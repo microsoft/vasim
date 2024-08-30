@@ -1,0 +1,93 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+  schedule:  # Run the pipeline every friday afternoon to make sure no package is broken
+    - cron: "15 21 * * FRI"
+
+permissions: read-all
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        # TODO: We will keep this simple for now. We will add more versions later.
+        os: ubuntu-22.04
+        python-version: '3.10'
+        #os: [ubuntu-24.04, macos-14, windows-2022]
+        #python-version: ['3.9', '3.10', '3.11']
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Lint with flake8
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install flake8
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # The GitHub editor is 127 chars wide
+        flake8 . --count  --max-complexity=10 --max-line-length=127 --statistics
+    - name: Install basic dependencies # TODO: separate out "test" dependencies in setup.py
+      run: |
+        python -m pip install -e . [dev]
+    - name: Run basic tests without extra
+      run: pytest
+    # TODO: setup coverage, then remove pytest above because it will be redundant
+    #- name: Coverage on basic tests
+    #    coverage run -a -m pytest tests
+    #    coverage xml
+    #- name: Upload coverage to Codecov
+    #  if: ${{ matrix.python-version == '3.9' && startsWith(matrix.os, 'ubuntu') }}
+    #  uses: codecov/codecov-action@v4
+    #  with:
+    #    file: ./coverage.xml
+    #    flags: unittests
+
+  # TODO: set this up later too. It needs to be in a separate block below due to the permissions
+  # page-build:
+  #   needs: build
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-22.04]
+  #       python-version: ['3.9']
+  #   permissions: # here we push documentation
+  #     actions: read
+  #     contents: write
+  #   if: github.ref == 'refs/heads/main' # only run this on main after PR merged
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - name: Set up Python ${{ matrix.python-version }}
+  #     uses: actions/setup-python@v5
+  #     with:
+  #       python-version: ${{ matrix.python-version }}
+  #   - name: Generate Documentation
+  #     run: |
+  #       # We're mocking out the torch. So now we also need to sub this on out
+  #       find ../. -type f -exec sed -i 's/{torch.__version__}/1.12.0/g' {} +
+  #       find ../. -type f -exec sed -i 's/torch.__version__/"1.12.0"/g' {} +
+  #       make sphinx-site -C website/
+  #       # now refresh the code
+  #       git checkout . && python -m pip install -e .[dev]
+  #   - name: Deploy to GitHub pages 🚀
+  #     uses: JamesIves/github-pages-deploy-action@v4.4.1
+  #     with:
+  #       branch: gh-pages
+  #       folder: website/public
+
