@@ -45,7 +45,7 @@ jobs:
         flake8 . --count  --max-complexity=10 --max-line-length=127 --statistics
     - name: Install basic dependencies # TODO: separate out "test" dependencies in setup.py
       run: |
-        python -m pip install -e . [dev]
+        python -m pip install -e .[dev]
     - name: Run basic tests without extra
       run: pytest
     # TODO: setup coverage, then remove pytest above because it will be redundant
