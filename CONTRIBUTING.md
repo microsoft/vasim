@@ -31,9 +31,8 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 ## Developing
 The simplest setup (assuming you have PyTorch already installed) is:
 ```
-mkdir Vasim
-cd Vasim
 git clone https://github.com/microsoft/vasim.git .
+cd vasim
 python -m pip install -e .[dev]
 ```
 

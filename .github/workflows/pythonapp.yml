@@ -79,9 +79,6 @@ jobs:
   #       python-version: ${{ matrix.python-version }}
   #   - name: Generate Documentation
   #     run: |
-  #       # We're mocking out the torch. So now we also need to sub this on out
-  #       find ../. -type f -exec sed -i 's/{torch.__version__}/1.12.0/g' {} +
-  #       find ../. -type f -exec sed -i 's/torch.__version__/"1.12.0"/g' {} +
   #       make sphinx-site -C website/
   #       # now refresh the code
   #       git checkout . && python -m pip install -e .[dev]

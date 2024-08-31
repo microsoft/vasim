@@ -21,12 +21,12 @@ class TestSimulatedInfraScaler(unittest.TestCase):
     def setUp(self):
 
         # For this test we'll use the "mini" dataset, which is a smaller version of the full dataset
-        ROOT_DIR = Path(os.path.dirname(os.path.abspath(__file__)))
-        self.source_dir = ROOT_DIR / "test_data/alibaba_control_c_29247_denom_1_mini"
+        root_dir = Path(os.path.dirname(os.path.abspath(__file__)))
+        self.source_dir = root_dir / "test_data/alibaba_control_c_29247_denom_1_mini"
         # Here we'll copy the source directory to a target directory, so we can modify the target directory without
         # affecting the source directory
-        self.target_dir = ROOT_DIR / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_mini"
-        self.target_dir_sim = ROOT_DIR / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_mini_simulations"
+        self.target_dir = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_mini"
+        self.target_dir_sim = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_mini_simulations"
         shutil.rmtree(self.target_dir, ignore_errors=True)
         shutil.copytree(self.source_dir, self.target_dir)
 

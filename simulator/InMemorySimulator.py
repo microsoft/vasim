@@ -22,7 +22,9 @@ class InMemoryRunnerSimulator:
 
     It contains the run method that simulates the cluster state and runs the recommender algorithm.
     """
-    def __init__(self, data_dir, config_path=None, initial_cpu_limit=None, lag=None, algorithm='multiplicative', config=None, target_simulation_dir=None, if_resample=True):
+
+    def __init__(self, data_dir, config_path=None, initial_cpu_limit=None, lag=None, algorithm='multiplicative',
+                 config=None, target_simulation_dir=None, if_resample=True):
         worker_id = str(uuid.uuid4())
         target_simulation_dir = target_simulation_dir or os.path.join(
             f"{data_dir}_simulations", f"target_{worker_id}")  # TODO: remove hardcode
