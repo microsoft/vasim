@@ -2,27 +2,27 @@ import os
 import unittest
 import shutil
 from unittest.mock import patch, MagicMock
+from pathlib import Path
 from simulator.analysis.pareto_visualization import create_pareto_curve_from_folder
 from simulator.ParameterTuning import tune_with_strategy
-from pathlib import Path
-
-'''
-This is a true run of simulator end to end. It is not a unit test.
-
-It calls tune_with_strategy, which performs a tuning run of the simulator, trying different configurations.
-'''
 
 
 class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
+    '''
+    This is a true run of simulator end to end. It is not a unit test.
+
+    It calls tune_with_strategy, which performs a tuning run of the simulator, trying different configurations.
+    '''
+
     def setUp(self):
 
         # For this test we'll use the "mini" dataset, which is a smaller version of the full dataset
-        ROOT_DIR = Path(os.path.dirname(os.path.abspath(__file__)))
-        self.source_dir = ROOT_DIR / "test_data/alibaba_control_c_29247_denom_1_mini"
+        root_dir = Path(os.path.dirname(os.path.abspath(__file__)))
+        self.source_dir = root_dir / "test_data/alibaba_control_c_29247_denom_1_mini"
         # Here we'll copy the source directory to a target directory, so we can modify the target directory without
         # affecting the source directory
-        self.target_dir = ROOT_DIR / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_mini"
-        self.target_dir_sim = ROOT_DIR / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_mini_tuning"
+        self.target_dir = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_mini"
+        self.target_dir_sim = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_mini_tuning"
         shutil.rmtree(self.target_dir, ignore_errors=True)
         shutil.copytree(self.source_dir, self.target_dir)
 
@@ -33,7 +33,9 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         cls.patcher = patcher
 
     def test_pareto2d(self):
-
+        """
+        This test will tune the simulator with a few parameters and then plot the results on a pareto curve.
+        """
         # First create some test data to tune
         config_path = f"{self.source_dir}/metadata.json"
         params_to_tune = {

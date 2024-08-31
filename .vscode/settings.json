@@ -1,0 +1,12 @@
+{
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.autopep8",
+        "editor.formatOnSave": true,
+    },
+    "python.linting.pylintEnabled": true,
+    "pylint.lintOnChange": true,
+    "editor.formatOnSave": true,
+    "autopep8.args": [
+        "--max-line-length=180"
+    ]
+}

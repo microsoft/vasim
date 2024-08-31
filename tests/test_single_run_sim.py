@@ -3,24 +3,23 @@ import unittest
 import shutil
 from unittest.mock import patch, MagicMock
 from simulator.InMemorySimulator import InMemoryRunnerSimulator
-from simulator.ParameterTuning import tune_with_strategy
 from pathlib import Path
-
-'''
-This is a true run of simulator end to end. It is not a unit test.
-
-It calls InMemoryRunnerSimulator, which performs a single run of the simulator without tuning.
-'''
 
 
 class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
+    """
+    This is a true run of simulator end to end. It is not a unit test.
+
+    It calls InMemoryRunnerSimulator, which performs a single run of the simulator without tuning.
+    """
+
     def setUp(self):
-        ROOT_DIR = Path(os.path.dirname(os.path.abspath(__file__)))
-        self.source_dir = ROOT_DIR / "test_data/alibaba_control_c_29247_denom_1"
+        root_dir = Path(os.path.dirname(os.path.abspath(__file__)))
+        self.source_dir = root_dir / "test_data/alibaba_control_c_29247_denom_1"
         # Here we'll copy the source directory to a target directory, so we can modify the target directory without
         # affecting the source directory
-        self.target_dir = ROOT_DIR / "test_data/alibaba_control_c_29247_denom_1_test_to_delete"
-        self.target_dir_sim = ROOT_DIR / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_simulations"
+        self.target_dir = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete"
+        self.target_dir_sim = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_simulations"
         shutil.rmtree(self.target_dir, ignore_errors=True)
         shutil.copytree(self.source_dir, self.target_dir)
 
