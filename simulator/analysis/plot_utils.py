@@ -1,14 +1,9 @@
 import os
 import warnings
-from datetime import datetime
 
-import matplotlib
-import matplotlib.dates as mdates
-import matplotlib.pyplot as plt
 import pandas as pd
-import seaborn as sns
 from plotnine import geom_line
-from plotnine import ggplot, labs, theme_minimal, theme, aes
+from plotnine import ggplot, labs, aes
 
 # Filter out UserWarning messages
 warnings.filterwarnings("ignore", category=UserWarning)
