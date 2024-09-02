@@ -1,6 +1,7 @@
 import os
 import unittest
 import shutil
+from unittest.mock import MagicMock, patch
 from simulator.ParameterTuning import tune_with_strategy
 from pathlib import Path
 
@@ -23,6 +24,12 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         self.target_dir_sim = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_mini_tuning"
         shutil.rmtree(self.target_dir, ignore_errors=True)
         shutil.copytree(self.source_dir, self.target_dir)
+
+    @classmethod
+    def setUpClass(cls):
+        patcher = patch('builtins.print', MagicMock())  # Mock the print function globally
+        patcher.start()
+        cls.patcher = patcher
 
     def test_run_tuning_grid(self):
         """
@@ -69,7 +76,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         # TODO: There is a bug with 'grid' in that it always trys all combinations, even if num_combinations is less than the total.
         # assert len(results) == num_combinations
         # check the first result's combinations, which is deterministic because we're using grid
-        self.assertEqual(results[0][0]['window'], 60)
+        self.assertEqual(results[0][0].general_config['window'], 60)
         # # check the first result's metrics
         self.assertAlmostEqual(results[0][1]["average_slack"], expected["average_slack"], places=2)
         self.assertAlmostEqual(results[0][1]["median_slack"], expected["median_slack"], places=2)
@@ -129,7 +136,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
 
         # assert len(results) == num_combinations
         # check the first result's combinations, which is deterministic because we're using grid
-        self.assertEqual(results[0][0]['window'], 60)
+        self.assertEqual(results[0][0].general_config['window'], 60)
         self.assertEqual(results[0][0]['prediction_config']['waiting_before_predict'], 60)
         # # check the first result's metrics
         self.assertAlmostEqual(results[0][1]["average_slack"], expected["average_slack"], places=2)
