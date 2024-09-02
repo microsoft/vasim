@@ -4,14 +4,12 @@ from abc import abstractmethod
 
 
 class Recommender:
-    def __init__(self, cluster_state_provider, config, save_metadata=True):
+    def __init__(self, cluster_state_provider, save_metadata=True):
         """
         This is the base class for all recommender algorithms.
 
         Parameters:
             cluster_state_provider (ClusterStateProvider): The cluster state provider such as FileClusterStateProvider.
-                    Used for logging.
-            config (dict): Configuration dictionary with parameters for the recommender.
             save_metadata (bool): Whether to save metadata to a file. For tuning this makes tracking easier.
 
         """
@@ -19,13 +17,18 @@ class Recommender:
         # For now, we are just passing the cluster_state_provider and config for logging purposes.
         #       Ex: we need the path in self.cluster_state_provider.config.uuid to save the logging/metadata during tuning
         self.cluster_state_provider = cluster_state_provider
-        self.config = config
+        self.config = self.cluster_state_provider.config
+
+        # This is for user convenience. They can pass the parameters in the config file. But maybe it's confusing/redundant.
+        self.algo_params = self.config.algo_specific_config
+
         self.logger = self._setup_logger()
 
         if save_metadata:
             self._save_metadata()
 
     def _setup_logger(self):
+        # TODO: I think we can simplify this by just using the config.uuid as the logger name
         if hasattr(self.cluster_state_provider, 'config') and self.cluster_state_provider.config is not None and hasattr(self.cluster_state_provider.config, "uuid"):
             return logging.getLogger(f'{self.cluster_state_provider.config.uuid}')
         else:

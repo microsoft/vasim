@@ -4,27 +4,17 @@ from recommender.Recommender import Recommender
 
 
 class SimpleAdditiveRecommender(Recommender):
-    def __init__(self, cluster_state_provider, config, save_metadata=True):
+    def __init__(self, cluster_state_provider, save_metadata=True):
         """
         Parameters:
             cluster_state_provider (ClusterStateProvider): The cluster state provider such as FileClusterStateProvider.
-            config (dict): Configuration dictionary with parameters for the recommender.
             save_metadata (bool): Whether to save metadata to a file.
         """
-        super().__init__(cluster_state_provider, config, save_metadata)
+        super().__init__(cluster_state_provider, save_metadata)
 
-        # For now, we are just passing the cluster_state_provider and config for logging purposes.
-        # TODO: Consider refactoring the logging to be more consistent across all classes.
-        self.cluster_state_provider = cluster_state_provider
-        if hasattr(self.cluster_state_provider, 'config') and self.cluster_state_provider.config is not None \
-                and hasattr(self.cluster_state_provider.config, "uuid"):
-            self.logger = logging.getLogger(f'{self.cluster_state_provider.config.uuid}')
-        else:
-            self.logger = logging.getLogger()
-
-        # User parameters go here
+        # User parameters go here. They are available in self.algo_params
         # Default addend is 2. This is the buffer to the maximum value.
-        self.addend = config.get("algo_specific_config", {}).get("addend", 2)
+        self.addend = self.algo_params.get("addend", 2)
 
     def run(self, recorded_data):
         """

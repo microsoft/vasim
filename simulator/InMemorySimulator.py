@@ -81,13 +81,9 @@ class InMemoryRunnerSimulator:
 
     def _create_recommender_algorithm(self, algorithm):
         if algorithm == 'multiplicative':
-            return SimpleMultiplierRecommender(
-                cluster_state_provider=self.cluster_state_provider,
-                config=self.config)
+            return SimpleMultiplierRecommender(self.cluster_state_provider)
         elif algorithm == 'additive':
-            return SimpleAdditiveRecommender(
-                cluster_state_provider=self.cluster_state_provider,
-                config=self.config)
+            return SimpleAdditiveRecommender(self.cluster_state_provider)
         # Add your own algorithm here!!!
         # TODO: Make this more dynamic
         else:

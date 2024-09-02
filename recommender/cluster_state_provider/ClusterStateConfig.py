@@ -2,13 +2,16 @@ import json
 
 
 class ClusterStateConfig(dict):
-    def __init__(self, config_dict=None, filename=None):
+    def __init__(self, config_dict=None, filename=None, is_predictive=True):
         super().__init__()  # Initialize the dictionary part of the object
 
         if config_dict is None and filename is None:
             self.algorithm_config = {}
             self.general_config = {}
-            self.prediction_config = {}
+            if is_predictive:
+                # TODO: we may unify and always have prediction_config
+                # and just have it be empty if not predictive. (Before, we had a flag.)
+                self.prediction_config = {}
         if config_dict is not None:
             self.update(config_dict)
         elif filename is not None:
