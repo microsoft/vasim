@@ -54,7 +54,7 @@ class InMemoryRunnerSimulator:
         logger = logging.getLogger()
         logger.setLevel(logging.ERROR)
 
-        log_file = os.path.join(f"{data_dir}/InMemorySim.log")
+        log_file = os.path.join(f"{data_dir}/InMemorySim.log")  # TODO: remove hardcode
         file_handler = logging.FileHandler(log_file)
         file_handler.setLevel(logging.WARNING)
 
@@ -68,7 +68,7 @@ class InMemoryRunnerSimulator:
         return ClusterStateConfig(filename=config_path)
 
     def _create_cluster_state_provider(self, data_dir, config, target_simulation_dir=None):
-        out_filename = f"{target_simulation_dir or data_dir}/decisions.txt"
+        out_filename = f"{target_simulation_dir or data_dir}/decisions.txt"  # TODO: remove hardcode. ALSO: todo, this is csv
         return SimulatedClusterStateProviderFactory(data_dir=data_dir, out_filename=out_filename, config=config).create_provider(
             predictive=config.predictive)
 
