@@ -51,6 +51,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
             num_combinations=num_combinations,
             num_workers=num_workers,
             data_dir=data_dir,
+            lag=10,
             algorithm=selected_algorithm,
             initial_cpu_limit=initial_cpu_limit,
             algo_specific_params_to_tune=algorithm_specific_params_to_tune,
@@ -110,7 +111,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         num_combinations = 16
         results = tune_with_strategy(config_path, strategy,
                                      num_combinations=num_combinations,
-                                     num_workers=num_workers, data_dir=data_dir,
+                                     num_workers=num_workers, data_dir=data_dir, lag=10,
                                      algorithm=selected_algorithm,
                                      initial_cpu_limit=initial_cpu_limit,
                                      algo_specific_params_to_tune=algorithm_specific_params_to_tune,
@@ -168,7 +169,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         num_combinations = 8  # how many combinations to try, here we'll do all 8 for consistency (2 windows * 4 addends)
         results = tune_with_strategy(config_path, strategy,
                                      num_combinations=num_combinations,
-                                     num_workers=num_workers, data_dir=data_dir,
+                                     num_workers=num_workers, data_dir=data_dir, lag=10,
                                      algorithm=selected_algorithm,
                                      initial_cpu_limit=initial_cpu_limit,
                                      algo_specific_params_to_tune=algorithm_specific_params_to_tune,
