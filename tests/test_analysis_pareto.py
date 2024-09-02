@@ -72,6 +72,8 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         # Now make sure the usage graphs in the folders are created.
         # The folders will be named after the UUID of the configuration
         self.assertTrue(len(list(Path(self.target_dir_sim).rglob("cpu_usage_and_new_limit.pdf"))) == num_combinations)
+        # also assert a log was created for each fodler
+        self.assertTrue(len(list(Path(self.target_dir_sim).rglob("InMemorySim.log"))) == num_combinations)
 
         ret = pareto_2d.find_closest_to_zero()
         # This function returns folder, config, dimension_1, and dimension_2 of the closest combination
@@ -84,7 +86,6 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         self.assertAlmostEqual(ret[3], 76.7, places=1)
 
     def tearDown(self):
-        return
         shutil.rmtree(self.target_dir_sim, ignore_errors=True)
         shutil.rmtree(self.target_dir, ignore_errors=True)
 

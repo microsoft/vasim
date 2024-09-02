@@ -1,6 +1,7 @@
 {
     "algo_specific_config": {
-        "addend": 2
+        "addend": 2,
+        "multiplier": 2
     },
     "general_config": {
         "window": 20,

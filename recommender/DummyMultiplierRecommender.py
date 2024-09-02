@@ -5,29 +5,20 @@ from recommender.Recommender import Recommender
 
 
 class SimpleMultiplierRecommender(Recommender):
-    def __init__(self, cluster_state_provider, config, save_metadata=True):
+    def __init__(self, cluster_state_provider, save_metadata=True):
         """
         Parameters:
             cluster_state_provider (ClusterStateProvider): The cluster state provider such as FileClusterStateProvider.
-            config (dict): Configuration dictionary with parameters for the recommender.
             save_metadata (bool): Whether to save metadata to a file.
         """
-        super().__init__(cluster_state_provider, config, save_metadata)
+        super().__init__(cluster_state_provider, save_metadata)
 
-        # For now, we are just passing the cluster_state_provider and config for logging purposes.
-        # TODO: Consider refactoring the logging to be more consistent across all classes.
-        self.cluster_state_provider = cluster_state_provider
-        if hasattr(self.cluster_state_provider, 'config') and self.cluster_state_provider.config is not None \
-                and hasattr(self.cluster_state_provider.config, "uuid"):
-            self.logger = logging.getLogger(f'{self.cluster_state_provider.config.uuid}')
-        else:
-            self.logger = logging.getLogger()
-
-        # User parameters go here
-        # Default smoothing window is 5. This is the number of data points to consider for smoothing.
-        self.smoothing_window = config.get("smoothing_window", config.get("general_config", {}).get("window", 5))
-        # TODO: this isn't in json for now. make a new json separetely for this test
-        self.multiplier = config.get("general_config", {}).get("multiplier", 2)  # Default multiplier is 2
+        # User parameters go here. They are available in self.algo_params
+        self.multiplier = self.algo_params.get("multiplier", 1.5)  # Default multiplier is 1.5
+        # Here is an example of accessing the general config in addition to the algo specific config/user params.
+        # (In this case, we didn't add smoothing_window to the algo specific config), so we use the general config as a fallback.
+        self.smoothing_window = self.algo_params.get(
+            "smoothing_window", self.config.get("general_config", {}).get("window", 5))
 
     def run(self, recorded_data):
         """

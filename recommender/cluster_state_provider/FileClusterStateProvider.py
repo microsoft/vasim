@@ -42,7 +42,7 @@ class FileClusterStateProvider(ClusterStateProvider):
             self.config = kwargs['config']
             self.logger = logging.getLogger(f'{self.config.uuid}')
         else:
-            self.config = ClusterStateConfig()
+            self.config = ClusterStateConfig()  # TODO: can pass in is_predictive False if we won't use forecasting
             self.logger = logging.getLogger()
 
         self.data_dir = Path(data_dir) or Path().absolute() / "data"
