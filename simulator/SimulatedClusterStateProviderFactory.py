@@ -9,7 +9,7 @@ class SimulatedClusterStateProviderFactory:
         self.config = config
         self.data_dir = data_dir
         self.out_filename = out_filename
-        if config.predictive:
+        if config.prediction_config:
             self.prediction_config = config.prediction_config
 
     def create_provider(self, predictive: bool) -> SimulatedBaseClusterStateProvider:
@@ -17,22 +17,22 @@ class SimulatedClusterStateProviderFactory:
             return SimulatedInMemoryPredictiveClusterStateProvider(
                 data_dir=self.data_dir,
                 prediction_config=self.prediction_config,
-                max_cpu_limit=self.config.max_cpu_limit,
+                max_cpu_limit=self.config.general_config['max_cpu_limit'],
                 decision_file_path=self.out_filename,
-                granularity=self.config.granularity,
-                lag=self.config.lag,
-                window=self.config.window,
-                min_cpu_limit=self.config.min_cpu_limit,
+                granularity=self.config.general_config['granularity'],
+                lag=self.config.general_config['lag'],
+                window=self.config.general_config['window'],
+                min_cpu_limit=self.config.general_config['min_cpu_limit'],
                 config=self.config
             )
         else:
             return SimulatedInMemoryClusterStateProvider(
                 data_dir=self.data_dir,
-                max_cpu_limit=self.config.max_cpu_limit,
+                max_cpu_limit=self.config.general_config['max_cpu_limit'],
                 decision_file_path=self.out_filename,
-                granularity=self.config.granularity,
-                lag=self.config.lag,
-                window=self.config.window,
-                min_cpu_limit=self.config.min_cpu_limit,
+                granularity=self.config.general_config['granularity'],
+                lag=self.config.general_config['lag'],
+                window=self.config.general_config['window'],
+                min_cpu_limit=self.config.general_config['min_cpu_limit'],
                 config=self.config
             )

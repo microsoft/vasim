@@ -51,12 +51,12 @@ class SimulatedInfraScaler:
             if self.last_scaling_time is None or (time_now - self.last_scaling_time).seconds > self.recovery_time * 60:
                 self.logger.info(">>>attempting to scale to %d cores from %d",
                                  new_limit, current_cpu_limit)
-                if new_limit < self.cluster_state_provider.config.min_cpu_limit:
+                if new_limit < self.cluster_state_provider.config.general_config["min_cpu_limit"]:
                     self.logger.info(">>>not scaling, would go below min cores")
-                    self.cluster_state_provider.set_cpu_limit(self.cluster_state_provider.min_cpu_limit)
+                    self.cluster_state_provider.set_cpu_limit(self.cluster_state_provider.config.general_config["min_cpu_limit"])
                     self.logger.info(">>>corrected to min cores")
-                elif new_limit > self.cluster_state_provider.config.max_cpu_limit:
-                    self.cluster_state_provider.set_cpu_limit(self.cluster_state_provider.max_cpu_limit)
+                elif new_limit > self.cluster_state_provider.config.general_config["max_cpu_limit"]:
+                    self.cluster_state_provider.set_cpu_limit(self.cluster_state_provider.config.general_config["max_cpu_limit"])
                     self.logger.info(">>>corrected to max cores")
                 else:
                     self.cluster_state_provider.set_cpu_limit(new_limit)

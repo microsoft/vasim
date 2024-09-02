@@ -4,6 +4,11 @@ import json
 class ClusterStateConfig(dict):
     def __init__(self, config_dict=None, filename=None):
         super().__init__()  # Initialize the dictionary part of the object
+
+        if config_dict is None and filename is None:
+            self.algorithm_config = {}
+            self.general_config = {}
+            self.prediction_config = {}
         if config_dict is not None:
             self.update(config_dict)
         elif filename is not None:

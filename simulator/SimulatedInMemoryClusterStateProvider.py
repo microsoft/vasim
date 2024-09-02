@@ -23,6 +23,7 @@ class SimulatedInMemoryClusterStateProvider(SimulatedBaseClusterStateProvider, F
             return None
 
         # Add lag to current time
+        # TODO: why 5? This seems a bug.
         filtered_data = self.recorded_data.loc[self.current_time - timedelta(minutes=self.window + 5):self.current_time]
 
         # adjust last lag to cores

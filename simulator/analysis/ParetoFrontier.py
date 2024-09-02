@@ -18,7 +18,7 @@ class ParetoFrontier(ABC):
     def filter_out_less_than_by_dimension(self, dimension, value):
         return list(filter(lambda x: x[2][dimension] <= value, self.workload_run_metrics))
 
-    def find_closest_to_zero(results):
+    def find_closest_to_zero(self):
         pass
 
     @staticmethod
@@ -67,7 +67,7 @@ class ParetoFrontier(ABC):
                 'average_slack': metrics["average_slack"],
                 'insufficient_observations_percentage': metrics["insufficient_observations_percentage"],
                 'slack_percentage': metrics["slack_percentage"],
-                'window': config.window,
+                'window': config.general_config["window"],
                 'uuid': config.get("uuid", folder.lstrip("target_") or "unknown"),
                 'predictive': config.prediction_config["waiting_before_predict"] < 24 * 60 * 2,
                 'waiting_before_predict': config.prediction_config["waiting_before_predict"],

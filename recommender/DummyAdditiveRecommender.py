@@ -1,18 +1,17 @@
 import logging
 import numpy as np
-import pandas as pd
 from recommender.Recommender import Recommender
 
 
 class SimpleAdditiveRecommender(Recommender):
     def __init__(self, cluster_state_provider, config, save_metadata=True):
-        super().__init__(cluster_state_provider, config, save_metadata)
         """
         Parameters:
             cluster_state_provider (ClusterStateProvider): The cluster state provider such as FileClusterStateProvider.
             config (dict): Configuration dictionary with parameters for the recommender.
             save_metadata (bool): Whether to save metadata to a file.
         """
+        super().__init__(cluster_state_provider, config, save_metadata)
 
         # For now, we are just passing the cluster_state_provider and config for logging purposes.
         # TODO: Consider refactoring the logging to be more consistent across all classes.
@@ -24,7 +23,8 @@ class SimpleAdditiveRecommender(Recommender):
             self.logger = logging.getLogger()
 
         # User parameters go here
-        self.addend = config.get("addend", 2)  # Default addend is 2. This is the buffer to the maximum value.
+        # Default addend is 2. This is the buffer to the maximum value.
+        self.addend = config.get("algo_specific_config", {}).get("addend", 2)
 
     def run(self, recorded_data):
         """

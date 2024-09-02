@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 
 from recommender.cluster_state_provider.ClusterStateProvider import ClusterStateProvider
+from recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
 
 
 class FileClusterStateProvider(ClusterStateProvider):
@@ -16,7 +17,9 @@ class FileClusterStateProvider(ClusterStateProvider):
 
     It is not part of the simulator, but is used in the production environment.
 
-    TODO: Remove this file from the simulator package, but some of the code here is useful for the simulator.
+    TODO: Remove this file from the simulator package, but some of the code here is used for the simulator.
+    We need to separate the simulator code from the production code. Ideally, we still preserve the
+    ability to run the simulator with a live k8s cluster.
     """
 
     def __init__(self, data_dir=None, features=["cpu"], window=40, decision_file_path=None, lag=5.0,
@@ -39,34 +42,35 @@ class FileClusterStateProvider(ClusterStateProvider):
             self.config = kwargs['config']
             self.logger = logging.getLogger(f'{self.config.uuid}')
         else:
+            self.config = ClusterStateConfig()
             self.logger = logging.getLogger()
-
-        self.max_cpu_limit = max_cpu_limit
-        if self.max_cpu_limit is None:
-            # TODO: reimplement this to not be Azure-specific
-            # self.max_cpu_limit = self.get_total_cpu()
-            raise SystemExit('Must set max_cpu_limit to a value')
 
         self.data_dir = Path(data_dir) or Path().absolute() / "data"
         if list(self.data_dir.glob("**/*.csv")) == []:
             self.logger.error('Error: no csvs found in data_dir {}'.format(self.data_dir))
             raise SystemExit('Error: no csvs found in data_dir {}'.format(self.data_dir))
+        # TODO: rename this, it's a bit confusing. It's not the features of the model, it's the features of the data.
         self.features = features or []
-        self.window = window
+        # TODO: a lot of the code below needs testing
+
+        # create an empty config object, and give it a general_config attribute
+
+        self.config.general_config['lag'] = lag
+        self.config.general_config['granularity'] = granularity
+        self.config.general_config['min_cpu_limit'] = min_cpu_limit
+        self.config.general_config['max_cpu_limit'] = max_cpu_limit
+        self.config.general_config['window'] = window
         self.decision_file_path = decision_file_path or "data/decisions.txt"
-        self.lag = lag
-        self.granularity = granularity
-        self.min_cpu_limit = min_cpu_limit
 
         if save_metadata:
             meta_out_file = self.data_dir / "metadata.txt"
             meta = open(meta_out_file, "a")
-            meta.write("max_cpu_limit: " + str(self.max_cpu_limit) + "\n")
+            meta.write("max_cpu_limit: " + str(self.config.general_config['max_cpu_limit']) + "\n")
             meta.write("features: " + str(self.features) + "\n")
-            meta.write("window: " + str(self.window) + "\n")
-            meta.write("lag: " + str(self.lag) + "\n")
-            meta.write("granularity: " + str(self.granularity) + "\n")
-            meta.write("min_cpu_limit: " + str(self.min_cpu_limit) + "\n")
+            meta.write("window: " + str(self.config.general_config['window']) + "\n")
+            meta.write("lag: " + str(self.config.general_config['lag']) + "\n")
+            meta.write("granularity: " + str(self.config.general_config['granularity']) + "\n")
+            meta.write("min_cpu_limit: " + str(self.config.general_config['min_cpu_limit']) + "\n")
             meta.close()
         self.save_metadata = save_metadata
 
@@ -148,7 +152,7 @@ class FileClusterStateProvider(ClusterStateProvider):
             if cores is None:
                 self.logger.error("Error getting current cores. Retry later.")
                 return None, None
-            recorded_data = recorded_data[recorded_data["cpu"] <= self.max_cpu_limit]
+            recorded_data = recorded_data[recorded_data["cpu"] <= self.config.general_config['max_cpu_limit']]
 
         return recorded_data, end_time
 
@@ -191,16 +195,16 @@ class FileClusterStateProvider(ClusterStateProvider):
                 )
                 return None, None
 
-        start_time = end_time - timedelta(minutes=self.window)
+        start_time = end_time - timedelta(minutes=self.config.general_config['window'])
         recorded_data = recorded_data[recorded_data["time"] >= start_time]
         recorded_data = recorded_data[recorded_data["time"] <= end_time]
         return recorded_data, end_time
 
     def create_resource_limits(self):
         # Infact I think we need to remove most of this file, as it won't be used in the simulator.
-        vcpus_increments = self.max_cpu_limit * self.granularity + 1
+        vcpus_increments = self.config.general_config['max_cpu_limit'] * self.config.general_config['granularity'] + 1
         new_resource_limits = pd.DataFrame(
-            data={"cpu": np.linspace(0, self.max_cpu_limit, num=vcpus_increments)})
+            data={"cpu": np.linspace(0, self.config.general_config['max_cpu_limit'], num=vcpus_increments)})
         new_resource_limits[
             "new_price"] = new_resource_limits["cpu"]  # we removed price from the model
         # TODO: where is this used?
@@ -234,9 +238,10 @@ class FileClusterStateProvider(ClusterStateProvider):
                 # Get the last time a decision was made
                 last_decision_time = new_limit_changes["LATEST_TIME"].iloc[-1]
                 # Add the lag to the last decision time
-                last_decision_time = last_decision_time + timedelta(minutes=self.lag)
+                last_decision_time = last_decision_time + timedelta(minutes=self.config.general_config['lag'])
 
         return last_decision_time
 
     def get_total_cpu(self):
-        return self.max_cpu_limit
+        # TODO: this function makes less sense in the context of the simulator
+        return self.config.general_config['max_cpu_limit']

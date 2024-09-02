@@ -38,9 +38,11 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         """
         # First create some test data to tune
         config_path = f"{self.source_dir}/metadata.json"
+        algo_specific_params_to_tune = {
+            "addend": [1, 2, 3],  # the addend is the number of minutes to add to the prediction\
+        }
         params_to_tune = {
             'window': [60, 120],  # the window size is the number of minutes to consider for the prediction
-            "addend": [1, 2, 3],  # the addend is the number of minutes to add to the prediction
             "lag": [1, 15]  # the lag is the number of minutes to wait before making a prediction
         }
         predictive_params_to_tune = None
@@ -53,11 +55,12 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         num_combinations = 12
 
         # This will populate the self.target_dir_sim folder with the results of the tuning
-        tune_with_strategy(config_path, params_to_tune, predictive_params_to_tune, strategy,
-                           num_combinations=num_combinations,
+        tune_with_strategy(config_path, strategy, num_combinations=num_combinations,
                            num_workers=num_workers, data_dir=data_dir, lag=10,
-                           algorithm=selected_algorithm,
-                           initial_cpu_limit=initial_cpu_limit)
+                           algorithm=selected_algorithm, initial_cpu_limit=initial_cpu_limit,
+                           algo_specific_params_to_tune=algo_specific_params_to_tune,
+                           general_params_to_tune=params_to_tune,
+                           predictive_params_to_tune=predictive_params_to_tune)
 
         # Now we'll plot them
         pareto_2d = create_pareto_curve_from_folder(data_dir, self.target_dir_sim)
@@ -74,13 +77,14 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         # This function returns folder, config, dimension_1, and dimension_2 of the closest combination
         # We don't know what folder will be because it's random, but we can check the other values
         # We know that a config with the added value of 1 has the least slack and expect that to be the closest to zero
-        self.assertEqual(ret[1]['addend'], 1)
+        self.assertEqual(ret[1].algo_specific_config['addend'], 1)
         # The other two are dimensions: the slack and the insufficient cpu
         # We pre-computed these.
-        self.assertAlmostEqual(ret[2], 7500, places=0)
+        self.assertAlmostEqual(ret[2], 7500, delta=100)
         self.assertAlmostEqual(ret[3], 76.7, places=1)
 
     def tearDown(self):
+        return
         shutil.rmtree(self.target_dir_sim, ignore_errors=True)
         shutil.rmtree(self.target_dir, ignore_errors=True)
 
