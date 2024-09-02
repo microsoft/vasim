@@ -24,8 +24,7 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
         # TODO: read from config
         self.frequency_minutes = prediction_config['frequency_minutes']  # 30 seconds
         self.minutes_to_predict = prediction_config.get('minutes_to_predict',
-                                                        int(self.window / 2))  # we want to take half of the original window and predict the other half
-        # self.window_length = prediction_config['window_length']  # 60 minutes
+                                                        int(self.config.general_config['window'] / 2))  # we want to take half of the original window and predict the other half
         self.freq = f"{self.frequency_minutes}T"
         self.waiting_time = prediction_config['waiting_before_predict']
         self.data_processor = DataProcessor()
@@ -38,7 +37,7 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
         self._prediction_activated = False
         self.number_of_points_to_predict = int(self.minutes_to_predict / self.frequency_minutes)
         self.predictive_window = prediction_config.get('total_predictive_window',
-                                                       self.number_of_points_to_predict + int(self.window))
+                                                       self.number_of_points_to_predict + int(self.config.general_config['window']))
         if 'config' in kwargs and 'uuid' in kwargs['config']:
             # keyword argument 'param_name' exists
             self.config = kwargs['config']

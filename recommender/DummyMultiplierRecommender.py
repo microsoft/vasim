@@ -6,13 +6,13 @@ from recommender.Recommender import Recommender
 
 class SimpleMultiplierRecommender(Recommender):
     def __init__(self, cluster_state_provider, config, save_metadata=True):
-        super().__init__(cluster_state_provider, config, save_metadata)
         """
         Parameters:
             cluster_state_provider (ClusterStateProvider): The cluster state provider such as FileClusterStateProvider.
             config (dict): Configuration dictionary with parameters for the recommender.
             save_metadata (bool): Whether to save metadata to a file.
         """
+        super().__init__(cluster_state_provider, config, save_metadata)
 
         # For now, we are just passing the cluster_state_provider and config for logging purposes.
         # TODO: Consider refactoring the logging to be more consistent across all classes.
@@ -24,8 +24,10 @@ class SimpleMultiplierRecommender(Recommender):
             self.logger = logging.getLogger()
 
         # User parameters go here
-        self.smoothing_window = config.get("smoothing_window", config.get("window", 5))  # Default smoothing window is 5
-        self.multiplier = config.get("multiplier", 2)  # Default multiplier is 2
+        # Default smoothing window is 5. This is the number of data points to consider for smoothing.
+        self.smoothing_window = config.get("smoothing_window", config.get("general_config", {}).get("window", 5))
+        # TODO: this isn't in json for now. make a new json separetely for this test
+        self.multiplier = config.get("general_config", {}).get("multiplier", 2)  # Default multiplier is 2
 
     def run(self, recorded_data):
         """

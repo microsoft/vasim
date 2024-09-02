@@ -71,7 +71,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
             with open(os.path.join(sim_dir, "metadata.json"), "r") as f:
                 import json
                 metadata = json.load(f)
-                lag_read_in = metadata["lag"]
+                lag_read_in = metadata["general_config"]["lag"]
                 assert lag_read_in == 10, f"Expected the lag parameter to be 5, but got {lag_read_in}"
             assert diff == lag_read_in, f"Expected the difference lines 1-2 to be {lag_read_in} minutes, but got {diff}"
             # and now we'll check that the third time is 10 minutes after the second time
@@ -127,7 +127,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
             with open(os.path.join(sim_dir, "metadata.json"), "r") as f:
                 import json
                 metadata = json.load(f)
-                lag_read_in = metadata["lag"]
+                lag_read_in = metadata["general_config"]["lag"]
                 assert lag_read_in == 5, f"Expected the lag parameter to be 5, but got {lag_read_in}"
             assert diff == lag_read_in, f"Expected the difference lines 1-2 to be {lag_read_in} minutes, but got {diff}"
             # and now we'll check that the third time is 10 minutes after the second time

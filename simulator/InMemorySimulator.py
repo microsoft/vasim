@@ -70,13 +70,14 @@ class InMemoryRunnerSimulator:
     def _create_cluster_state_provider(self, data_dir, config, target_simulation_dir=None):
         out_filename = f"{target_simulation_dir or data_dir}/decisions.txt"  # TODO: remove hardcode. ALSO: todo, this is csv
         return SimulatedClusterStateProviderFactory(data_dir=data_dir, out_filename=out_filename, config=config).create_provider(
-            predictive=config.predictive)
+            predictive=config.prediction_config)
 
     def _get_experiment_time_range(self):
         return self.cluster_state_provider.start_time, self.cluster_state_provider.end_time
 
     def _create_infra_scaler(self):
-        return SimulatedInfraScaler(self.cluster_state_provider, self.experiment_start_time, self.config.get("recovery_time", 15))
+        return SimulatedInfraScaler(self.cluster_state_provider, self.experiment_start_time,
+                                    self.config.get("general_config", {}).get("recovery_time", 15))
 
     def _create_recommender_algorithm(self, algorithm):
         if algorithm == 'multiplicative':
@@ -106,8 +107,8 @@ class InMemoryRunnerSimulator:
         return f
 
     def _configure_sleep_interval(self, lag, config):
-        config.lag = lag or config.lag
-        self.sleep_interval_minutes = config.lag
+        # TODO: there may be some double-storing of the lag parameter here
+        self.sleep_interval_minutes = lag or config.general_config['lag']
 
     def output_decision(self, latest_time, current_limit, new_limit):
         if latest_time is not None:

@@ -3,6 +3,7 @@ from abc import abstractmethod
 
 class ClusterStateProvider:
     def __init__(self, data_dir=None, features=None, window=None, decision_file_path=None, lag=None):
+        # TODO: How did we chose to include lag and window, but not the rest? I think make them all kwargs
         pass
 
     @abstractmethod

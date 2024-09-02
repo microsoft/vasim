@@ -38,13 +38,13 @@ class TestSimulatedInfraScaler(unittest.TestCase):
         # and clarify how it's different from the lag parameter.
         with open(f"{self.target_dir}/metadata_alt_config.json") as f:
             config = json.load(f)
-            self.assertEqual(config["recovery_time"], 5)
+            self.assertEqual(config["general_config"]["recovery_time"], 5)
 
         self.runner = InMemoryRunnerSimulator(self.target_dir, initial_cpu_limit=14,
                                               algorithm="multiplicative", config_path=f"{self.target_dir}/metadata_alt_config.json")
 
         # now assert that the config is the same as the one we loaded
-        self.assertEqual(self.runner.config["recovery_time"], 5)
+        self.assertEqual(self.runner.config.general_config["recovery_time"], 5)
         self.assertEqual(self.runner.infra_scaler.recovery_time, 5)
 
         # set things locally for easier access

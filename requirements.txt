@@ -6,6 +6,5 @@ setuptools>=68.0.0
 matplotlib~=3.7.1
 jsonargparse~=4.21.0
 requests~=2.32.0
-PyYAML~=6.0
 plotnine~=0.12.2
 cvxpy~=1.5.2

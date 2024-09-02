@@ -1,6 +1,7 @@
 import os
 import unittest
 import shutil
+from unittest.mock import MagicMock, patch
 from simulator.ParameterTuning import tune_with_strategy
 from pathlib import Path
 
@@ -24,6 +25,12 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         shutil.rmtree(self.target_dir, ignore_errors=True)
         shutil.copytree(self.source_dir, self.target_dir)
 
+    @classmethod
+    def setUpClass(cls):
+        patcher = patch('builtins.print', MagicMock())  # Mock the print function globally
+        patcher.start()
+        cls.patcher = patcher
+
     def test_run_tuning_grid(self):
         """
         Now use the tuning function to test the tuning process
@@ -32,8 +39,10 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         """
 
         config_path = f"{self.source_dir}/metadata.json"
-        params_to_tune = {
+        general_params_to_tune = {
             'window': [60, 120],  # the window size is the number of minutes to consider for the prediction
+        }
+        algorithm_specific_params_to_tune = {
             "addend": [1, 3, 5, 10],  # the addend is the number of minutes to add to the prediction
         }
         predictive_params_to_tune = None
@@ -43,11 +52,19 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         data_dir = self.target_dir
         num_workers = 8  # how many threads to spin up
         num_combinations = 8  # how many combinations to try, here we'll do all 8 for consistency (2 windows * 4 addends)
-        results = tune_with_strategy(config_path, params_to_tune, predictive_params_to_tune, strategy,
-                                     num_combinations=num_combinations,
-                                     num_workers=num_workers, data_dir=data_dir, lag=10,
-                                     algorithm=selected_algorithm,
-                                     initial_cpu_limit=initial_cpu_limit)
+        results = tune_with_strategy(
+            config_path,
+            strategy,
+            num_combinations=num_combinations,
+            num_workers=num_workers,
+            data_dir=data_dir,
+            lag=10,
+            algorithm=selected_algorithm,
+            initial_cpu_limit=initial_cpu_limit,
+            algo_specific_params_to_tune=algorithm_specific_params_to_tune,
+            general_params_to_tune=general_params_to_tune,
+            predictive_params_to_tune=predictive_params_to_tune
+        )
 
         assert results is not None
 
@@ -59,7 +76,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         # TODO: There is a bug with 'grid' in that it always trys all combinations, even if num_combinations is less than the total.
         # assert len(results) == num_combinations
         # check the first result's combinations, which is deterministic because we're using grid
-        self.assertEqual(results[0][0]['window'], 60)
+        self.assertEqual(results[0][0].general_config['window'], 60)
         # # check the first result's metrics
         self.assertAlmostEqual(results[0][1]["average_slack"], expected["average_slack"], places=2)
         self.assertAlmostEqual(results[0][1]["median_slack"], expected["median_slack"], places=2)
@@ -82,8 +99,10 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         """
 
         config_path = f"{self.source_dir}/metadata.json"
-        params_to_tune = {
+        general_params_to_tune = {
             'window': [60, 120],  # the window size is the number of minutes to consider for the prediction
+        }
+        algorithm_specific_params_to_tune = {
             "addend": [1, 3, 5, 10],  # the addend is the number of minutes to add to the prediction
         }
         predictive_params_to_tune = {
@@ -97,11 +116,15 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         # TODO: There is a bug with 'grid' in that it always trys all combinations, even if num_combinations is less than the total.
         # how many combinations to try, there are 16 (2 * 4 * 2) total possible combinations. (For grid, it will try all)
         num_combinations = 16
-        results = tune_with_strategy(config_path, params_to_tune, predictive_params_to_tune, strategy,
+        results = tune_with_strategy(config_path, strategy,
                                      num_combinations=num_combinations,
                                      num_workers=num_workers, data_dir=data_dir, lag=10,
                                      algorithm=selected_algorithm,
-                                     initial_cpu_limit=initial_cpu_limit)
+                                     initial_cpu_limit=initial_cpu_limit,
+                                     algo_specific_params_to_tune=algorithm_specific_params_to_tune,
+                                     general_params_to_tune=general_params_to_tune,
+                                     predictive_params_to_tune=predictive_params_to_tune
+                                     )
 
         assert results is not None
 
@@ -113,7 +136,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
 
         # assert len(results) == num_combinations
         # check the first result's combinations, which is deterministic because we're using grid
-        self.assertEqual(results[0][0]['window'], 60)
+        self.assertEqual(results[0][0].general_config['window'], 60)
         self.assertEqual(results[0][0]['prediction_config']['waiting_before_predict'], 60)
         # # check the first result's metrics
         self.assertAlmostEqual(results[0][1]["average_slack"], expected["average_slack"], places=2)
@@ -138,8 +161,10 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         """
 
         config_path = f"{self.source_dir}/metadata.json"
-        params_to_tune = {
+        general_params_to_tune = {
             'window': [60, 120],  # the window size is the number of minutes to consider for the prediction
+        }
+        algorithm_specific_params_to_tune = {
             "addend": [1, 3, 5, 10, 13],  # the addend is the number of minutes to add to the prediction
         }
         predictive_params_to_tune = None
@@ -149,11 +174,14 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         data_dir = self.target_dir
         num_workers = 8  # how many threads to spin up
         num_combinations = 8  # how many combinations to try, here we'll do all 8 for consistency (2 windows * 4 addends)
-        results = tune_with_strategy(config_path, params_to_tune, predictive_params_to_tune, strategy,
+        results = tune_with_strategy(config_path, strategy,
                                      num_combinations=num_combinations,
                                      num_workers=num_workers, data_dir=data_dir, lag=10,
                                      algorithm=selected_algorithm,
-                                     initial_cpu_limit=initial_cpu_limit)
+                                     initial_cpu_limit=initial_cpu_limit,
+                                     algo_specific_params_to_tune=algorithm_specific_params_to_tune,
+                                     general_params_to_tune=general_params_to_tune,
+                                     predictive_params_to_tune=predictive_params_to_tune)
 
         assert results is not None
         # This should work for grid.

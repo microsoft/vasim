@@ -30,7 +30,7 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
             self.logger.error(f'Error reading csvs from {self.data_dir}. Your csv_paths are empty.')
 
             print("Error reading csvs")
-            return None, None
+            raise FileNotFoundError(f'Error reading csvs from {self.data_dir}. Your csv_paths are empty.')
 
         # Process data
         self.recorded_data = self.process_data(csv_paths)
@@ -77,7 +77,7 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
 
     def get_last_decision_time(self, recorded_data):
         # check is redundant, but we keep it for now. This will speed up the simulation
-        return pd.Timestamp(self.current_time) - pd.Timedelta(minutes=self.config.lag)
+        return pd.Timestamp(self.current_time) - pd.Timedelta(minutes=self.config.general_config["lag"])
 
     def advance_time(self):
-        self.current_time = pd.Timestamp(self.current_time) + pd.Timedelta(minutes=self.config.lag)
+        self.current_time = pd.Timestamp(self.current_time) + pd.Timedelta(minutes=self.config.general_config["lag"])
