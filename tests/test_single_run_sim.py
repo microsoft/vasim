@@ -116,6 +116,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         self.assertAlmostEqual(results["slack_percentage"], expected["slack_percentage"], places=2)
 
     def tearDown(self):
+        return
         shutil.rmtree(self.target_dir_sim, ignore_errors=True)
         shutil.rmtree(self.target_dir, ignore_errors=True)
 
