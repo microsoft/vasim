@@ -148,6 +148,7 @@ def tune_with_strategy(config_path: str,
     """
     This function is the main entry point for tuning the simulator parameters.
     TODO: Refactor this function, as it's a bit burried in the code.
+    TODO: lag is already in the config, don't have it separately here i think.
 
     Parameters:
     - config_path: The path to the base configuration file.
