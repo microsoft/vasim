@@ -84,7 +84,6 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         self.assertAlmostEqual(ret[3], 76.7, places=1)
 
     def tearDown(self):
-        return
         shutil.rmtree(self.target_dir_sim, ignore_errors=True)
         shutil.rmtree(self.target_dir, ignore_errors=True)
 
