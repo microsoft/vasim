@@ -2,6 +2,8 @@
 
 Vasim (**V**ertical **A**utoscaling **Sim**ulator) is a tool designed to address the complexities involved in assessing autoscaling algorithms.
 
+For quick examples of how to run things end-to-end until we have better documentation setup, see any test in the [tests](tests) folder that starts with `test_e2e`.
+
 Please see our [blog post](https://www.microsoft.com/en-us/research/blog/enhanced-autoscaling-with-vasim-vertical-autoscaling-simulator-toolkit/?msockid=0d2280e91b2c6ea41f32935e1a9f6f36) or [research paper](https://www.microsoft.com/en-us/research/publication/vasim-vertical-autoscaling-simulator-toolkit/) for more details!
 
 ## Contributing

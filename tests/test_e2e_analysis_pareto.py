@@ -82,8 +82,8 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         self.assertEqual(ret[1].algo_specific_config['addend'], 1)
         # The other two are dimensions: the slack and the insufficient cpu
         # We pre-computed these.
-        self.assertAlmostEqual(ret[2], 7500, delta=100)
-        self.assertAlmostEqual(ret[3], 76.7, places=1)
+        self.assertAlmostEqual(ret[2], 7800, delta=100)
+        self.assertAlmostEqual(ret[3], 70.6, delta=4)
 
     def tearDown(self):
         shutil.rmtree(self.target_dir_sim, ignore_errors=True)

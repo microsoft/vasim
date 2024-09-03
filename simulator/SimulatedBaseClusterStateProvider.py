@@ -7,6 +7,7 @@ from recommender.cluster_state_provider.ClusterStateProvider import ClusterState
 
 
 class SimulatedBaseClusterStateProvider(ClusterStateProvider):
+    # TODO: I am not sure if this class is used? it is not tested if so.
     def __init__(self, data_dir="data/performance_log", window=40, decision_file_path=None,
                  max_cpu_limit=None, granularity=None, lag=None, **kwargs):
 
@@ -18,6 +19,7 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         self.curr_cpu_limit = None  # set by initial_cores_count during the first scaling
         self.print_properties()
         self.config = kwargs.get("config")
+        # TODO: these did not get updated to the new config format
         self.max_cpu_limit = max_cpu_limit
         self.granularity = granularity
         self.lag = lag

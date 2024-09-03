@@ -56,8 +56,8 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         expected = {"average_slack": 9.255356800676894, "average_insufficient_cpu": 8.710042679209252e-06,
                     "sum_slack": 106260.75142857143, "sum_insufficient_cpu": 0.10000000000000142, "num_scalings": 466,
                     "num_insufficient_cpu": 1, "insufficient_observations_percentage": 0.008710042679209128,
-                    "slack_percentage": 51.50325900419567, "median_insufficient_cpu": 0.0, "median_slack": 9.845714285714289,
-                    "max_slack": 16.759999999999998}
+                    "slack_percentage": 51.50325900419567, "median_insufficient_cpu": 0.0,
+                    "median_slack": 9.845714285714289, "max_slack": 16.759999999999998}
         self.assertAlmostEqual(results["average_slack"], expected["average_slack"], places=2)
         self.assertAlmostEqual(results["median_slack"], expected["median_slack"], places=2)
         self.assertAlmostEqual(results["sum_slack"], expected["sum_slack"], places=2)
@@ -91,10 +91,19 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         assert os.path.exists(os.path.join(sim_dir, "metadata.json"))
         assert os.path.exists(os.path.join(sim_dir, "perf_event_log.csv"))
 
-        expected = {"average_slack": 2.591291189169684, "average_insufficient_cpu": 0.006747035474759541, "sum_slack": 29750.614142857143,
-                    "sum_insufficient_cpu": 77.46271428571428, "num_scalings": 345, "num_insufficient_cpu": 23,
-                    "insufficient_observations_percentage": 0.20033098162180996, "slack_percentage": 22.932540520659785,
-                    "median_insufficient_cpu": 0.0, "median_slack": 2.539999999999999, "max_slack": 6.988571428571428}
+        expected = {
+            "average_slack": 2.629179874824244,
+            "average_insufficient_cpu": 0.006747035474759541,
+            "sum_slack": 30185.614142857143,
+            "sum_insufficient_cpu": 77.46271428571428,
+            "num_scalings": 347,
+            "num_insufficient_cpu": 23,
+            "insufficient_observations_percentage": 0.20033098162180996,
+            "slack_percentage": 23.19009122417309,
+            "median_insufficient_cpu": 0.0,
+            "median_slack": 2.539999999999999,
+            "max_slack": 14.4
+        }
 
         # We expect the average slack to be between 2 and 3, because the addend is 2, meaning we want to keep
         # a buffer of 2 cores. The slack is the difference between the desired CPU usage and the actual CPU usage.

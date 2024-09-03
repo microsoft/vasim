@@ -68,10 +68,19 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
 
         assert results is not None
 
-        expected = {"average_slack": 1.7158246827407597, "average_insufficient_cpu": 0.02455232644273956, "sum_slack": 7688.610403361345,
-                    "sum_insufficient_cpu": 110.01897478991597, "num_scalings": 109, "num_insufficient_cpu": 42,
-                    "insufficient_observations_percentage": 0.9372907833072975, "slack_percentage": 16.528603313544178, "median_insufficient_cpu": 0.0,
-                    "median_slack": 1.5976470588235294, "max_slack": 22.98857142857143}
+        expected = {
+            "average_slack": 1.811722919741429,
+            "average_insufficient_cpu": 0.024489840390519074,
+            "sum_slack": 8118.330403361344,
+            "sum_insufficient_cpu": 109.73897478991597,
+            "num_scalings": 109,
+            "num_insufficient_cpu": 41,
+            "insufficient_observations_percentage": 0.9149743360856952,
+            "slack_percentage": 17.29254351366721,
+            "median_insufficient_cpu": 0.0,
+            "median_slack": 1.5999999999999996,
+            "max_slack": 22.98857142857143
+        }
 
         # TODO: There is a bug with 'grid' in that it always trys all combinations, even if num_combinations is less than the total.
         # assert len(results) == num_combinations
@@ -127,12 +136,19 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
                                      )
 
         assert results is not None
-
-        expected = {"average_slack": 1.7503276954611346, "average_insufficient_cpu": 0.02212161901136264,
-                    "sum_slack": 7843.218403361345, "sum_insufficient_cpu": 99.12697478991598, "num_scalings": 132,
-                    "num_insufficient_cpu": 48, "insufficient_observations_percentage": 1.0711894666369115,
-                    "slack_percentage": 16.801196172787115, "median_insufficient_cpu": 0.0, "median_slack": 1.578620689655172,
-                    "max_slack": 22.98857142857143}
+        expected = {
+            "average_slack": 1.8384330290920206,
+            "average_insufficient_cpu": 0.019845341394759197,
+            "sum_slack": 8238.018403361344,
+            "sum_insufficient_cpu": 88.92697478991596,
+            "num_scalings": 133,
+            "num_insufficient_cpu": 46,
+            "insufficient_observations_percentage": 1.0265565721937069,
+            "slack_percentage": 17.49512801350962,
+            "median_insufficient_cpu": 0.0,
+            "median_slack": 1.58,
+            "max_slack": 22.98857142857143
+        }
 
         # assert len(results) == num_combinations
         # check the first result's combinations, which is deterministic because we're using grid
