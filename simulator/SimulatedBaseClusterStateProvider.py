@@ -4,11 +4,9 @@ from pathlib import Path
 import pandas as pd
 
 from recommender.cluster_state_provider.ClusterStateProvider import ClusterStateProvider
-from recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
 
 
 class SimulatedBaseClusterStateProvider(ClusterStateProvider):
-    # TODO: I think this is not used? At least it is not tested (except in the newly added test_metrics_data_window.py)
     def __init__(self, data_dir="data/performance_log", window=40, decision_file_path=None,
                  max_cpu_limit=None, granularity=None, lag=None, **kwargs):
 
@@ -20,13 +18,10 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         self.curr_cpu_limit = None  # set by initial_cores_count during the first scaling
         self.print_properties()
         self.config = kwargs.get("config")
-
-        self.config = ClusterStateConfig()
-        self.config.general_config['lag'] = lag
-        self.config.general_config['granularity'] = granularity
-        # self.config.general_config['min_cpu_limit'] = min_cpu_limit  #TODO: what happened to this?
-        self.config.general_config['max_cpu_limit'] = max_cpu_limit
-        self.config.general_config['window'] = window
+        self.max_cpu_limit = max_cpu_limit
+        self.granularity = granularity
+        self.lag = lag
+        self.window = window
 
         # Read all data from file
         # TODO: This is a temporary solution. We will need to read data in chunks
