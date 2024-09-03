@@ -22,13 +22,10 @@ class SimulatedInMemoryClusterStateProvider(SimulatedBaseClusterStateProvider, F
         if self.current_time > self.end_time:
             return None
 
-        # Add lag to current time
-        # TODO: write unit tests. TODO: Do we need to do sanity checks on 'window' and 'lag' user inputs?
-        td_window_lag = timedelta(minutes=self.config.general_config['window'] + self.config.general_config['lag'])
-        filtered_data = self.recorded_data.loc[self.current_time - td_window_lag:self.current_time]
-        # adjust last lag to cores
-        self.recorded_data.loc[self.current_time - timedelta(minutes=self.config.general_config['lag']):self.current_time,
-                               'cpu'] = np.minimum(self.recorded_data['cpu'], self.curr_cpu_limit)
+        # Get the data based on the window size and current time
+        # TODO: sanity checks on 'window' user inputs
+        td_window = timedelta(minutes=self.config.general_config['window'])
+        filtered_data = self.recorded_data.loc[self.current_time - td_window:self.current_time]
 
         self.logger.info(f"current_time: {self.current_time}; filtered_data length: {len(filtered_data)}")
         return filtered_data
