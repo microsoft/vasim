@@ -1,10 +1,37 @@
 # Project
 
-Vasim (**V**ertical **A**utoscaling **Sim**ulator) is a tool designed to address the complexities involved in assessing autoscaling algorithms.
+VASIM (**V**ertical **A**utoscaling **SIM**ulator) is a tool designed to address the complexities involved in assessing autoscaling algorithms.
+
+VASIM is designed for testing recommendation algorithms, with a particular focus on CPU usage in VMs and Kubernetes pods. The toolkit
+replicates common components found in autoscaler architectures, including the controller, metrics collector, recommender, and
+resource updater. It enables a comprehensive simulation of the entire autoscaling system’s behavior, with the flexibility to customize
+various parameters.
 
 For quick examples of how to run things end-to-end until we have better documentation setup, see any test in the [tests](tests) folder that starts with `test_e2e`.
 
 Please see our [blog post](https://www.microsoft.com/en-us/research/blog/enhanced-autoscaling-with-vasim-vertical-autoscaling-simulator-toolkit/?msockid=0d2280e91b2c6ea41f32935e1a9f6f36) or [research paper](https://www.microsoft.com/en-us/research/publication/vasim-vertical-autoscaling-simulator-toolkit/) for more details!
+
+If you are writing an academic paper, you can cite this work as:
+
+```bibtex
+@inproceedings{pavlenko2024vasim,
+  author = {Pavlenko, Anna and Saur, Karla and Zhu, Yiwen and Kroth, Brian and Cahoon, Joyce and Camacho-Rodríguez, Jesús},
+  title = {VASIM: Vertical Autoscaling Simulator Toolkit},
+  booktitle = {IEEE International Conference on Data Engineering (ICDE 2024)},
+  year = {2024},
+  month = {May},
+}
+```
+
+## Authors
+
+* Anna Pavlenko ([@apvavlen](https://github.com/apavlen), primary implementation)
+* Karla Saur ([@ksaur](https://github.com/ksaur), editing, maintaining)
+* Yiwen Zhu ([@zyw400](https://github.com/zyw400))
+* Brian Kroth ([@bpkroth](https://github.com/bpkroth))
+* Joyce Cahoon ([@jyuu](https://github.com/jyuu))
+* Jesús Camacho Rodríguez ([@jcamachor](https://github.com/jcamachor))
+
 
 ## Contributing
 
