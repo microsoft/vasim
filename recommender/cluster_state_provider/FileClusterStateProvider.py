@@ -148,6 +148,7 @@ class FileClusterStateProvider(ClusterStateProvider):
         # Additional guardrails to ensure valid telemetry
         if recorded_data.shape[0] > 2:
             # Filter out any data points that are greater than the machine max
+            # This is because sometimes the telemetry can be incorrect
             cores = self.get_current_cpu_limit()
             if cores is None:
                 self.logger.error("Error getting current cores. Retry later.")
