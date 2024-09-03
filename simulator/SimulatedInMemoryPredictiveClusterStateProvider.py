@@ -23,8 +23,8 @@ class SimulatedInMemoryPredictiveClusterStateProvider(SimulatedBaseClusterStateP
 
         # Add lag to current time
         # TODO: write unit tests. TODO: Do we need to do sanity checks on 'window' and 'lag' user inputs?
-        filtered_data = self.recorded_data.loc[self.current_time - timedelta(minutes=self.config.general_config['window'] +
-                                                                             self.config.general_config['lag']):self.current_time]
+        filtered_data = self.recorded_data.loc[self.current_time - timedelta(minutes=self.config.general_config['window']
+                                                                             + self.config.general_config['lag']):self.current_time]
 
         # adjust last lag to cores
         self.recorded_data.loc[self.current_time - timedelta(minutes=self.lag):self.current_time,
