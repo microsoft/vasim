@@ -1,6 +1,6 @@
 # Project
 
-VASIM (**V**ertical **A**utoscaling **Sim**ulator) is a tool designed to address the complexities involved in assessing autoscaling algorithms.
+VASIM (**V**ertical **A**utoscaling **SIM**ulator) is a tool designed to address the complexities involved in assessing autoscaling algorithms.
 
 VASIM is designed for testing recommendation algorithms, with a particular focus on CPU usage in VMs and Kubernetes pods. The toolkit
 replicates common components found in autoscaler architectures, including the controller, metrics collector, recommender, and
