@@ -11,6 +11,18 @@ For quick examples of how to run things end-to-end until we have better document
 
 Please see our [blog post](https://www.microsoft.com/en-us/research/blog/enhanced-autoscaling-with-vasim-vertical-autoscaling-simulator-toolkit/?msockid=0d2280e91b2c6ea41f32935e1a9f6f36) or [research paper](https://www.microsoft.com/en-us/research/publication/vasim-vertical-autoscaling-simulator-toolkit/) for more details!
 
+If you are writing an academic paper, you can cite this work as:
+
+```bibtex
+@inproceedings{pavlenko2024vasim,
+  author = {Pavlenko, Anna and Saur, Karla and Zhu, Yiwen and Kroth, Brian and Cahoon, Joyce and Camacho-Rodríguez, Jesús},
+  title = {VASIM: Vertical Autoscaling Simulator Toolkit},
+  booktitle = {IEEE International Conference on Data Engineering (ICDE 2024)},
+  year = {2024},
+  month = {May},
+}
+```
+
 ## Authors
 
 * Anna Pavlenko ([@apvavlen](https://github.com/apavlen), primary implementation)
