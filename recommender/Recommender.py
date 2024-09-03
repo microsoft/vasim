@@ -21,10 +21,7 @@ class Recommender:
 
         # This is for user convenience. They can pass the parameters in the config file. But maybe it's confusing/redundant.
         # check to see if the algo_specific_config field is in the config file, if so, set it to self.algo_params
-        if hasattr(self.config, 'algo_specific_config'):
-            self.algo_params = self.config.algo_specific_config
-        else:
-            self.algo_params = {}
+        self.algo_params = self.config.algo_specific_config
 
         self.logger = self._setup_logger()
 
