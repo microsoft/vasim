@@ -24,18 +24,18 @@ class SimulatedInMemoryClusterStateProvider(SimulatedBaseClusterStateProvider, F
 
         # Add lag to current time
         # TODO: write unit tests. TODO: Do we need to do sanity checks on 'window' and 'lag' user inputs?
-        filtered_data = self.recorded_data.loc[self.current_time - timedelta(minutes=self.config.general_config['window']
-                                                                             + self.config.general_config['lag']):self.current_time]
+        td_window_lag = timedelta(minutes=self.config.general_config['window'] + self.config.general_config['lag'])
+        filtered_data = self.recorded_data.loc[self.current_time - td_window_lag): self.current_time]
         # adjust last lag to cores
-        self.recorded_data.loc[self.current_time - timedelta(minutes=self.lag):self.current_time,
-                               'cpu'] = np.minimum(self.recorded_data['cpu'], self.curr_cpu_limit)
+        self.recorded_data.loc[self.current_time - timedelta(minutes=self.config.general_config['lag']):self.current_time,
+                               'cpu']= np.minimum(self.recorded_data['cpu'], self.curr_cpu_limit)
 
         self.logger.info(f"current_time: {self.current_time}; filtered_data length: {len(filtered_data)}")
         return filtered_data
 
     def flush_metrics_data(self, filename):
         # Create a custom header string
-        custom_header = "TIMESTAMP,CPU_USAGE_ACTUAL"
+        custom_header= "TIMESTAMP,CPU_USAGE_ACTUAL"
 
         # Open the file for writing
         with open(filename, 'w') as file:
