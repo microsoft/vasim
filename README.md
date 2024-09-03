@@ -15,9 +15,10 @@ Please see our [blog post](https://www.microsoft.com/en-us/research/blog/enhance
 
 * Anna Pavlenko ([@apvavlen](https://github.com/apavlen), primary implementation)
 * Karla Saur ([@ksaur](https://github.com/ksaur), editing, maintaining)
-* Joyce Cahoon ([@jyuu](https://github.com/jyuu))
 * Yiwen Zhu ([@zyw400](https://github.com/zyw400))
 * Brian Kroth ([@bpkroth](https://github.com/bpkroth))
+* Joyce Cahoon ([@jyuu](https://github.com/jyuu))
+* Jesús Camacho Rodríguez ([@jcamachor](https://github.com/jcamachor))
 
 
 ## Contributing
