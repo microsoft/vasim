@@ -25,7 +25,7 @@ If you are writing an academic paper, you can cite this work as:
 
 ## Authors
 
-* Anna Pavlenko ([@apvavlen](https://github.com/apavlen), primary implementation)
+* Anna Pavlenko ([@apavlen](https://github.com/apavlen), primary implementation)
 * Karla Saur ([@ksaur](https://github.com/ksaur), editing, maintaining)
 * Yiwen Zhu ([@zyw400](https://github.com/zyw400))
 * Brian Kroth ([@bpkroth](https://github.com/bpkroth))
