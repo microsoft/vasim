@@ -28,7 +28,7 @@ class SimpleMultiplierRecommender(Recommender):
             recorded_data (pd.DataFrame): The recorded metrics data for the current time window to simulate
         Returns:
             latest_time (datetime): The latest time of the performance data.
-            new_limit (int): The new number of cores to scale to.
+            new_limit (float): The new number of cores to scale to.
         """
 
         # Calculate the smoothed maximum value
