@@ -7,10 +7,6 @@ replicates common components found in autoscaler architectures, including the co
 resource updater. It enables a comprehensive simulation of the entire autoscaling system’s behavior, with the flexibility to customize
 various parameters.
 
-For quick examples of how to run things end-to-end until we have better documentation setup, see any test in the [tests](tests) folder that starts with `test_e2e`.
-
-Please see our [blog post](https://www.microsoft.com/en-us/research/blog/enhanced-autoscaling-with-vasim-vertical-autoscaling-simulator-toolkit/?msockid=0d2280e91b2c6ea41f32935e1a9f6f36) or [research paper](https://www.microsoft.com/en-us/research/publication/vasim-vertical-autoscaling-simulator-toolkit/) for more details!
-
 If you are writing an academic paper, you can cite this work as:
 
 ```bibtex
@@ -22,6 +18,22 @@ If you are writing an academic paper, you can cite this work as:
   month = {May},
 }
 ```
+
+## Getting started
+
+* We have a [notebook](examples/using_vasim.ipynb) that shows how to get started simulating your data traces and tuning parameters.  You will need (1) a data csv file, (2) an autoscaling algorithm that you write (or use one of the provided dummy ones), and (3) a metadata.json file of parameters. Details of all of these can be found in the notebook.
+
+* Within each folder, there is a README explaining the code.
+  * [simulator](simulator/README.md)
+  * [recommender](recommender/README.md)
+  * [forecasting](recommender/forecasting/README.md)
+  * [cluster state](recommender/cluster_state_provider/README.md)
+  * [tests](tests/README.md)
+
+* For additional usage examples, see any test in the [tests](tests) folder that starts with `test_e2e`.
+
+* Please see our [blog post](https://www.microsoft.com/en-us/research/blog/enhanced-autoscaling-with-vasim-vertical-autoscaling-simulator-toolkit/?msockid=0d2280e91b2c6ea41f32935e1a9f6f36) or [research paper](https://www.microsoft.com/en-us/research/publication/vasim-vertical-autoscaling-simulator-toolkit/) for more details!
+
 
 ## Authors
 
