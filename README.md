@@ -9,7 +9,7 @@ replicates common components found in autoscaler architectures, including the co
 resource updater. It enables a comprehensive simulation of the entire autoscaling system’s behavior, with the flexibility to customize
 various parameters.
 
-If you are writing an academic paper, you can cite this work as:
+If you are writing an academic paper, you can cite [this work](https://www.microsoft.com/en-us/research/publication/vasim-vertical-autoscaling-simulator-toolkit/) as:
 
 ```bibtex
 @inproceedings{pavlenko2024vasim,
