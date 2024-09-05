@@ -21,11 +21,11 @@ If you are writing an academic paper, you can cite [this work](https://www.micro
 }
 ```
 
-## Getting started
+## Start here!
 
 Our documentation and working example is in our [notebook](examples/using_vasim.ipynb) that shows how to get started simulating your data traces and tuning parameters.  Our example provides the 3 things needed to run VASim: (1) a data csv file, (2) an autoscaling algorithm, and (3) a metadata.json file of parameters. Details of all of these can be found in the notebook.
 
-Addtionally:
+#### Addtionally:
 
 * Within each folder, there is a README explaining the code.
   * [simulator](simulator/README.md)
