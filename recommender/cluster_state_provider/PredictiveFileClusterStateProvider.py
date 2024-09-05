@@ -48,11 +48,8 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
         if self.save_metadata:
             meta_out_file = self.data_dir / "metadata.txt"
             meta = open(meta_out_file, "a")
-            meta.write("waiting_before_predict: " + str(prediction_config["waiting_before_predict"]) + "\n")
-            meta.write("frequency_minutes: " + str(prediction_config["frequency_minutes"]) + "\n")
-            meta.write("forecasting_models: " + str(prediction_config["forecasting_models"]) + "\n")
-            meta.write("minutes_to_predict: " + str(prediction_config["minutes_to_predict"]) + "\n")
-            meta.write("total_predictive_window: " + str(prediction_config["total_predictive_window"]) + "\n")
+            # dump prediction_config to file
+            meta.write(f"prediction_config: {prediction_config}\n")
             meta.close()
 
     def get_predicted_cores(self, data):

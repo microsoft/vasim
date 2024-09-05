@@ -21,7 +21,7 @@ If you are writing an academic paper, you can cite this work as:
 
 ## Getting started
 
-* We have a [notebook](examples/using_vasim.ipynb) that shows how to get started simulating your data traces and tuning parameters.
+* We have a [notebook](examples/using_vasim.ipynb) that shows how to get started simulating your data traces and tuning parameters.  You will need (1) a data csv file, (2) an autoscaling algorithm that you write (or use one of the provided dummy ones), and (3) a metadata.json file of parameters. Details of all of these can be found in the notebook.
 
 * Within each folder, there is a README explaining the code.
   * [simulator](simulator/README.md)

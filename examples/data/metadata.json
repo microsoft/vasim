@@ -1,24 +1,18 @@
 {
-    "window": 20,
-    "high": 0.8,
-    "low": 0.5,
-    "max_autoscale_up": 5,
-    "max_autoscale_down": 5,
-    "slack": 0.1,
-    "granularity": 1,
-    "ecdf_threshold": 0.95,
-    "lower_slack_threshold": 0.8,
-    "lag": 1,
-    "max_cpu": 80,
-    "min_cpu": 2.0,
-    "price_per_core": 1.18,
-    "scale_down_buffer": 3,
-    "predictive": true,
+    "algo_specific_config": {
+        "addend": 2
+    },
+    "general_config": {
+        "window": 20,
+        "lag": 10,
+        "max_cpu_limit": 25,
+        "min_cpu_limit": 2.0,
+        "granularity": 1
+    },
     "prediction_config": {
         "waiting_before_predict": 1440,
         "frequency_minutes": 1,
-        "forecasting_models": "lstm",
-        "minutes_to_predict": 40,
-        "total_predictive_window": 60
+        "minutes_to_predict": 10,
+        "forecasting_models": "naive"
     }
 }
