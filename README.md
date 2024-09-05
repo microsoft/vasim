@@ -1,5 +1,7 @@
 # Project
 
+[![Build](https://github.com/microsoft/vasim/actions/workflows/pythonapp.yml/badge.svg)](https://github.com/microsoft/vasim/actions/workflows/pythonapp.yml)
+
 VASIM (**V**ertical **A**utoscaling **SIM**ulator) is a tool designed to address the complexities involved in assessing autoscaling algorithms.
 
 VASIM is designed for testing recommendation algorithms, with a particular focus on CPU usage in VMs and Kubernetes pods. The toolkit
