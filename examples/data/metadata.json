@@ -13,6 +13,7 @@
         "waiting_before_predict": 1440,
         "frequency_minutes": 1,
         "minutes_to_predict": 10,
-        "forecasting_models": "naive"
+        "forecasting_models": "naive",
+        "total_predictive_window": 30
     }
 }
