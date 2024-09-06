@@ -181,7 +181,7 @@ class FileClusterStateProvider(ClusterStateProvider):
         return recorded_data
 
     def sort_data(self, recorded_data):
-        recorded_data["time"] = pd.to_datetime(recorded_data["time"])
+        recorded_data = recorded_data.assign(time=pd.to_datetime(recorded_data["time"]))
         recorded_data = recorded_data.sort_values(by="time")
         return recorded_data
 
