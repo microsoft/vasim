@@ -1,6 +1,7 @@
-# Project
+# VASIM
 
 [![Build](https://github.com/microsoft/vasim/actions/workflows/pythonapp.yml/badge.svg)](https://github.com/microsoft/vasim/actions/workflows/pythonapp.yml)
+[![coverage](https://codecov.io/gh/microsoft/vasim/branch/main/graph/badge.svg)](https://codecov.io/github/microsoft/vasim?branch=main)
 
 VASIM (**V**ertical **A**utoscaling **SIM**ulator) is a tool designed to address the complexities involved in assessing autoscaling algorithms.
 
