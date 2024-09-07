@@ -1,5 +1,7 @@
 [run]
 branch = True
-source = vasim
+source =
+  recommender
+  simulator
 omit =
   *tests*
