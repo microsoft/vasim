@@ -150,3 +150,11 @@ cython_debug/
 *additive*
 *data_tuning*
 *to_delete*
+
+# IDEA
+.idea
+*.iml
+
+# MAC
+**.DS_STORE
+
