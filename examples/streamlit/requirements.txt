@@ -1,0 +1,11 @@
+streamlit
+numpy~=1.24.2
+pandas~=1.5.3
+sktime~=0.16.1
+python-dateutil~=2.8.2
+setuptools>=68.0.0
+matplotlib~=3.7.1
+jsonargparse~=4.21.0
+requests~=2.32.0
+plotnine~=0.12.2
+cvxpy~=1.5.2
