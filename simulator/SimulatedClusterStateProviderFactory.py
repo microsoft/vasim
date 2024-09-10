@@ -1,3 +1,10 @@
+#
+# --------------------------------------------------------------------------
+#  Licensed under the MIT License. See LICENSE file in the project root for
+#  license information.
+#  Copyright (c) Microsoft Corporation.
+# --------------------------------------------------------------------------
+#
 from recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
 from simulator.SimulatedBaseClusterStateProvider import SimulatedBaseClusterStateProvider
 from simulator.SimulatedInMemoryClusterStateProvider import SimulatedInMemoryClusterStateProvider
