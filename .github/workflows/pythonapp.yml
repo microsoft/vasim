@@ -47,9 +47,14 @@ jobs:
       run: |
         python -m pip install licenseheaders
         licenseheaders -t .mit-license.tmpl -E .py -f
-        # The following is used to check whether all files have a license header
-        git diff --name-only .
-        git diff --quiet --name-only . || exit -1 
+        CHANGED_FILES=$(git diff --name-only .)
+        if [ -n "$CHANGED_FILES" ]; then
+          echo "Error: The following files are missing the required license header:"
+          echo "$CHANGED_FILES"
+          exit -1
+        else
+          echo "All files have the required license headers."
+        fi
     - name: Install basic dependencies # TODO: separate out "test" dependencies in setup.py
       run: |
         python -m pip install -e .[dev]
