@@ -46,7 +46,10 @@ jobs:
     - name: Apply LICENSE
       run: |
         python -m pip install licenseheaders
-        python -m licenseheaders -t .mit-license.tmpl -E .py -f
+        licenseheaders -t .mit-license.tmpl -E .py -f
+        # The following is used to check whether all files have a license header
+        git diff --name-only .
+        git diff --quiet --name-only . || exit -1 
     - name: Install basic dependencies # TODO: separate out "test" dependencies in setup.py
       run: |
         python -m pip install -e .[dev]
