@@ -5,3 +5,8 @@ repos:
       - id: flake8
         args: [--config=.flake8]
         additional_dependencies: [flake8]
+  - repo: https://github.com/johann-petrak/licenseheaders
+    rev: v0.8.8
+    hooks:
+      - id: licenseheaders
+        args: ['-t', '.mit-license.tmpl', '-E', '.py', '-f']

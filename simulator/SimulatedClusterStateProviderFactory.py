@@ -1,3 +1,10 @@
+#
+# --------------------------------------------------------------------------
+#  Licensed under the MIT License. See LICENSE file in the project root for
+#  license information.
+#  Copyright (c) Microsoft Corporation.
+# --------------------------------------------------------------------------
+#
 from recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
 from simulator.SimulatedBaseClusterStateProvider import SimulatedBaseClusterStateProvider
 from simulator.SimulatedInMemoryClusterStateProvider import SimulatedInMemoryClusterStateProvider
@@ -11,6 +18,7 @@ class SimulatedClusterStateProviderFactory:
         self.out_filename = out_filename
         if config.prediction_config:
             self.prediction_config = config.prediction_config
+            print(f"Prediction config was detected:{self.prediction_config}")
 
     def create_provider(self, predictive: bool) -> SimulatedBaseClusterStateProvider:
         if predictive:

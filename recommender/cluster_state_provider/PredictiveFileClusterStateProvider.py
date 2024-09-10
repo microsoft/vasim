@@ -1,3 +1,10 @@
+#
+# --------------------------------------------------------------------------
+#  Licensed under the MIT License. See LICENSE file in the project root for
+#  license information.
+#  Copyright (c) Microsoft Corporation.
+# --------------------------------------------------------------------------
+#
 import pandas as pd
 
 import logging
@@ -38,12 +45,11 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
         self.number_of_points_to_predict = int(self.minutes_to_predict / self.frequency_minutes)
         self.predictive_window = prediction_config.get('total_predictive_window',
                                                        self.number_of_points_to_predict + int(self.config.general_config['window']))
-        if 'config' in kwargs and 'uuid' in kwargs['config']:
+        if 'config' in kwargs:
             # keyword argument 'param_name' exists
             self.config = kwargs['config']
-            self.logger = logging.getLogger(f'{self.config.uuid}')
-        else:
-            self.logger = logging.getLogger(__name__)
+
+        self.logger = logging.getLogger()
 
         if self.save_metadata:
             meta_out_file = self.data_dir / "metadata.txt"

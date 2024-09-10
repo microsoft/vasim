@@ -1,3 +1,10 @@
+#
+# --------------------------------------------------------------------------
+#  Licensed under the MIT License. See LICENSE file in the project root for
+#  license information.
+#  Copyright (c) Microsoft Corporation.
+# --------------------------------------------------------------------------
+#
 import os
 import pandas as pd
 from datetime import datetime, timedelta

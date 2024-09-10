@@ -1,3 +1,10 @@
+#
+# --------------------------------------------------------------------------
+#  Licensed under the MIT License. See LICENSE file in the project root for
+#  license information.
+#  Copyright (c) Microsoft Corporation.
+# --------------------------------------------------------------------------
+#
 import argparse
 import json
 import logging
@@ -38,7 +45,7 @@ class InMemoryRunnerSimulator:
             config_path = config_path or f"{data_dir}/metadata.json"
             self.config = self._load_config(config_path)
 
-        self.initial_cpu_limit = initial_cpu_limit or self.config.max_cpu_limit
+        self.initial_cpu_limit = initial_cpu_limit or self.config.general_config["max_cpu_limit"]
         self.cluster_state_provider = self._create_cluster_state_provider(data_dir, self.config, target_simulation_dir)
         self.experiment_start_time, self.experiment_end_time = self._get_experiment_time_range()
         self.infra_scaler = self._create_infra_scaler()
@@ -77,7 +84,7 @@ class InMemoryRunnerSimulator:
 
     def _create_infra_scaler(self):
         return SimulatedInfraScaler(self.cluster_state_provider, self.experiment_start_time,
-                                    self.config.get("general_config", {}).get("recovery_time", 15))
+                                    self.config.general_config.get("recovery_time", 15))
 
     def _create_recommender_algorithm(self, algorithm):
         if algorithm == 'multiplicative':
@@ -134,56 +141,76 @@ class InMemoryRunnerSimulator:
 
     def run_simulation(self):
         """
-        This executes the simulation and runs the recommender algorithm.
+        Run the simulation to completion and return the final metrics.
         """
 
         print(f"Starting simulation at {self.experiment_start_time} and continuing till {self.experiment_end_time}")
         print(f"Setting number of cores to {self.initial_cpu_limit}")
         self.cluster_state_provider.set_cpu_limit(self.initial_cpu_limit)
 
-        # # for run_with_progress
-        # total_time = self.cluster_state_provider.end_time - self.cluster_state_provider.current_time
-        # time_elapsed = pd.Timedelta(minutes=0)
+        while self.cluster_state_provider.current_time + pd.Timedelta(
+                minutes=self.sleep_interval_minutes) < self.cluster_state_provider.end_time:
+
+            # Core simulation logic (without yielding progress)
+            self._execute_simulation_step()
+
+        print(f"Simulation finished at {self.cluster_state_provider.current_time}")
+        self.cluster_state_provider.flush_metrics_data(f"{self.target_simulation_dir}/perf_event_log.csv")
+
+        # Return the final metrics
+        return self.get_metrics()
+
+    def run_simulation_with_progress(self):
+        """
+        Run the simulation, yielding progress updates as the simulation progresses, followed by the final result.
+        """
+        print(f"Starting simulation at {self.experiment_start_time} and continuing till {self.experiment_end_time}")
+        print(f"Setting number of cores to {self.initial_cpu_limit}")
+        self.cluster_state_provider.set_cpu_limit(self.initial_cpu_limit)
+
+        total_time = self.cluster_state_provider.end_time - self.cluster_state_provider.current_time
+        time_elapsed = pd.Timedelta(minutes=0)
 
         while self.cluster_state_provider.current_time + pd.Timedelta(
                 minutes=self.sleep_interval_minutes) < self.cluster_state_provider.end_time:
 
-            # Get the next window of data to simulate
-            recorded_data, latest_time = self.cluster_state_provider.get_next_recorded_data()
+            # Core simulation logic (with progress tracking)
+            self._execute_simulation_step()
 
-            # Check if recorded_data is None, and continue if so
-            if recorded_data is None:
-                self.logger.info("Waiting for window to fill with data before running simulation.")
-                # Advance time by the lag parameter
-                self.cluster_state_provider.advance_time()
-                continue
-
-            # run user-provided algorithm with the recorded data
-            new_limit = self.recommender_algorithm.run(recorded_data)
-
-            # We also log the current limit for a safety check, along with the current limit to understand the difference
-            self.output_decision(latest_time, self.cluster_state_provider.get_current_cpu_limit(), new_limit)
-
-            # Advance time by the lag parameter
-            self.cluster_state_provider.advance_time()
-
-            # There may be no decision made depending on the algorithm
-            if new_limit is None:
-                self.logger.info("No decision made")
-                continue
-
-            # Check for scaling and log the decision
-            # Note: now current_time is lag minutes ahead of the "latest_time" from the performance data
-            self.infra_scaler.scale(new_limit, self.cluster_state_provider.current_time)
-
-            # # Calculate the progress (run_with_progress)
-            # time_elapsed += pd.Timedelta(minutes=self.sleep_interval_minutes)
-            # progress = time_elapsed / total_time
-            # yield progress  # Yield the progress
+            # Yield the progress
+            time_elapsed += pd.Timedelta(minutes=self.sleep_interval_minutes)
+            progress = time_elapsed / total_time
+            yield progress
 
         print(f"Simulation finished at {self.cluster_state_provider.current_time}")
         self.cluster_state_provider.flush_metrics_data(f"{self.target_simulation_dir}/perf_event_log.csv")
-        return self.get_metrics()
+
+    def _execute_simulation_step(self):
+        """
+        This function holds the core simulation logic shared by both run_simulation and run_simulation_with_progress.
+        """
+        # Get the next window of data to simulate
+        recorded_data, latest_time = self.cluster_state_provider.get_next_recorded_data()
+
+        if recorded_data is None:
+            self.logger.info("Waiting for window to fill with data before running simulation.")
+            self.cluster_state_provider.advance_time()
+            return
+
+        # Run user-provided algorithm with the recorded data
+        new_limit = self.recommender_algorithm.run(recorded_data)
+
+        # Log current and new CPU limit decisions
+        self.output_decision(latest_time, self.cluster_state_provider.get_current_cpu_limit(), new_limit)
+
+        # Advance time by the lag parameter
+        self.cluster_state_provider.advance_time()
+
+        if new_limit is None:
+            self.logger.info("No decision made")
+            return
+
+        self.infra_scaler.scale(new_limit, self.cluster_state_provider.current_time)
 
 
 def main():
