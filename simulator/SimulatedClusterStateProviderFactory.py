@@ -18,6 +18,7 @@ class SimulatedClusterStateProviderFactory:
         self.out_filename = out_filename
         if config.prediction_config:
             self.prediction_config = config.prediction_config
+            print(f"Prediction config was detected:{self.prediction_config}")
 
     def create_provider(self, predictive: bool) -> SimulatedBaseClusterStateProvider:
         if predictive:
