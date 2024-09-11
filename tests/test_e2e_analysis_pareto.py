@@ -69,6 +69,16 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
                            general_params_to_tune=params_to_tune,
                            predictive_params_to_tune=predictive_params_to_tune)
 
+        # Wait for all the threads to finish
+        # We can't use the return value of tune_with_strategy because it's a ThreadPoolExecutor
+        # and it doesn't return anything.
+        #
+        # We cannot reproduce this bug outside of the GitHub Actions environment....
+        # So we'll just wait for all the threads to finish
+        # This is a bit of a hack, but it works for testing
+        import time
+        time.sleep(5)
+
         # Now we'll plot them
         pareto_2d = create_pareto_curve_from_folder(data_dir, self.target_dir_sim)
 
