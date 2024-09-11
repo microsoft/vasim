@@ -61,13 +61,13 @@ jobs:
     - name: Coverage on basic tests
       run : |
         # run only the e2e pareto test
-        pytest tests/test_e2e_pareto.py
-        pytest tests/test_e2e_pareto.py
-        pytest tests/test_e2e_pareto.py
-        pytest tests/test_e2e_pareto.py
-        pytest tests/test_e2e_pareto.py
-        pytest tests/test_e2e_pareto.py
-        pytest tests/test_e2e_pareto.py
+        pytest tests/test_e2e_analysis_pareto.py
+        pytest tests/test_e2e_analysis_pareto.py
+        pytest tests/test_e2e_analysis_pareto.py
+        pytest tests/test_e2e_analysis_pareto.py
+        pytest tests/test_e2e_analysis_pareto.py
+        pytest tests/test_e2e_analysis_pareto.py
+        pytest tests/test_e2e_analysis_pareto.py
 
 
   # TODO: set this up later too. It needs to be in a separate block below due to the permissions
