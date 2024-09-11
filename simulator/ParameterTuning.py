@@ -203,8 +203,6 @@ def tune_with_strategy(config_path: str,
                               for modified_config in modified_configs]
         print(f"Running {len(param_combinations)} configurations...")
         results = pool.starmap(_tune_parameters, param_combinations)
-    # TODO: There *may* be a race condition where all threads don't finish.
-    # We cannot reproduce this bug outside of the GitHub Actions environment....
 
     # For debugging, you can just call one directly for now, using the first modified config
     # TODO: the starmap isn't showing up in codecov. Write a unit test for the code above that looks like this

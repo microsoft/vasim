@@ -8,6 +8,7 @@
 import os
 import unittest
 import shutil
+import time
 from unittest.mock import patch, MagicMock
 from pathlib import Path
 from simulator.analysis.pareto_visualization import create_pareto_curve_from_folder
@@ -69,16 +70,6 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
                            general_params_to_tune=params_to_tune,
                            predictive_params_to_tune=predictive_params_to_tune)
 
-        # Wait for all the threads to finish
-        # We can't use the return value of tune_with_strategy because it's a ThreadPoolExecutor
-        # and it doesn't return anything.
-        #
-        # We cannot reproduce this bug outside of the GitHub Actions environment....
-        # So we'll just wait for all the threads to finish
-        # This is a bit of a hack, but it works for testing
-        import time
-        time.sleep(5)
-
         # Now we'll plot them
         pareto_2d = create_pareto_curve_from_folder(data_dir, self.target_dir_sim)
 
@@ -103,6 +94,10 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         self.assertAlmostEqual(ret[3], 70.6, delta=4)
 
     def tearDown(self):
+        # There seems to be a bug that the files get deleted before the test finishes.
+        # We cannot reproduce this bug consistently outside of the GitHub Actions environment....
+        # This is a bit of a hack, but it works for testing
+        time.sleep(5)
         shutil.rmtree(self.target_dir_sim, ignore_errors=True)
         shutil.rmtree(self.target_dir, ignore_errors=True)
 
