@@ -29,8 +29,10 @@ def read_data(decision_file_path, perf_log_file_path, if_resample=True):
     :param if_resample: If True, the data will be resampled to 1 minute intervals.
     :return: The decision and performance log dataframes.
     """
-    if not os.path.exists(decision_file_path) or not os.path.exists(perf_log_file_path):
-        raise FileNotFoundError("Please provide valid paths to the decision and performance log files.")
+    if not os.path.exists(decision_file_path):
+        raise FileNotFoundError(f"Decision file not found at path: {decision_file_path}")
+    if not os.path.exists(perf_log_file_path):
+        raise FileNotFoundError(f"Performance log file not found at path: {perf_log_file_path}")
 
     decision_df = pd.read_csv(decision_file_path)
     decision_df.drop_duplicates(subset=['LATEST_TIME'], inplace=True)
