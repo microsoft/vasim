@@ -17,6 +17,7 @@ import streamlit as st
 
 from recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
 from simulator.InMemorySimulator import InMemoryRunnerSimulator
+from simulator.ParameterTuning import create_uuid
 
 
 def calculate_and_return_metrics(experiment_dir, perf_log_file_path=None, decision_file_path=None):
@@ -108,7 +109,7 @@ def load_results_parallel(target_folder):
 
 
 def run_simulation(algorithm, data_dir, initial_cores_count, config):
-    uid = uuid.uuid4()
+    uid = create_uuid()
     # Create target directory
     target_dir_name = Path(data_dir).parent / "simulation_results" / str(uid)
     target_dir_name.mkdir(parents=True, exist_ok=True)

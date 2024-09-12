@@ -21,6 +21,7 @@ from recommender.cluster_state_provider.ClusterStateConfig import ClusterStateCo
 from simulator.SimulatedInfraScaler import SimulatedInfraScaler
 from simulator.SimulatedClusterStateProviderFactory import SimulatedClusterStateProviderFactory
 from simulator.analysis.plot_utils import plot_cpu_usage_and_new_limit_plotnine, calculate_and_return_metrics_to_target
+from simulator.ParameterTuning import create_uuid
 
 
 class InMemoryRunnerSimulator:
@@ -32,7 +33,7 @@ class InMemoryRunnerSimulator:
 
     def __init__(self, data_dir, config_path=None, initial_cpu_limit=None, lag=None, algorithm='multiplicative',
                  config=None, target_simulation_dir=None, if_resample=True):
-        worker_id = str(uuid.uuid4())
+        worker_id = create_uuid()
         target_simulation_dir = target_simulation_dir or os.path.join(
             f"{data_dir}_simulations", f"target_{worker_id}")  # TODO: remove hardcode
         # Create the directory if it doesn't exist

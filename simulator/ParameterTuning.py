@@ -93,6 +93,21 @@ def _create_modified_configs(baseconfig: ClusterStateConfig,
     return modified_configs
 
 
+def create_uuid():
+    """
+    This function creates a unique identifier to be used as a worker ID.
+
+    There seems to be some bug we are hitting with the dashes and letters, so let's just use the numbers
+    """
+
+    uid = uuid.uuid4()
+    uid = uid.hex
+    uid = ''.join([str(ord(c)) for c in uid])
+    # now chop that in half, not get too crazy.
+    uid = uid[:len(uid) // 2]
+    return str(uid)
+
+
 def _tune_parameters(config, data_dir=None, lag=None, algorithm=None, initial_cpu_limit=None):
     """
     This is a helper function that runs the simulator with a given configuration and returns the resulting metrics.
@@ -100,7 +115,7 @@ def _tune_parameters(config, data_dir=None, lag=None, algorithm=None, initial_cp
     It is called by the tune_with_strategy function.
     """
     # Include a unique worker ID in the directory path
-    worker_id = str(uuid.uuid4())
+    worker_id = create_uuid()
     setattr(config, "uuid", worker_id)
     target_dir = f'{data_dir}_tuning/target_{worker_id}'  # TODO: remove hardcode
     # Create the directory if it doesn't exist
