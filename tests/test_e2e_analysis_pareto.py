@@ -8,7 +8,6 @@
 import os
 import unittest
 import shutil
-import time
 from unittest.mock import patch, MagicMock
 from pathlib import Path
 from simulator.analysis.pareto_visualization import create_pareto_curve_from_folder
@@ -69,8 +68,6 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
                            algo_specific_params_to_tune=algo_specific_params_to_tune,
                            general_params_to_tune=params_to_tune,
                            predictive_params_to_tune=predictive_params_to_tune)
-
-        os.system(f"ls -R {self.target_dir_sim}")
 
         # Now we'll plot them
         pareto_2d = create_pareto_curve_from_folder(data_dir, self.target_dir_sim)

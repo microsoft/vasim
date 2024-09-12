@@ -146,8 +146,8 @@ class ParetoFront2D(ParetoFrontier):
 
         for alpha in self.alphas:
             folder = self.result[alpha]['uuid']
-            # Save only the first character of the folder name before the first '-'. (This will be about 8 characters)
-            folder = folder.split('-')[0]
+            # Save only the first 7 characters of the folder name
+            folder = folder[:7]
 
             ax.scatter(self.result[alpha][self.dimension_2] / self.denominator, self.result[alpha][self.dimension_1]
                        / self.denominator, label=f'alpha={alpha:.3f}', s=20, marker='x', color='red')
@@ -163,7 +163,8 @@ class ParetoFront2D(ParetoFrontier):
         # label it on the left side of the point
         ax.scatter(closest_combination[3] / self.denominator, closest_combination[2]
                    / self.denominator, s=50, marker='+', color='green')
-        folder_closest = closest_combination[0].split('-')[0].split('_')[1]
+        # remove the word 'target_' from the folder name at closest_combination[0], and only keep the first 7 characters of the folder name
+        folder_closest = closest_combination[0].split('_')[:7][1]
         ax.annotate(folder_closest, (closest_combination[3], closest_combination[2],), fontsize=15, color='black')
 
         # put a small note at the bottom about how axes do not start at 0.
