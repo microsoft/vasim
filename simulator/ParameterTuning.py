@@ -102,10 +102,8 @@ def create_uuid():
 
     uid = uuid.uuid4()
     uid = uid.hex
-    uid = ''.join([str(ord(c)) for c in uid])
-    # now chop that in half, not get too crazy.
-    uid = uid[:len(uid) // 2]
-    return str(uid)
+    # return a slightly shorter version of the uuid for manageability
+    return 'cfg-' + uid[:8] + '-' + uid[9:13]
 
 
 def _tune_parameters(config, data_dir=None, lag=None, algorithm=None, initial_cpu_limit=None):
