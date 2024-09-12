@@ -30,9 +30,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         # Here we'll copy the source directory to a target directory, so we can modify the target directory without
         # affecting the source directory
         self.target_dir = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_mini"
-        # get the current time in seconds to make the folder unique
-        time_in_seconds = str(int(time.time()))
-        self.target_dir_sim = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_mini_tuning_" + time_in_seconds
+        self.target_dir_sim = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_mini_tuning"
         shutil.rmtree(self.target_dir, ignore_errors=True)
         shutil.copytree(self.source_dir, self.target_dir)
 
