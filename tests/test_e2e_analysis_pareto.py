@@ -73,17 +73,17 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         os.system(f"ls -R {self.target_dir_sim}")
 
         # Now we'll plot them
-        pareto_2d = create_pareto_curve_from_folder(data_dir, self.target_dir_sim, plot_surface=False)
+        pareto_2d = create_pareto_curve_from_folder(data_dir, self.target_dir_sim)
 
         assert pareto_2d is not None
         # Make sure the main parateo file was created
-        # # # self.assertTrue(os.path.exists(f"{self.target_dir_sim}/pareto_frontier.png"))
+        self.assertTrue(os.path.exists(f"{self.target_dir_sim}/pareto_frontier.png"))
 
-        # # # # Now make sure the usage graphs in the folders are created.
-        # # # # The folders will be named after the UUID of the configuration
-        # # # self.assertTrue(len(list(Path(self.target_dir_sim).rglob("cpu_usage_and_new_limit.pdf"))) == num_combinations)
-        # # # # also assert a log was created for each fodler
-        # # # self.assertTrue(len(list(Path(self.target_dir_sim).rglob("InMemorySim.log"))) == num_combinations)
+        # Now make sure the usage graphs in the folders are created.
+        # The folders will be named after the UUID of the configuration
+        self.assertTrue(len(list(Path(self.target_dir_sim).rglob("cpu_usage_and_new_limit.pdf"))) == num_combinations)
+        # also assert a log was created for each fodler
+        self.assertTrue(len(list(Path(self.target_dir_sim).rglob("InMemorySim.log"))) == num_combinations)
 
         ret = pareto_2d.find_closest_to_zero()
         # This function returns folder, config, dimension_1, and dimension_2 of the closest combination
