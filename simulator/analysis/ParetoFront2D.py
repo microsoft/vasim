@@ -146,7 +146,7 @@ class ParetoFront2D(ParetoFrontier):
 
         for alpha in self.alphas:
             folder = self.result[alpha]['uuid']
-            # Save only the the trailing characters after the last '-'
+            # For easier labels, save only the the trailing characters after the last '-'
             folder = folder.split('-')[-1]
 
             ax.scatter(self.result[alpha][self.dimension_2] / self.denominator, self.result[alpha][self.dimension_1]
@@ -163,7 +163,7 @@ class ParetoFront2D(ParetoFrontier):
         # label it on the left side of the point
         ax.scatter(closest_combination[3] / self.denominator, closest_combination[2]
                    / self.denominator, s=50, marker='+', color='green')
-        # For clear labels, save only the the trailing characters after the last '-'
+        # For easier labels, save only the the trailing characters after the last '-'
         folder_closest = closest_combination[0].split('-')[-1]
         ax.annotate(folder_closest, (closest_combination[3], closest_combination[2],), fontsize=15, color='black')
 

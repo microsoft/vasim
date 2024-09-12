@@ -96,13 +96,13 @@ def _create_modified_configs(baseconfig: ClusterStateConfig,
 def create_uuid():
     """
     This function creates a unique identifier to be used as a worker ID.
+    We return a slightly shorter version of the uuid for manageability.
 
-    There seems to be some bug we are hitting with the dashes and letters, so let's just use the numbers
+    It will be of the format: cfg-368079f0-9164 for example.
     """
 
     uid = uuid.uuid4()
     uid = uid.hex
-    # return a slightly shorter version of the uuid for manageability
     return 'cfg-' + uid[:8] + '-' + uid[9:13]
 
 
