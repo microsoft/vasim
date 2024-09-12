@@ -93,7 +93,7 @@ def _create_modified_configs(baseconfig: ClusterStateConfig,
     return modified_configs
 
 
-def _tune_parameters(config, data_dir=None, lag=None, algorithm=None, initial_cpu_limit=None):
+def _tune_parameters(config, data_dir=None, output_dir=None, lag=None, algorithm=None, initial_cpu_limit=None):
     """
     This is a helper function that runs the simulator with a given configuration and returns the resulting metrics.
     It is intended to be used with the multiprocessing.Pool.starmap method.
@@ -102,9 +102,9 @@ def _tune_parameters(config, data_dir=None, lag=None, algorithm=None, initial_cp
     # Include a unique worker ID in the directory path
     worker_id = str(uuid.uuid4())
     setattr(config, "uuid", worker_id)
-    target_dir = f'{data_dir}_tuning/target_{worker_id}'  # TODO: remove hardcode
+    target_dir = f'{output_dir}/target_{worker_id}'
     # Create the directory if it doesn't exist
-    os.makedirs(f'{data_dir}_tuning', exist_ok=True)
+    os.makedirs(f'{data_dir}', exist_ok=True)
     os.makedirs(target_dir, exist_ok=True)
     lag = lag or config["general_config"]["lag"]
     logger = logging.getLogger(f'{config.uuid}')
@@ -145,6 +145,7 @@ def _tune_parameters(config, data_dir=None, lag=None, algorithm=None, initial_cp
 
 
 def tune_with_strategy(config_path: str,
+                       output_dir: str,
                        strategy: str,
                        num_combinations: int = 10,
                        num_workers: int = 1,
@@ -159,6 +160,7 @@ def tune_with_strategy(config_path: str,
 
     Parameters:
     - config_path: The path to the base configuration file.
+    - output_dir: The directory to write the results to.
     - algo_specific_params_to_tune: A dictionary of algorithm-specific parameters to tune, where the keys are the parameter names and the values are
     lists of possible values for each parameter.
     - general_params_to_tune: A dictionary of parameters to tune that are not specific to the algorithm
@@ -199,7 +201,7 @@ def tune_with_strategy(config_path: str,
     # Initialize the pool of worker processes
     with multiprocessing.Pool(processes=num_workers) as pool:
         # Map the tuning function to the modified configs
-        param_combinations = [(modified_config, data_dir, modified_config.general_config["lag"] or lag, algorithm, initial_cpu_limit)
+        param_combinations = [(modified_config, data_dir, output_dir, modified_config.general_config["lag"] or lag, algorithm, initial_cpu_limit)
                               for modified_config in modified_configs]
         print(f"Running {len(param_combinations)} configurations...")
         results = pool.starmap(_tune_parameters, param_combinations)
