@@ -60,15 +60,14 @@ jobs:
         python -m pip install -e .[dev]
     - name: Coverage on basic tests
       run : |
-        # run only the e2e pareto test
-        pytest tests/test_e2e_analysis_pareto.py
-        pytest tests/test_e2e_analysis_pareto.py
-        pytest tests/test_e2e_analysis_pareto.py
-        pytest tests/test_e2e_analysis_pareto.py
-        pytest tests/test_e2e_analysis_pareto.py
-        pytest tests/test_e2e_analysis_pareto.py
-        pytest tests/test_e2e_analysis_pareto.py
-
+        coverage run -a -m pytest
+        coverage xml
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        token: ${{ secrets.CODECOV_TOKEN }}
 
   # TODO: set this up later too. It needs to be in a separate block below due to the permissions
   # page-build:
