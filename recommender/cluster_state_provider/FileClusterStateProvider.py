@@ -60,45 +60,21 @@ class FileClusterStateProvider(ClusterStateProvider):
 
         # create an empty config object, and give it a general_config attribute
 
-        # self.config.general_config['lag'] = lag
-        # self.config.general_config['granularity'] = granularity
-        # self.config.general_config['min_cpu_limit'] = min_cpu_limit
-        # self.config.general_config['max_cpu_limit'] = max_cpu_limit
-        # self.config.general_config['window'] = window
         self.decision_file_path = decision_file_path or "data/decisions.txt"
 
-        # if save_metadata:
-        #     meta_out_file = self.data_dir / "metadata.txt"
-        #     meta = open(meta_out_file, "a")
-        #     meta.write("max_cpu_limit: " + str(self.config.general_config['max_cpu_limit']) + "\n")
-        #     meta.write("features: " + str(self.features) + "\n")
-        #     meta.write("window: " + str(self.config.general_config['window']) + "\n")
-        #     meta.write("lag: " + str(self.config.general_config['lag']) + "\n")
-        #     meta.write("granularity: " + str(self.config.general_config['granularity']) + "\n")
-        #     meta.write("min_cpu_limit: " + str(self.config.general_config['min_cpu_limit']) + "\n")
-        #     meta.close()
         self.save_metadata = save_metadata
 
     def get_current_cpu_limit(self):
         """
+        TODO: Here is where we called into the live system (Kubernetes) to get the current limit of cores being used.
+        This is not needed in the simulator, but we leave this placeholder here in case others want to use this code
+        to run the simulator with a live k8s cluster.
+
         Returns
         -------
         cores : int
             The number of cores currently being used.
         """
-        try:
-
-            def get_current_cpu_limit_pods():
-                # TODO: reimplement this to not be Azure-specific
-                pass
-            cores, _ = get_current_cpu_limit_pods()[0]
-        except Exception as e:
-            self.logger.error(f'Error getting current cores. Retry later. {e}')
-            print("Error getting current cores. Retry later.")
-            print(e)
-            return None
-
-        return int(cores)
 
     def read_metrics_data(self):
         # Verify that csvs exist in the data_dir
@@ -154,10 +130,6 @@ class FileClusterStateProvider(ClusterStateProvider):
         if recorded_data.shape[0] > 2:
             # Filter out any data points that are greater than the machine max
             # This is because sometimes the telemetry can be incorrect
-            cores = self.get_current_cpu_limit()
-            if cores is None:
-                self.logger.error("Error getting current cores. Retry later.")
-                return None, None
             recorded_data = recorded_data[recorded_data["cpu"] <= self.config.general_config['max_cpu_limit']]
 
         return recorded_data, end_time
