@@ -5,3 +5,4 @@ source =
   simulator
 omit =
   *tests*
+  *examples*
