@@ -13,6 +13,10 @@ import docker
 """
 This script is used to read live CPU usage data from the container and write it to a file.
 
+It stores the csv file in the 'data' directory, with the format:
+TIMESTAMP,CPU_USAGE_ACTUAL
+2021.06.02-15:45:12:123456,0.5
+
 """
 
 WAIT_INTERVAL = 60  # how often to poll the CPU usage
@@ -22,7 +26,9 @@ CONTAINER_NAME = "some-cassandra1"  # the container to monitor
 def get_curr_cpu_usage(container_name=CONTAINER_NAME):
     """
     This demo shows only a standalone container, but it could be modified to read CPU usage from a
-        Kubernetes cluster/metrics-server, or from multiple containers.
+    Kubernetes cluster/metrics-server, or from multiple containers.
+
+    To modify this to work with Kubernetes, you would need to use the Kubernetes API. Contributions welcome!
     """
 
     client = docker.from_env()
@@ -42,7 +48,6 @@ def get_timestamp():
 
     Ideally, this would be replaced with a more robust timestamping mechanism and standard format.
     See: https://github.com/microsoft/vasim/issues/34
-
     """
     return datetime.now().strftime("%Y.%m.%d-%H:%M:%S:%f")
 
@@ -51,6 +56,7 @@ if __name__ == "__main__":
 
     curr_dir = Path().absolute()
     # if there is no data directory, create it
+    # TODO: remove hardcoded path
     if not Path(str(curr_dir) + "/data").exists():
         Path(str(curr_dir) + "/data").mkdir()
     filename = str(curr_dir) + "/data/" + \
