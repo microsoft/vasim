@@ -140,7 +140,7 @@ class InMemoryRunnerSimulator:
                                                   if_resample=self.if_resample)
         return metrics
 
-    def run_simulation(self):
+    def run_simulation(self, save_to_file=True):
         """
         Run the simulation to completion and return the final metrics.
         """
@@ -159,22 +159,33 @@ class InMemoryRunnerSimulator:
         self.cluster_state_provider.flush_metrics_data(f"{self.target_simulation_dir}/perf_event_log.csv")
 
         # Return the final metrics
-        return self.get_metrics()
+        return self.get_metrics(save_to_file=save_to_file)
 
-    def run_last_window_only(self):
-        """
-        This will be used to run the simulation for the last window only.
+    # def run_last_window_only(self):
+    #     """
+    #     This will be used to run the simulation for the last window only.
 
-        This will ignore the rest of the data in the CSV file except for the last window.
+    #     This will ignore the rest of the data in the CSV file except for the last window.
 
-        It is just like run_simulation, except that it only runs the last window of the data.
-        """
+    #     It is just like run_simulation, except that it only runs the last window of the data.
+    #     """
 
-        # we need to calculate the last window time
-        last_window_time = self.cluster_state_provider.end_time - pd.Timedelta(minutes=self.config.general_config['window'])
-        self.cluster_state_provider.current_time = last_window_time
+    #     # # First, update any new data, since it might have changed since the last run
+    #     # # This is a little messy for now.
+    #     self.cluster_state_provider.recorded_data = super(type(self.cluster_state_provider), # pylint: disable=E1003
+    #                                                       self.cluster_state_provider).read_metrics_data()
+    #     ###self.cluster_state_provider.recorded_data = self.cluster_state_provider.read_metrics_data()
 
-        return self.run_simulation()
+    #     # We need to calculate the last window time
+    #     last_window_time = self.cluster_state_provider.end_time - pd.Timedelta(minutes=self.config.general_config['window'])
+
+    #     # Make sure that we have at least one window of data.
+    #     if (last_window_time < self.cluster_state_provider.start_time):
+    #         self.logger.error("Not enough data to run the simulation for the last window.")
+    #         return None
+
+    #     self.cluster_state_provider.current_time = last_window_time
+    #     return self.run_simulation(save_to_file=False)
 
     def run_simulation_with_progress(self):
         """
