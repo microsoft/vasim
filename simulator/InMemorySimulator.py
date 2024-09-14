@@ -161,32 +161,6 @@ class InMemoryRunnerSimulator:
         # Return the final metrics
         return self.get_metrics(save_to_file=save_to_file)
 
-    # def run_last_window_only(self):
-    #     """
-    #     This will be used to run the simulation for the last window only.
-
-    #     This will ignore the rest of the data in the CSV file except for the last window.
-
-    #     It is just like run_simulation, except that it only runs the last window of the data.
-    #     """
-
-    #     # # First, update any new data, since it might have changed since the last run
-    #     # # This is a little messy for now.
-    #     self.cluster_state_provider.recorded_data = super(type(self.cluster_state_provider), # pylint: disable=E1003
-    #                                                       self.cluster_state_provider).read_metrics_data()
-    #     ###self.cluster_state_provider.recorded_data = self.cluster_state_provider.read_metrics_data()
-
-    #     # We need to calculate the last window time
-    #     last_window_time = self.cluster_state_provider.end_time - pd.Timedelta(minutes=self.config.general_config['window'])
-
-    #     # Make sure that we have at least one window of data.
-    #     if (last_window_time < self.cluster_state_provider.start_time):
-    #         self.logger.error("Not enough data to run the simulation for the last window.")
-    #         return None
-
-    #     self.cluster_state_provider.current_time = last_window_time
-    #     return self.run_simulation(save_to_file=False)
-
     def run_simulation_with_progress(self):
         """
         Run the simulation, yielding progress updates as the simulation progresses, followed by the final result.
