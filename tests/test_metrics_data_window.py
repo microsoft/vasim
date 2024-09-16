@@ -14,6 +14,7 @@ import pandas as pd
 from simulator.SimulatedInMemoryPredictiveClusterStateProvider import SimulatedInMemoryPredictiveClusterStateProvider
 from recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
 from recommender.cluster_state_provider.FileClusterStateProvider import FileClusterStateProvider
+from simulator.InMemorySimulator import InMemoryRunnerSimulator
 from unittest.mock import patch
 
 
@@ -28,16 +29,21 @@ class TestSimulatedInMemoryPredictiveClusterStateProvider(unittest.TestCase):
 
         root_dir = Path(os.path.dirname(os.path.abspath(__file__)))
         self.source_dir = root_dir / "test_data/alibaba_control_c_29247_denom_1_mini"
+        self.source_dir_toosmall = root_dir / "test_data/alibaba_control_c_29247_denom_1_toosmall"
         # Here we'll copy the source directory to a target directory, so we can modify the target directory without
         # affecting the source directory
         self.target_dir = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_mini"
+        self.target_dir_toosmall = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_toosmall"
         # TODO: sometimes the output is 'simulations', sometimes it is 'tuning'. this is confusing.
         self.target_dir_sim = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_mini_simulations"
+        self.target_dir_sim_toosmall = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_toosmall_simulations"
         shutil.rmtree(self.target_dir, ignore_errors=True)
+        shutil.rmtree(self.target_dir_toosmall, ignore_errors=True)
         shutil.copytree(self.source_dir, self.target_dir)
+        shutil.copytree(self.source_dir_toosmall, self.target_dir_toosmall)
         self.config = ClusterStateConfig(filename=self.source_dir / "metadata.json")
 
-    def __test_read_metrics_data(self):
+    def test_read_metrics_data(self):
         """
         Test the read_metrics_data method, which is the window of data to process next
         """
@@ -135,9 +141,22 @@ class TestSimulatedInMemoryPredictiveClusterStateProvider(unittest.TestCase):
 
         self.assertEqual(recorded_data['cpu'].values.tolist(), expected_result['cpu'].values.tolist())
 
+    def test_too_small_data(self):
+
+        # Here we'll work with the too small data.  We were hitting a bug where there is at
+        # least one data point in the window, but not enough data points to make a prediction.
+        # This is a regression test for that bug.
+
+        runner = InMemoryRunnerSimulator(self.target_dir_toosmall, initial_cpu_limit=14, algorithm="additive")
+        cfg = runner.run_simulation()
+
+        self.assertEqual(cfg, {})
+
     def tearDown(self):
         shutil.rmtree(self.target_dir_sim, ignore_errors=True)
         shutil.rmtree(self.target_dir, ignore_errors=True)
+        shutil.rmtree(self.target_dir_toosmall, ignore_errors=True)
+        shutil.rmtree(self.target_dir_sim_toosmall, ignore_errors=True)
 
 
 if __name__ == "__main__":
