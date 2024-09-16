@@ -55,7 +55,7 @@ jobs:
         else
           echo "All files have the required license headers."
         fi
-    - name: Install basic dependencies # TODO: separate out "test" dependencies in setup.py
+    - name: Install test dependencies
       run: |
         python -m pip install -e .[dev]
     - name: Coverage on basic tests
