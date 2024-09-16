@@ -16,7 +16,7 @@ _Provide a concise summary of what this PR does. Explain why this change is nece
 
 ## Type of Change
 
-_Indicate the type of change by choosing one of the following:_
+_Indicate the type of change by choosing one (or more) of the following:_
 
 - 🛠️ Bug fix  
 - ✨ New feature  
