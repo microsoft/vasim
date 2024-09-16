@@ -32,15 +32,15 @@ version = "0.1.0"
 requires-python = ">=3.10"
 dependencies = [
     # TODO: Remove version pinning
-    "cvxpy",
-    "jsonargparse",
-    "matplotlib",
-    "numpy",
-    "pandas",
-    "plotnine",
-    "python-dateutil",
-    "requests",
-    "sktime",
+    "cvxpy~=1.5.2",
+    "jsonargparse~=4.21.0",
+    "matplotlib~=3.7.1",
+    "numpy~=1.24.2",
+    "pandas~=1.5.3",
+    "plotnine~=0.12.2",
+    "python-dateutil~=2.8.2",
+    "requests~=2.32.0",
+    "sktime~=0.16.1",
 ]
 [project.optional-dependencies]
 "dev" = [
