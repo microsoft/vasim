@@ -12,24 +12,37 @@
 import time
 import os
 from pathlib import Path
+import docker
 from simulator.InMemorySimulator import InMemoryRunnerSimulator
+from poll_metrics import CONTAINER_NAME
 
 RECOMMENDATION_FREQ = 10  # how often to make a recommendation in seconds
-INITIAL_CPU_LIMIT = 8  # TODO you could read this off of k8s or docker. For now, we'll just set it to 8
+INITIAL_CPU_LIMIT_DEFAULT = 6  # the initial CPU limit to use if we can't read it from the container
 
 
 if __name__ == '__main__':
 
     # we will pass it the metadata.json file that is up a directory. you can change this to the path of your metadata.json file
     root_dir = Path(os.path.dirname(os.path.abspath(__file__)))
-    # for now, we'll use the metadata.json file in the data folder up a level.
-    meta = root_dir / "../data/metadata.json"
 
     # data dir is inside the root_dir
     data_dir = root_dir / "data"
 
+    # Read the current CPU limit from the container. This is the initial CPU limit that we will use for the simulation.
+    # If it is not set, use the default value.
+
+    client = docker.from_env()
+    container = client.containers.get(CONTAINER_NAME)
+    INITIAL_CPU_LIMIT = container.attrs['HostConfig']['CpuQuota'] / 100000
+
+    if INITIAL_CPU_LIMIT == 0:
+        print(f"No CPU limit on container {CONTAINER_NAME}. Using default value.")
+        INITIAL_CPU_LIMIT = INITIAL_CPU_LIMIT_DEFAULT
+
+    print(f"Initial CPU limit: {INITIAL_CPU_LIMIT}")
+
     # we will use the additive algorithm for now. You can change this to any of the other algorithms.
-    runner = InMemoryRunnerSimulator(data_dir, initial_cpu_limit=INITIAL_CPU_LIMIT, algorithm="additive", config_path=meta)
+    runner = InMemoryRunnerSimulator(data_dir, initial_cpu_limit=INITIAL_CPU_LIMIT, algorithm="additive")
 
     print("starting recommender loop. Writing to data_simulation dir. Ctrl-C to exit.")
 

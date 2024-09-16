@@ -21,6 +21,7 @@ TIMESTAMP,CPU_USAGE_ACTUAL
 
 WAIT_INTERVAL = 60  # how often to poll the CPU usage
 CONTAINER_NAME = "some-cassandra1"  # the container to monitor
+ERROR_BACKOFF = 5
 
 
 def get_curr_cpu_usage(container_name=CONTAINER_NAME):
@@ -74,8 +75,8 @@ if __name__ == "__main__":
             usage = get_curr_cpu_usage()
             readings = "{},{}\n".format(get_timestamp(), usage)
         except KeyError:
-            print("error getting data (possible update in-flight), trying again")
-            sleep(5)
+            print("error getting data, is container running? Trying again")
+            sleep(ERROR_BACKOFF)
             continue
 
         print(readings)

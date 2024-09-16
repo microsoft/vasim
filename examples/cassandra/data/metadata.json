@@ -1,0 +1,12 @@
+{
+    "algo_specific_config": {
+        "addend": 2
+    },
+    "general_config": {
+        "window": 5,
+        "lag": 1,
+        "max_cpu_limit": 5,
+        "min_cpu_limit": 1.0,
+        "granularity": 1
+    }
+}
