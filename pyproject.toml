@@ -48,6 +48,7 @@ dependencies = [
     "flake8",
     "pytest",
     "coverage",
+    "pre-commit",
 ]
 
 [project.urls]
