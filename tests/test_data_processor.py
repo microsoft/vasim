@@ -34,13 +34,23 @@ class TestDataProcessor(unittest.TestCase):
         self.assertEqual(1, len(y_test))
         self.assertEqual(15.0, y_test.iloc[0])
 
-    def test_prepare_data(self):
+    def test_prepare_data_smooth(self):
         y_train, y_test = DataProcessor.prepare_data(self.data['value'], smooth_window=2, smooth=True, test_size=0.2)
         self.assertEqual(4, len(y_train))
         self.assertEqual(10.0, y_train.iloc[0])
         self.assertEqual(20.0, y_train.iloc[1])
         self.assertEqual(30.0, y_train.iloc[2])
         self.assertEqual(30.0, y_train.iloc[3])
+        self.assertEqual(1, len(y_test))
+        self.assertEqual(15.0, y_test.iloc[0])
+
+    def test_prepare_data_no_smooth(self):
+        y_train, y_test = DataProcessor.prepare_data(self.data['value'], smooth_window=2, smooth=False, test_size=0.2)
+        self.assertEqual(4, len(y_train))
+        self.assertEqual(10.0, y_train.iloc[0])
+        self.assertEqual(20.0, y_train.iloc[1])
+        self.assertEqual(30.0, y_train.iloc[2])
+        self.assertEqual(25.0, y_train.iloc[3])
         self.assertEqual(1, len(y_test))
         self.assertEqual(15.0, y_test.iloc[0])
 
