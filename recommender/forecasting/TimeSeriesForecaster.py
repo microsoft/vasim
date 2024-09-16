@@ -16,7 +16,28 @@ from recommender.forecasting.models.oracle import Oracle
 
 
 class TimeSeriesForecaster:
+    """
+    A class for forecasting time series data using various forecasting models.
+
+    Attributes:
+        window_splitter (float): Proportion of data to use for training.
+        sp (int): Seasonal periodicity.
+        selected_forecaster (list): List of selected forecasters.
+        forecaster (object): The forecaster object.
+        forecaster_param_grid (dict): Parameter grid for the forecaster.
+        cv (SlidingWindowSplitter): Cross-validation splitter.
+        data_dir (str): Directory containing the data.
+    """
+
     def __init__(self, data_dir=None, sp=24 * 60 * 2, selected_forecaster=["naive"]):
+        """
+        Initializes the TimeSeriesForecaster with the specified parameters.
+
+        Args:
+            data_dir (str, optional): Directory containing the data. Defaults to None.
+            sp (int, optional): Seasonal periodicity. Defaults to 24 * 60 * 2.
+            selected_forecaster (list, optional): List of selected forecasters. Defaults to ["naive"].
+        """
         self.window_splitter = 0.7
         self.sp = sp
         self.selected_forecaster = selected_forecaster
@@ -27,6 +48,12 @@ class TimeSeriesForecaster:
         self.set_forecaster(selected_forecaster)
 
     def set_forecaster(self, selected_forecaster):
+        """
+        Sets the forecaster based on the selected forecaster.
+
+        Args:
+            selected_forecaster (list): List of selected forecasters.
+        """
         self.selected_forecaster = selected_forecaster
         # Select the forecaster based on the selected_forecaster string, it is one to one mapping
         if selected_forecaster == "naive":
@@ -42,6 +69,16 @@ class TimeSeriesForecaster:
         self.forecaster_param_grid = {"selected_forecaster": [selected_forecaster]}
 
     def get_prediction(self, data, number_of_points_to_predict):
+        """
+        Gets the prediction for the specified number of points.
+
+        Args:
+            data (pd.DataFrame): The input data for prediction.
+            number_of_points_to_predict (int): Number of future data points to predict.
+
+        Returns:
+            pd.DataFrame: DataFrame containing the predicted data points with time and cpu columns.
+        """
         y_pred = self._forecast(data, number_of_points_to_predict)
         # make y_pred a dataframe with time and cpu columns
         y_pred['time'] = y_pred.index
@@ -50,6 +87,16 @@ class TimeSeriesForecaster:
         return y_pred
 
     def _forecast(self, data, number_of_points_to_predict):
+        """
+        Forecasts the future data points based on the provided data.
+
+        Args:
+            data (pd.DataFrame): The input data for forecasting.
+            number_of_points_to_predict (int): Number of future data points to predict.
+
+        Returns:
+            pd.DataFrame: DataFrame containing the forecasted data points.
+        """
         fh_abs = np.arange(1, number_of_points_to_predict + 1)
         self.cv = SlidingWindowSplitter(window_length=int(len(data) * self.window_splitter), fh=fh_abs)
         warnings.filterwarnings("ignore", category=DeprecationWarning)
