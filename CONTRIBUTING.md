@@ -76,6 +76,10 @@ Flake8............................Failed
 - exit code: 1
 ```
 
+#### Naming Convention
+
+Scripts should be named in `snake_case` and classes in `CamelCase`.
+
 #### Formatting
 
 We generally use all pep8 checks, with the exception of line length 127.
