@@ -71,6 +71,10 @@ def process_data(decision_df, perf_df, if_resample=True):
 
 
 def calculate_metrics(merged):
+    if len(merged) == 0:
+        print("No data to calculate metrics.")
+        return {}
+
     num_changes = (merged['CURR_LIMIT'] != merged['CURR_LIMIT'].shift(-1)).sum()
 
     metrics = {
