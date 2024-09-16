@@ -71,22 +71,9 @@ def process_data(decision_df, perf_df, if_resample=True):
 
 
 def calculate_metrics(merged):
-
     if len(merged) == 0:
         print("No data to calculate metrics.")
-        return {
-            'average_slack': 0,
-            'average_insufficient_cpu': 0,
-            'sum_slack': 0,
-            'sum_insufficient_cpu': 0,
-            'num_scalings': 0,
-            'num_insufficient_cpu': 0,
-            "insufficient_observations_percentage": 0,
-            "slack_percentage": 0,
-            'median_insufficient_cpu': 0,
-            'median_slack': 0,
-            'max_slack': 0,
-        }
+        return {}
 
     num_changes = (merged['CURR_LIMIT'] != merged['CURR_LIMIT'].shift(-1)).sum()
 
