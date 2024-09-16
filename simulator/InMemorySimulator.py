@@ -131,7 +131,7 @@ class InMemoryRunnerSimulator:
                 metrics[key] = int(value)
 
         #        save metrics to file
-        if save_to_file:
+        if save_to_file and metrics != {}:
             with open(f"{self.target_simulation_dir}/calc_metrics.json", 'w') as f:
                 json.dump(metrics, f)
             self.cluster_state_provider.config.to_json(f"{self.target_simulation_dir}/metadata.json")
