@@ -58,12 +58,8 @@ Repository = "https://github.com/microsoft/vasim"
 Issues = "https://github.com/microsoft/vasim/issues"
 
 # Tell setuptools where to find the package.
-[tool.setuptools.package-dir]
-vasim = "src"
-
-[tool.setuptools.packages.find]
-include = ["vasim", "vasim.*"]
-exclude = ["*.tests", "*.tests.*"]
+[tool.setuptools]
+package-dir = {"" = "src"}
 
 [tool.pytest.ini_options]
 minversion = "6.0"
