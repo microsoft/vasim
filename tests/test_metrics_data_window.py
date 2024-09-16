@@ -11,10 +11,10 @@ import shutil
 from datetime import datetime
 from pathlib import Path
 import pandas as pd
-from simulator.SimulatedInMemoryPredictiveClusterStateProvider import SimulatedInMemoryPredictiveClusterStateProvider
-from recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
-from recommender.cluster_state_provider.FileClusterStateProvider import FileClusterStateProvider
-from simulator.InMemorySimulator import InMemoryRunnerSimulator
+from vasim.simulator.SimulatedInMemoryPredictiveClusterStateProvider import SimulatedInMemoryPredictiveClusterStateProvider
+from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
+from vasim.recommender.cluster_state_provider.FileClusterStateProvider import FileClusterStateProvider
+from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
 from unittest.mock import patch
 
 

@@ -10,9 +10,9 @@ import pandas as pd
 import multiprocessing
 import time
 import os
-from simulator.analysis.ParetoFront2D import ParetoFront2D
-from simulator.analysis.ParetoFrontier import ParetoFrontier
-from simulator.analysis.plot_utils import plot_cpu_usage_and_new_limit_reformat
+from vasim.simulator.analysis.ParetoFront2D import ParetoFront2D
+from vasim.simulator.analysis.ParetoFrontier import ParetoFrontier
+from vasim.simulator.analysis.plot_utils import plot_cpu_usage_and_new_limit_reformat
 
 
 def _load_results_parallel(target_folder):

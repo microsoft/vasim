@@ -15,7 +15,7 @@ import uuid
 import os
 import itertools
 
-from recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
+from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
 
 random.seed(1234)
 

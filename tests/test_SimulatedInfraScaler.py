@@ -10,8 +10,8 @@ import unittest
 import shutil
 import json
 from datetime import datetime, timedelta
-from simulator.SimulatedInfraScaler import SimulatedInfraScaler
-from simulator.InMemorySimulator import InMemoryRunnerSimulator
+from vasim.simulator.SimulatedInfraScaler import SimulatedInfraScaler
+from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
 from pathlib import Path
 
 

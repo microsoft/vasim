@@ -9,7 +9,7 @@ import os
 import unittest
 import shutil
 from unittest.mock import patch, MagicMock
-from simulator.InMemorySimulator import InMemoryRunnerSimulator
+from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
 from pathlib import Path
 
 

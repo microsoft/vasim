@@ -12,7 +12,7 @@ from sktime.forecasting.compose import MultiplexForecaster
 from sktime.forecasting.model_selection import SlidingWindowSplitter
 from sktime.forecasting.naive import NaiveForecaster
 
-from recommender.forecasting.models.oracle import Oracle
+from vasim.recommender.forecasting.models.oracle import Oracle
 
 
 class TimeSeriesForecaster:

@@ -13,8 +13,8 @@ from examples.streamlit.utils import run_simulation, unflatten_dict
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-from recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
-from simulator.ParameterTuning import tune_with_strategy
+from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
+from vasim.simulator.ParameterTuning import tune_with_strategy
 
 st.set_page_config(layout="wide")
 st.title("VASIM Autoscaling Simulator Toolkit Presentation")
