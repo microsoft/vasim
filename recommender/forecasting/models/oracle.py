@@ -12,7 +12,11 @@ from datetime import datetime
 
 class Oracle:
     """
-    Oracle class for loading and processing performance data from CSV files.
+    Oracle class for loading, processing, and evaluating performance data from CSV files.
+
+    This class is designed to assess recommender system policies by comparing them against
+    an ideal theoretical predictor, allowing for the separation of errors attributable to
+    prediction and the recommender itself.
 
     Attributes:
         all_performance_data (pd.DataFrame): DataFrame containing all loaded performance data.
@@ -52,13 +56,13 @@ class Oracle:
         """
         pass
 
-    def predict(self, data, number_of_points_to_predict):
+    def predict(self, data, forecast_horizon):
         """
         Predicts future data points based on the provided data.
 
         Args:
             data (pd.DataFrame): DataFrame containing the input data for prediction.
-            number_of_points_to_predict (int): Number of future data points to predict.
+            forecast_horizon (int): Number of future data points to predict.
 
         Returns:
             pd.DataFrame: DataFrame containing the predicted data points.
@@ -66,8 +70,8 @@ class Oracle:
         temp_data = self.all_performance_data
         latest_timestamp = data.index.max()
 
-        # Get the number_of_points_to_predict data points immediately after the latest timestamp from df2
-        data_after_latest = temp_data[temp_data['time'] > latest_timestamp].head(number_of_points_to_predict)
+        # Get the forecast_horizon data points immediately after the latest timestamp from data
+        data_after_latest = temp_data[temp_data['time'] > latest_timestamp].head(forecast_horizon)
         data_after_latest = data_after_latest[['time', 'cpu']]
 
         data_after_latest['timeindex'] = data_after_latest['time']
