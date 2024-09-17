@@ -12,7 +12,7 @@ import math
 
 from vasim.recommender.cluster_state_provider.FileClusterStateProvider import FileClusterStateProvider
 from vasim.recommender.forecasting.TimeSeriesForecaster import TimeSeriesForecaster
-from vasim.recommender.forecasting.utils.DataProcessor import DataProcessor
+from vasim.recommender.forecasting.utils import DataProcessor
 
 
 # This class adds predictive capabilities to FileClusterStateProvider. The algorithm is as
@@ -61,7 +61,7 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
 
     def prediction_activated(self, all_history_data=None):
         if not self._prediction_activated and all_history_data is not None:
-            self._prediction_activated = self.data_processor.get_workload_duration(
+            self._prediction_activated = DataProcessor.get_workload_duration(
                 all_history_data).total_seconds() > (self.waiting_time * 60)
         return self._prediction_activated
 
@@ -114,5 +114,5 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
 
         self.logger.debug(
             f"total number of observations: {len(data)}. We want to predict next {self.minutes_to_predict} minutes = {self.number_of_points_to_predict} points.")
-        data = self.data_processor.resample_dataframe(data, self.freq)
+        data = DataProcessor.resample_dataframe(data, self.freq)
         return self.data_forecaster.get_prediction(data, self.number_of_points_to_predict)
