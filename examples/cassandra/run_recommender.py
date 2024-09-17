@@ -13,8 +13,10 @@ import time
 import os
 from pathlib import Path
 import docker
-from simulator.InMemorySimulator import InMemoryRunnerSimulator
 from poll_metrics import CONTAINER_NAME
+from LiveContainerInfraScaler import LiveContainerInfraScaler
+
+from simulator.InMemorySimulator import InMemoryRunnerSimulator
 
 RECOMMENDATION_FREQ = 10  # how often to make a recommendation in seconds
 INITIAL_CPU_LIMIT_DEFAULT = 6  # the initial CPU limit to use if we can't read it from the container
@@ -44,6 +46,10 @@ if __name__ == '__main__':
     # we will use the additive algorithm for now. You can change this to any of the other algorithms.
     runner = InMemoryRunnerSimulator(data_dir, initial_cpu_limit=INITIAL_CPU_LIMIT, algorithm="additive")
 
+    # Now we will override the infra_scaler with our own implementation that will update the CPU limit of the container
+    runner.infra_scaler = LiveContainerInfraScaler(runner.cluster_state_provider, runner.start_timestamp,
+                                                   runner.recovery_time, container)
+
     print("starting recommender loop. Writing to data_simulation dir. Ctrl-C to exit.")
 
     # We will call this in a loop every 5 minutes
@@ -59,3 +65,9 @@ if __name__ == '__main__':
 
         # Now read in the new data that accumlated from the poll_metrics.py while we were sleeping
         runner.cluster_state_provider.process_data(list(data_dir.glob("**/*.csv")))
+
+        # TODO: we need to modify SimulatedArcScaler to use the new CPU limit
+        # We'll need to write code that calls docker update some-cassandra --cpus $CPUS
+        # where $CPUS is the new CPU limit
+        # runner.infra_scaler.scale(new_cpu_limit)
+        # TODO: where is the output of infra scaler going?

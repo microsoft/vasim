@@ -3,6 +3,7 @@
         "addend": 2
     },
     "general_config": {
+        "recovery_time": 1,
         "window": 5,
         "lag": 1,
         "max_cpu_limit": 5,
