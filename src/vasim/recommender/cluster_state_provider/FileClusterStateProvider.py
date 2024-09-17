@@ -13,8 +13,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from recommender.cluster_state_provider.ClusterStateProvider import ClusterStateProvider
-from recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
+from vasim.recommender.cluster_state_provider.ClusterStateProvider import ClusterStateProvider
+from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
 
 
 class FileClusterStateProvider(ClusterStateProvider):
@@ -57,26 +57,7 @@ class FileClusterStateProvider(ClusterStateProvider):
         # TODO: rename this, it's a bit confusing. It's not the features of the model, it's the features of the data.
         self.features = features or []
         # TODO: a lot of the code below needs testing
-
-        # create an empty config object, and give it a general_config attribute
-
-        # self.config.general_config['lag'] = lag
-        # self.config.general_config['granularity'] = granularity
-        # self.config.general_config['min_cpu_limit'] = min_cpu_limit
-        # self.config.general_config['max_cpu_limit'] = max_cpu_limit
-        # self.config.general_config['window'] = window
         self.decision_file_path = decision_file_path or "data/decisions.txt"
-
-        # if save_metadata:
-        #     meta_out_file = self.data_dir / "metadata.txt"
-        #     meta = open(meta_out_file, "a")
-        #     meta.write("max_cpu_limit: " + str(self.config.general_config['max_cpu_limit']) + "\n")
-        #     meta.write("features: " + str(self.features) + "\n")
-        #     meta.write("window: " + str(self.config.general_config['window']) + "\n")
-        #     meta.write("lag: " + str(self.config.general_config['lag']) + "\n")
-        #     meta.write("granularity: " + str(self.config.general_config['granularity']) + "\n")
-        #     meta.write("min_cpu_limit: " + str(self.config.general_config['min_cpu_limit']) + "\n")
-        #     meta.close()
         self.save_metadata = save_metadata
 
     def get_current_cpu_limit(self):

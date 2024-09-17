@@ -5,10 +5,10 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
-from recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
-from simulator.SimulatedBaseClusterStateProvider import SimulatedBaseClusterStateProvider
-from simulator.SimulatedInMemoryClusterStateProvider import SimulatedInMemoryClusterStateProvider
-from simulator.SimulatedInMemoryPredictiveClusterStateProvider import SimulatedInMemoryPredictiveClusterStateProvider
+from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
+from vasim.simulator.SimulatedBaseClusterStateProvider import SimulatedBaseClusterStateProvider
+from vasim.simulator.SimulatedInMemoryClusterStateProvider import SimulatedInMemoryClusterStateProvider
+from vasim.simulator.SimulatedInMemoryPredictiveClusterStateProvider import SimulatedInMemoryPredictiveClusterStateProvider
 
 
 class SimulatedClusterStateProviderFactory:

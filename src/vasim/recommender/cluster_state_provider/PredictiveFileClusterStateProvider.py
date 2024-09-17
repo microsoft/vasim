@@ -10,9 +10,9 @@ import pandas as pd
 import logging
 import math
 
-from recommender.cluster_state_provider.FileClusterStateProvider import FileClusterStateProvider
-from recommender.forecasting.TimeSeriesForecaster import TimeSeriesForecaster
-from recommender.forecasting.utils import DataProcessor
+from vasim.recommender.cluster_state_provider.FileClusterStateProvider import FileClusterStateProvider
+from vasim.recommender.forecasting.TimeSeriesForecaster import TimeSeriesForecaster
+from vasim.recommender.forecasting.utils import DataProcessor
 
 
 # This class adds predictive capabilities to FileClusterStateProvider. The algorithm is as
@@ -50,13 +50,6 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
             self.config = kwargs['config']
 
         self.logger = logging.getLogger()
-
-        if self.save_metadata:
-            meta_out_file = self.data_dir / "metadata.txt"
-            meta = open(meta_out_file, "a")
-            # dump prediction_config to file
-            meta.write(f"prediction_config: {prediction_config}\n")
-            meta.close()
 
     def get_predicted_cores(self, data):
         def traditional_round(x):

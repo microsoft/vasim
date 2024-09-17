@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from recommender.cluster_state_provider.ClusterStateProvider import ClusterStateProvider
+from vasim.recommender.cluster_state_provider.ClusterStateProvider import ClusterStateProvider
 
 
 class SimulatedBaseClusterStateProvider(ClusterStateProvider):

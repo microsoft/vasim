@@ -10,8 +10,8 @@ import unittest
 import shutil
 from unittest.mock import patch, MagicMock
 from pathlib import Path
-from simulator.analysis.pareto_visualization import create_pareto_curve_from_folder
-from simulator.ParameterTuning import tune_with_strategy
+from vasim.simulator.analysis.pareto_visualization import create_pareto_curve_from_folder
+from vasim.simulator.ParameterTuning import tune_with_strategy
 
 
 class TestRunnerSimulatorIntegrationTest(unittest.TestCase):

@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 
-from simulator.analysis.ParetoFrontier import ParetoFrontier
+from vasim.simulator.analysis.ParetoFrontier import ParetoFrontier
 
 
 def calculate_objective(alpha, sum_slack, sum_insufficient_cpu):

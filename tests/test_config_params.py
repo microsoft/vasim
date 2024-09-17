@@ -9,7 +9,7 @@ import os
 import unittest
 import shutil
 from pathlib import Path
-from simulator.InMemorySimulator import InMemoryRunnerSimulator
+from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
 
 
 class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
