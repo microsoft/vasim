@@ -16,7 +16,7 @@ from vasim.recommender.cluster_state_provider.ClusterStateProvider import Cluste
 class SimulatedBaseClusterStateProvider(ClusterStateProvider):
     # TODO: I am not sure if this class is used? it is not tested if so.
     def __init__(self, data_dir="data/performance_log", window=40, decision_file_path=None,
-                 max_cpu_limit=None, granularity=None, lag=None, **kwargs):
+                 max_cpu_limit=None, lag=None, **kwargs):
 
         self.logger = logging.getLogger()
         self.logger.info("SimulatedBaseClusterStateProvider init")
@@ -28,7 +28,6 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         self.config = kwargs.get("config")
         # TODO: these did not get updated to the new config format
         self.max_cpu_limit = max_cpu_limit
-        self.granularity = granularity
         self.lag = lag
         self.window = window
 
