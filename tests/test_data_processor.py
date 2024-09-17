@@ -8,7 +8,7 @@
 import unittest
 import pandas as pd
 from datetime import timedelta
-from recommender.forecasting.utils import DataProcessor
+from vasim.recommender.forecasting.utils import DataProcessor
 
 
 class TestDataProcessor(unittest.TestCase):
