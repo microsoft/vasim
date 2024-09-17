@@ -26,12 +26,14 @@ class SimulatedInfraScaler:
         self.start_time = start_timestamp
         self.recovery_time = recovery_time
 
-        # Set up logging
-        log_file = Path(self.cluster_state_provider.data_dir) / 'updatelog.txt'
-        logging.basicConfig(filename=log_file, level=logging.INFO)
+        # Set up logging in the target path, so it will be stored with the simulation data
+        log_file = Path(self.cluster_state_provider.decision_file_path).parent.joinpath('updatelog.txt')
         self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG)
+        self.logger.addHandler(logging.FileHandler(log_file))
 
-        self.logger.info("warming up")
+        # Write a test message
+        self.logger.info(">>>SimulatedInfraScaler initialized")
 
     def scale(self, new_limit, time_now):
         """
@@ -60,10 +62,12 @@ class SimulatedInfraScaler:
                                  new_limit, current_cpu_limit)
                 if new_limit < self.cluster_state_provider.config.general_config["min_cpu_limit"]:
                     self.logger.info(">>>not scaling, would go below min cores")
-                    self.cluster_state_provider.set_cpu_limit(self.cluster_state_provider.config.general_config["min_cpu_limit"])
+                    self.cluster_state_provider.set_cpu_limit(
+                        self.cluster_state_provider.config.general_config["min_cpu_limit"])
                     self.logger.info(">>>corrected to min cores")
                 elif new_limit > self.cluster_state_provider.config.general_config["max_cpu_limit"]:
-                    self.cluster_state_provider.set_cpu_limit(self.cluster_state_provider.config.general_config["max_cpu_limit"])
+                    self.cluster_state_provider.set_cpu_limit(
+                        self.cluster_state_provider.config.general_config["max_cpu_limit"])
                     self.logger.info(">>>corrected to max cores")
                 else:
                     self.cluster_state_provider.set_cpu_limit(new_limit)
