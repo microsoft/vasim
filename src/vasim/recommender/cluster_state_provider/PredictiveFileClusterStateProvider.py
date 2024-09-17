@@ -51,13 +51,6 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
 
         self.logger = logging.getLogger()
 
-        if self.save_metadata:
-            meta_out_file = self.data_dir / "metadata.txt"
-            meta = open(meta_out_file, "a")
-            # dump prediction_config to file
-            meta.write(f"prediction_config: {prediction_config}\n")
-            meta.close()
-
     def get_predicted_cores(self, data):
         def traditional_round(x):
             frac = x - math.floor(x)
