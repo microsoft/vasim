@@ -7,7 +7,7 @@
 #
 import logging
 import numpy as np
-from recommender.Recommender import Recommender
+from vasim.recommender.Recommender import Recommender
 
 
 class SimpleAdditiveRecommender(Recommender):

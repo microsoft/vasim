@@ -9,7 +9,7 @@ import os
 import unittest
 import shutil
 from unittest.mock import MagicMock, patch
-from simulator.ParameterTuning import tune_with_strategy
+from vasim.simulator.ParameterTuning import tune_with_strategy
 from pathlib import Path
 
 '''

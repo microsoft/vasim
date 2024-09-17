@@ -10,9 +10,9 @@ import pandas as pd
 import logging
 import math
 
-from recommender.cluster_state_provider.FileClusterStateProvider import FileClusterStateProvider
-from recommender.forecasting.TimeSeriesForecaster import TimeSeriesForecaster
-from recommender.forecasting.utils.DataProcessor import DataProcessor
+from vasim.recommender.cluster_state_provider.FileClusterStateProvider import FileClusterStateProvider
+from vasim.recommender.forecasting.TimeSeriesForecaster import TimeSeriesForecaster
+from vasim.recommender.forecasting.utils.DataProcessor import DataProcessor
 
 
 # This class adds predictive capabilities to FileClusterStateProvider. The algorithm is as

@@ -11,7 +11,7 @@ import json
 import os
 from unittest.mock import mock_open, patch
 
-from recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
+from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
 
 
 class TestClusterStateConfig(unittest.TestCase):

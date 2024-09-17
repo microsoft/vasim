@@ -15,13 +15,13 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from recommender.DummyAdditiveRecommender import SimpleAdditiveRecommender
-from recommender.DummyMultiplierRecommender import SimpleMultiplierRecommender
-from recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
-from simulator.SimulatedInfraScaler import SimulatedInfraScaler
-from simulator.SimulatedClusterStateProviderFactory import SimulatedClusterStateProviderFactory
-from simulator.analysis.plot_utils import plot_cpu_usage_and_new_limit_plotnine, calculate_and_return_metrics_to_target
-from simulator.ParameterTuning import create_uuid
+from vasim.recommender.DummyAdditiveRecommender import SimpleAdditiveRecommender
+from vasim.recommender.DummyMultiplierRecommender import SimpleMultiplierRecommender
+from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
+from vasim.simulator.SimulatedInfraScaler import SimulatedInfraScaler
+from vasim.simulator.SimulatedClusterStateProviderFactory import SimulatedClusterStateProviderFactory
+from vasim.simulator.analysis.plot_utils import plot_cpu_usage_and_new_limit_plotnine, calculate_and_return_metrics_to_target
+from vasim.simulator.ParameterTuning import create_uuid
 
 
 class InMemoryRunnerSimulator:

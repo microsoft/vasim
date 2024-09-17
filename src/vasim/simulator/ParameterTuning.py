@@ -15,7 +15,7 @@ import uuid
 import os
 import itertools
 
-from recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
+from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
 
 random.seed(1234)
 
@@ -137,7 +137,7 @@ def _tune_parameters(config, data_dir=None, lag=None, algorithm=None, initial_cp
     logger.info(f'Starting tuning for configuration {config.uuid}')
     # Run the simulator
     try:
-        from simulator.InMemorySimulator import InMemoryRunnerSimulator
+        from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
         runner = InMemoryRunnerSimulator(data_dir=data_dir, lag=lag, algorithm=algorithm, initial_cpu_limit=initial_cpu_limit, target_simulation_dir=target_dir,
                                          config=config)
         metrics = runner.run_simulation()

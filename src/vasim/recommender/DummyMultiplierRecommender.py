@@ -8,7 +8,7 @@
 import logging
 import numpy as np
 import pandas as pd
-from recommender.Recommender import Recommender
+from vasim.recommender.Recommender import Recommender
 
 
 class SimpleMultiplierRecommender(Recommender):
