@@ -14,7 +14,6 @@ import numpy as np
 import pandas as pd
 
 from vasim.recommender.cluster_state_provider.ClusterStateProvider import ClusterStateProvider
-from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
 
 
 class FileClusterStateProvider(ClusterStateProvider):

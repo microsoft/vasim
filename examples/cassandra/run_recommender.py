@@ -16,7 +16,7 @@ import docker
 from poll_metrics import CONTAINER_NAME
 from LiveContainerInfraScaler import LiveContainerInfraScaler
 
-from simulator.InMemorySimulator import InMemoryRunnerSimulator
+from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
 
 RECOMMENDATION_FREQ = 10  # how often to make a recommendation in seconds
 INITIAL_CPU_LIMIT_DEFAULT = 6  # the initial CPU limit to use if we can't read it from the container

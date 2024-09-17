@@ -6,7 +6,7 @@
 # --------------------------------------------------------------------------
 #
 
-from simulator.SimulatedInfraScaler import SimulatedInfraScaler
+from vasim.simulator.SimulatedInfraScaler import SimulatedInfraScaler
 
 
 class LiveContainerInfraScaler(SimulatedInfraScaler):
