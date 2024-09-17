@@ -47,8 +47,8 @@ if __name__ == '__main__':
     runner = InMemoryRunnerSimulator(data_dir, initial_cpu_limit=INITIAL_CPU_LIMIT, algorithm="additive")
 
     # Now we will override the infra_scaler with our own implementation that will update the CPU limit of the container
-    runner.infra_scaler = LiveContainerInfraScaler(runner.cluster_state_provider, runner.start_timestamp,
-                                                   runner.recovery_time, container)
+    runner.infra_scaler = LiveContainerInfraScaler(runner.cluster_state_provider, runner.experiment_start_time,
+                                                   runner.config.general_config['recovery_time'], container)
 
     print("starting recommender loop. Writing to data_simulation dir. Ctrl-C to exit.")
 
