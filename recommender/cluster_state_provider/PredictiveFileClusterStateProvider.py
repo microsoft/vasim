@@ -13,7 +13,7 @@ import math
 from recommender.cluster_state_provider.FileClusterStateProvider import FileClusterStateProvider
 from recommender.forecasting.TimeSeriesForecaster import TimeSeriesForecaster
 from recommender.forecasting.utils.DataProcessor import DataProcessor
-
+from commons.utils import list_perf_event_log_files
 
 # This class adds predictive capabilities to FileClusterStateProvider. The algorithm is as
 # follows:
@@ -73,10 +73,9 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
         return self._prediction_activated
 
     def _get_all_performance_data(self):  # Verify that csvs exist in the data_dir
-        csv_paths = list(self.data_dir.glob("**/*.csv"))
-        if csv_paths == []:
+        csv_paths = list_perf_event_log_files(self.data_dir)
+        if not csv_paths:
             self.logger.error(f"Error reading csvs in {self.data_dir}")
-            print("Error reading csvs")
             return None, None
 
         # Process data

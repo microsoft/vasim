@@ -11,7 +11,7 @@ from pathlib import Path
 import pandas as pd
 
 from recommender.cluster_state_provider.ClusterStateProvider import ClusterStateProvider
-
+from commons.utils import list_perf_event_log_files
 
 class SimulatedBaseClusterStateProvider(ClusterStateProvider):
     # TODO: I am not sure if this class is used? it is not tested if so.
@@ -32,16 +32,16 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         self.lag = lag
         self.window = window
 
-        # Read all data from file
-        # TODO: This is a temporary solution. We will need to read data in chunks
-        csv_paths = list(self.data_dir.glob("**/*.csv"))
-        if csv_paths == []:
-            self.logger.error(f'Error reading csvs from {self.data_dir}. Your csv_paths are empty.')
-
-            print("Error reading csvs")
+        csv_paths = list_perf_event_log_files(self.data_dir)
+        if not csv_paths:
+            err_msg = f'Error reading csvs from {self.data_dir}. Your csv_paths are empty.'
+            self.logger.error(err_msgr)
             raise FileNotFoundError(f'Error reading csvs from {self.data_dir}. Your csv_paths are empty.')
 
         # Process data
+        # Read all data from file
+        # TODO: This is a temporary solution. We will need to read data in chunks
+        
         self.recorded_data = self.process_data(csv_paths)
         self.start_time = pd.Timestamp(self.recorded_data['time'].iloc[0])
         self.end_time = pd.Timestamp(self.recorded_data['time'].iloc[-1])

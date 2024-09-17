@@ -15,7 +15,7 @@ import pandas as pd
 
 from recommender.cluster_state_provider.ClusterStateProvider import ClusterStateProvider
 from recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
-
+from commons.utils import list_perf_event_log_files
 
 class FileClusterStateProvider(ClusterStateProvider):
     """
@@ -51,9 +51,11 @@ class FileClusterStateProvider(ClusterStateProvider):
         self.logger = logging.getLogger()
 
         self.data_dir = Path(data_dir) or Path().absolute() / "data"
-        if list(self.data_dir.glob("**/*.csv")) == []:
-            self.logger.error('Error: no csvs found in data_dir {}'.format(self.data_dir))
-            raise SystemExit('Error: no csvs found in data_dir {}'.format(self.data_dir))
+        if not list_perf_event_log_files(self.data_dir):
+            err_msg = f'Error: no csvs found in data_dir {self.data_dir}'
+            self.logger.error(err_msg)
+            raise SystemExit(err_msg)
+        
         # TODO: rename this, it's a bit confusing. It's not the features of the model, it's the features of the data.
         self.features = features or []
         # TODO: a lot of the code below needs testing
@@ -104,11 +106,9 @@ class FileClusterStateProvider(ClusterStateProvider):
         # Verify that csvs exist in the data_dir
         # TODO: This is not a scalable way to check for csvs
         # if the data is large, this will take a long time. Need to chunk.
-        csv_paths = list(self.data_dir.glob("**/*.csv"))
-        if csv_paths == []:
+        csv_paths = list_perf_event_log_files(self.data_dir)
+        if not csv_paths:
             self.logger.error(f'Error reading csvs from {self.data_dir}')
-
-            print("Error reading csvs")
             return None, None
 
         # Process data
@@ -164,21 +164,18 @@ class FileClusterStateProvider(ClusterStateProvider):
 
     def process_data(self, csv_paths):
         recorded_data = pd.DataFrame()
-        for i, path in enumerate(csv_paths):
+        for path in csv_paths:
             path = str(path)
-            # The CSVs must have the word "perf_event_log" in them, else we ignore
-            # This is to prevent accidentally reading other CSVs in the directory
-            if "perf_event_log" in path:
-                try:
-                    temp_data = pd.read_csv(path)
-                    temp_data["cpu"] = temp_data["CPU_USAGE_ACTUAL"]
-                    temp_data["time"] = temp_data["TIMESTAMP"].apply(
-                        lambda x: datetime.strptime(x, "%Y.%m.%d-%H:%M:%S:%f"))
-                    temp_data = temp_data[["time"] + self.features]
-                    recorded_data = pd.concat([recorded_data, temp_data], axis=0)
-                except Exception as e:
-                    self.logger.error(f"Error reading {path} {e}")
-                    continue
+            try:
+                temp_data = pd.read_csv(path)
+                temp_data["cpu"] = temp_data["CPU_USAGE_ACTUAL"]
+                temp_data["time"] = temp_data["TIMESTAMP"].apply(
+                    lambda x: datetime.strptime(x, "%Y.%m.%d-%H:%M:%S:%f"))
+                temp_data = temp_data[["time"] + self.features]
+                recorded_data = pd.concat([recorded_data, temp_data], axis=0)
+            except Exception as e:
+                self.logger.error(f"Error reading {path} {e}")
+                continue
         return recorded_data
 
     def drop_duplicates(self, recorded_data):
