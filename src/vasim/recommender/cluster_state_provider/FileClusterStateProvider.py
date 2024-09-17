@@ -55,12 +55,7 @@ class FileClusterStateProvider(ClusterStateProvider):
             raise SystemExit('Error: no csvs found in data_dir {}'.format(self.data_dir))
         # TODO: rename this, it's a bit confusing. It's not the features of the model, it's the features of the data.
         self.features = features or []
-        # TODO: a lot of the code below needs testing
-
-        # create an empty config object, and give it a general_config attribute
-
         self.decision_file_path = decision_file_path or "data/decisions.txt"
-
         self.save_metadata = save_metadata
 
     def get_current_cpu_limit(self):
