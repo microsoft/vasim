@@ -13,8 +13,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from recommender.cluster_state_provider.ClusterStateProvider import ClusterStateProvider
-from recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
+from vasim.recommender.cluster_state_provider.ClusterStateProvider import ClusterStateProvider
+from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
 
 
 class FileClusterStateProvider(ClusterStateProvider):

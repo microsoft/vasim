@@ -12,7 +12,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 import pandas as pd
 
-from recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
+from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
 
 
 class ParetoFrontier(ABC):

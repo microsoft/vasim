@@ -12,12 +12,12 @@ import os
 import uuid
 from pathlib import Path
 import pandas as pd
-from simulator.analysis.plot_utils import calculate_metrics, process_data, read_data
+from vasim.simulator.analysis.plot_utils import calculate_metrics, process_data, read_data
 import streamlit as st
 
-from recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
-from simulator.InMemorySimulator import InMemoryRunnerSimulator
-from simulator.ParameterTuning import create_uuid
+from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
+from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
+from vasim.simulator.ParameterTuning import create_uuid
 
 
 def calculate_and_return_metrics(experiment_dir, perf_log_file_path=None, decision_file_path=None):

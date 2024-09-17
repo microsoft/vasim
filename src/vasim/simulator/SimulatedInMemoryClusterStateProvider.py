@@ -9,8 +9,8 @@ from datetime import timedelta
 
 import numpy as np
 
-from recommender.cluster_state_provider.FileClusterStateProvider import FileClusterStateProvider
-from simulator.SimulatedBaseClusterStateProvider import SimulatedBaseClusterStateProvider
+from vasim.recommender.cluster_state_provider.FileClusterStateProvider import FileClusterStateProvider
+from vasim.simulator.SimulatedBaseClusterStateProvider import SimulatedBaseClusterStateProvider
 
 
 class SimulatedInMemoryClusterStateProvider(SimulatedBaseClusterStateProvider, FileClusterStateProvider):
