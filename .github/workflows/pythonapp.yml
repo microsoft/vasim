@@ -29,7 +29,7 @@ jobs:
       matrix:
         # TODO: We will keep this simple for now. We will add more versions later.
         os: [ubuntu-22.04]
-        python-version: ['3.10']
+        python-version: ['3.8', '3.10']
         #os: [ubuntu-24.04, macos-14, windows-2022]
         #python-version: ['3.9', '3.10', '3.11']
 
