@@ -7,7 +7,7 @@
 #
 import unittest
 import time
-from recommender.forecasting.utils.helpers import timeit
+from vasim.recommender.forecasting.utils.helpers import timeit
 
 
 class TestTimeitDecorator(unittest.TestCase):

@@ -11,7 +11,7 @@ import pandas as pd
 import shutil
 from datetime import datetime
 from pathlib import Path
-from recommender.forecasting.models.oracle import Oracle
+from vasim.recommender.forecasting.models.oracle import Oracle
 
 
 class TestOracle(unittest.TestCase):
