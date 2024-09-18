@@ -19,4 +19,5 @@ Highlighting a few that might be relevant for those wanting to use the simulator
 
 ## Notes
 
-For our tests [data](test_data/), we use a trace from the [Alibaba dataset](https://github.com/alibaba/clusterdata).
+* For our tests [data](test_data/), we use a trace from the [Alibaba dataset](https://github.com/alibaba/clusterdata).
+* Tests use `pytest-xdist` to run in parallel by default.  To run tests serially, use `pytest -n 0`.

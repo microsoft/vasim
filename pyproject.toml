@@ -47,6 +47,8 @@ dependencies = [
     "autopep8",
     "flake8",
     "pytest",
+    "pytest-cov",
+    "pytest-xdist",
     "coverage",
     "pre-commit",
 ]
@@ -60,3 +62,9 @@ Issues = "https://github.com/microsoft/vasim/issues"
 # Tell setuptools where to find the package.
 [tool.setuptools]
 package-dir = {"" = "src"}
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+# parallelize tests with xdist
+# produce coverage report
+addopts = "-n auto -s -v --cov=src/ --cov-fail-under=70 --cov-report=xml"
