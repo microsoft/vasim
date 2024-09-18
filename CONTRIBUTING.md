@@ -119,3 +119,19 @@ To run all unit tests:
 ```sh
 pytest
 ```
+
+### Maintainers
+
+#### Release Publishing Steps
+
+1. Create a PR to update the version in `pyproject.toml` to the new `M.m.p` version.
+2. Once merged to `main`, create a tag with the new version:
+
+    ```sh
+    git checkout main
+    git pull
+    git tag -a vM.m.p -m "Release vM.m.p"
+    git push --tags
+    ```
+
+3. Create a release on GitHub with the tag and the release notes.
