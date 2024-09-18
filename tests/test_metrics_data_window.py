@@ -32,11 +32,13 @@ class TestSimulatedInMemoryPredictiveClusterStateProvider(unittest.TestCase):
         self.source_dir_toosmall = root_dir / "test_data/alibaba_control_c_29247_denom_1_toosmall"
         # Here we'll copy the source directory to a target directory, so we can modify the target directory without
         # affecting the source directory
-        self.target_dir = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_mini"
-        self.target_dir_toosmall = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_toosmall"
+        # Use a unique directory for each worker when using xdist to parallelize tests.
+        uid = os.environ.get("PYTEST_XDIST_WORKER", "")
+        self.target_dir = root_dir / f"test_data/tmp/{uid}/alibaba_control_c_29247_denom_1_test_to_delete_mini"
+        self.target_dir_toosmall = root_dir / f"test_data/tmp/{uid}/alibaba_control_c_29247_denom_1_test_to_delete_toosmall"
         # TODO: sometimes the output is 'simulations', sometimes it is 'tuning'. this is confusing.
-        self.target_dir_sim = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_mini_simulations"
-        self.target_dir_sim_toosmall = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_toosmall_simulations"
+        self.target_dir_sim = root_dir / f"test_data/tmp/{uid}/alibaba_control_c_29247_denom_1_test_to_delete_mini_simulations"
+        self.target_dir_sim_toosmall = root_dir / f"test_data/tmp/{uid}/alibaba_control_c_29247_denom_1_test_to_delete_toosmall_simulations"
         shutil.rmtree(self.target_dir, ignore_errors=True)
         shutil.rmtree(self.target_dir_toosmall, ignore_errors=True)
         shutil.copytree(self.source_dir, self.target_dir)
