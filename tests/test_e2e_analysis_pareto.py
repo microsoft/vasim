@@ -63,7 +63,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
 
         # This will populate the self.target_dir_sim folder with the results of the tuning
         tune_with_strategy(config_path, strategy, num_combinations=num_combinations,
-                           num_workers=num_workers, data_dir=data_dir, lag=10,
+                           num_workers=num_workers, data_dir=data_dir,
                            algorithm=selected_algorithm, initial_cpu_limit=initial_cpu_limit,
                            algo_specific_params_to_tune=algo_specific_params_to_tune,
                            general_params_to_tune=params_to_tune,

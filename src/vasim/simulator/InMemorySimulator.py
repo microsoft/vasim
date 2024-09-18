@@ -31,7 +31,7 @@ class InMemoryRunnerSimulator:
     It contains the run method that simulates the cluster state and runs the recommender algorithm.
     """
 
-    def __init__(self, data_dir, config_path=None, initial_cpu_limit=None, lag=None, algorithm='multiplicative',
+    def __init__(self, data_dir, config_path=None, initial_cpu_limit=None, algorithm='multiplicative',
                  config=None, target_simulation_dir=None, if_resample=True):
         worker_id = create_uuid()
         target_simulation_dir = target_simulation_dir or os.path.join(
@@ -56,7 +56,7 @@ class InMemoryRunnerSimulator:
 
         self.out_file = self._initialize_output_file(target_simulation_dir or data_dir)
 
-        self._configure_sleep_interval(lag, self.config)
+        self.sleep_interval_minutes = self.config.general_config['lag']
 
     def _setup_logger(self, data_dir):
         logger = logging.getLogger()
@@ -109,10 +109,6 @@ class InMemoryRunnerSimulator:
             f = open(out_file, 'a')
 
         return f
-
-    def _configure_sleep_interval(self, lag, config):
-        # TODO: there may be some double-storing of the lag parameter here
-        self.sleep_interval_minutes = lag or config.general_config['lag']
 
     def output_decision(self, latest_time, current_limit, new_limit):
         if latest_time is not None:
@@ -228,7 +224,7 @@ def main():
     args = parser.parse_args()
 
     runner = InMemoryRunnerSimulator(data_dir=args.data_dir, algorithm=args.algorithm,
-                                     config_path=args.config_path, lag=args.lag)
+                                     config_path=args.config_path)
     runner.run_simulation()
 
 
