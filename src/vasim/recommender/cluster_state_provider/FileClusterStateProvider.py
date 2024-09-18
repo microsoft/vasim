@@ -15,7 +15,7 @@ import pandas as pd
 
 from vasim.recommender.cluster_state_provider.ClusterStateProvider import ClusterStateProvider
 from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
-from commons.utils import list_perf_event_log_files
+from vasim.commons.utils import list_perf_event_log_files
 
 
 class FileClusterStateProvider(ClusterStateProvider):

@@ -11,7 +11,7 @@ from pathlib import Path
 import pandas as pd
 
 from vasim.recommender.cluster_state_provider.ClusterStateProvider import ClusterStateProvider
-from commons.utils import list_perf_event_log_files
+from vasim.commons.utils import list_perf_event_log_files
 
 class SimulatedBaseClusterStateProvider(ClusterStateProvider):
     # TODO: I am not sure if this class is used? it is not tested if so.
@@ -88,8 +88,4 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         return pd.Timestamp(self.current_time) - pd.Timedelta(minutes=self.lag)
 
     def advance_time(self):
-<<<<<<< HEAD:simulator/SimulatedBaseClusterStateProvider.py
-        self.current_time = pd.Timestamp(self.current_time) + pd.Timedelta(minutes=self.config.general_config["lag"])
-=======
         self.current_time = pd.Timestamp(self.current_time) + pd.Timedelta(minutes=self.lag)
->>>>>>> origin/main:src/vasim/simulator/SimulatedBaseClusterStateProvider.py
