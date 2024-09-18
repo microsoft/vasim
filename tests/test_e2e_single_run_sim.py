@@ -9,7 +9,7 @@ import os
 import unittest
 import shutil
 from unittest.mock import patch, MagicMock
-from simulator.InMemorySimulator import InMemoryRunnerSimulator
+from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
 from pathlib import Path
 
 
@@ -25,8 +25,10 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         self.source_dir = root_dir / "test_data/alibaba_control_c_29247_denom_1"
         # Here we'll copy the source directory to a target directory, so we can modify the target directory without
         # affecting the source directory
-        self.target_dir = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete"
-        self.target_dir_sim = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_simulations"
+        # Use a unique directory for each worker when using xdist to parallelize tests.
+        uid = os.environ.get("PYTEST_XDIST_WORKER", "")
+        self.target_dir = root_dir / f"test_data/tmp/{uid}/alibaba_control_c_29247_denom_1_test_to_delete"
+        self.target_dir_sim = root_dir / f"test_data/tmp/{uid}/alibaba_control_c_29247_denom_1_test_to_delete_simulations"
         shutil.rmtree(self.target_dir, ignore_errors=True)
         shutil.copytree(self.source_dir, self.target_dir)
 

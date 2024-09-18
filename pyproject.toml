@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vasim"
+description = "Vertical Autoscaler Simulator Toolkit"
+keywords = [
+    "data analysis",
+    "visualization",
+]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: Scientific/Engineering :: Simulation",
+    "Topic :: System",
+]
+license = { "file" = "LICENSE" }
+readme = { file = "README.md", content-type = "text/markdown" }
+maintainers = [
+    { name = "VASim Maintainers", email = "vasim-maintainers@service.microsoft.com" },
+]
+
+version = "0.1.0"
+requires-python = ">=3.9"
+dependencies = [
+    # TODO: Remove version pinning or make it version dependent.
+    "cvxpy~=1.5.2",
+    "jsonargparse~=4.21.0",
+    "matplotlib~=3.7.1",
+    "numpy~=1.24.2",
+    "pandas~=1.5.3",
+    "plotnine~=0.12.2",
+    "python-dateutil~=2.8.2",
+    "requests~=2.32.0",
+    "sktime~=0.16.1",
+]
+[project.optional-dependencies]
+"dev" = [
+    "autopep8",
+    "flake8",
+    "pytest",
+    "pytest-cov",
+    "pytest-xdist",
+    "coverage",
+    "pre-commit",
+]
+
+[project.urls]
+# TODO:
+#Documentation = "https://microsoft.github.io/vasim"
+Repository = "https://github.com/microsoft/vasim"
+Issues = "https://github.com/microsoft/vasim/issues"
+
+# Tell setuptools where to find the package.
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+# parallelize tests with xdist
+# produce coverage report
+addopts = "-n auto -s -v --cov=src/ --cov-fail-under=70 --cov-report=xml"

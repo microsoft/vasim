@@ -10,8 +10,8 @@ import unittest
 import shutil
 from unittest.mock import patch, MagicMock
 from pathlib import Path
-from simulator.analysis.pareto_visualization import create_pareto_curve_from_folder
-from simulator.ParameterTuning import tune_with_strategy
+from vasim.simulator.analysis.pareto_visualization import create_pareto_curve_from_folder
+from vasim.simulator.ParameterTuning import tune_with_strategy
 
 
 class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
@@ -28,8 +28,10 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         self.source_dir = root_dir / "test_data/alibaba_control_c_29247_denom_1_mini"
         # Here we'll copy the source directory to a target directory, so we can modify the target directory without
         # affecting the source directory
-        self.target_dir = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_mini"
-        self.target_dir_sim = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_mini_tuning"
+        # Use a unique directory for each worker when using xdist to parallelize tests.
+        uid = os.environ.get("PYTEST_XDIST_WORKER", "")
+        self.target_dir = root_dir / f"test_data/tmp/{uid}/alibaba_control_c_29247_denom_1_test_to_delete_mini"
+        self.target_dir_sim = root_dir / f"test_data/tmp/{uid}/alibaba_control_c_29247_denom_1_test_to_delete_mini_tuning"
         shutil.rmtree(self.target_dir, ignore_errors=True)
         shutil.copytree(self.source_dir, self.target_dir)
 
@@ -63,7 +65,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
 
         # This will populate the self.target_dir_sim folder with the results of the tuning
         tune_with_strategy(config_path, strategy, num_combinations=num_combinations,
-                           num_workers=num_workers, data_dir=data_dir, lag=10,
+                           num_workers=num_workers, data_dir=data_dir,
                            algorithm=selected_algorithm, initial_cpu_limit=initial_cpu_limit,
                            algo_specific_params_to_tune=algo_specific_params_to_tune,
                            general_params_to_tune=params_to_tune,

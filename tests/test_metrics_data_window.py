@@ -11,10 +11,10 @@ import shutil
 from datetime import datetime
 from pathlib import Path
 import pandas as pd
-from simulator.SimulatedInMemoryPredictiveClusterStateProvider import SimulatedInMemoryPredictiveClusterStateProvider
-from recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
-from recommender.cluster_state_provider.FileClusterStateProvider import FileClusterStateProvider
-from simulator.InMemorySimulator import InMemoryRunnerSimulator
+from vasim.simulator.SimulatedInMemoryPredictiveClusterStateProvider import SimulatedInMemoryPredictiveClusterStateProvider
+from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
+from vasim.recommender.cluster_state_provider.FileClusterStateProvider import FileClusterStateProvider
+from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
 from unittest.mock import patch
 
 
@@ -32,11 +32,13 @@ class TestSimulatedInMemoryPredictiveClusterStateProvider(unittest.TestCase):
         self.source_dir_toosmall = root_dir / "test_data/alibaba_control_c_29247_denom_1_toosmall"
         # Here we'll copy the source directory to a target directory, so we can modify the target directory without
         # affecting the source directory
-        self.target_dir = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_mini"
-        self.target_dir_toosmall = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_toosmall"
+        # Use a unique directory for each worker when using xdist to parallelize tests.
+        uid = os.environ.get("PYTEST_XDIST_WORKER", "")
+        self.target_dir = root_dir / f"test_data/tmp/{uid}/alibaba_control_c_29247_denom_1_test_to_delete_mini"
+        self.target_dir_toosmall = root_dir / f"test_data/tmp/{uid}/alibaba_control_c_29247_denom_1_test_to_delete_toosmall"
         # TODO: sometimes the output is 'simulations', sometimes it is 'tuning'. this is confusing.
-        self.target_dir_sim = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_mini_simulations"
-        self.target_dir_sim_toosmall = root_dir / "test_data/alibaba_control_c_29247_denom_1_test_to_delete_toosmall_simulations"
+        self.target_dir_sim = root_dir / f"test_data/tmp/{uid}/alibaba_control_c_29247_denom_1_test_to_delete_mini_simulations"
+        self.target_dir_sim_toosmall = root_dir / f"test_data/tmp/{uid}/alibaba_control_c_29247_denom_1_test_to_delete_toosmall_simulations"
         shutil.rmtree(self.target_dir, ignore_errors=True)
         shutil.rmtree(self.target_dir_toosmall, ignore_errors=True)
         shutil.copytree(self.source_dir, self.target_dir)
@@ -50,7 +52,7 @@ class TestSimulatedInMemoryPredictiveClusterStateProvider(unittest.TestCase):
 
         sim_inmem_p_prov = SimulatedInMemoryPredictiveClusterStateProvider(window=40, lag=10, data_dir=self.target_dir,
                                                                            decision_file_path=self.target_dir / "decisions.txt",
-                                                                           max_cpu_limit=14, granularity=1, config=self.config,
+                                                                           max_cpu_limit=14, config=self.config,
                                                                            prediction_config=self.config.prediction_config,
                                                                            general_config=self.config.general_config)
 
@@ -98,7 +100,7 @@ class TestSimulatedInMemoryPredictiveClusterStateProvider(unittest.TestCase):
 
         file_cs_prov = FileClusterStateProvider(window=40, lag=10, data_dir=self.target_dir,
                                                 decision_file_path=self.target_dir / "decisions.txt",
-                                                max_cpu_limit=14, granularity=1, config=self.config,
+                                                max_cpu_limit=14, config=self.config,
                                                 prediction_config=self.config.prediction_config,
                                                 general_config=self.config.general_config)
 
