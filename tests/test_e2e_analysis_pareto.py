@@ -73,7 +73,6 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
             num_combinations=num_combinations,
             num_workers=num_workers,
             data_dir=data_dir,
-            lag=10,
             algorithm=selected_algorithm,
             initial_cpu_limit=initial_cpu_limit,
             algo_specific_params_to_tune=algo_specific_params_to_tune,
