@@ -85,7 +85,7 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
 
     def get_last_decision_time(self, recorded_data):
         # check is redundant, but we keep it for now. This will speed up the simulation
-        return pd.Timestamp(self.current_time) - pd.Timedelta(minutes=self.config.general_config["lag"])
+        return pd.Timestamp(self.current_time) - pd.Timedelta(minutes=self.lag)
 
     def advance_time(self):
-        self.current_time = pd.Timestamp(self.current_time) + pd.Timedelta(minutes=self.config.general_config["lag"])
+        self.current_time = pd.Timestamp(self.current_time) + pd.Timedelta(minutes=self.lag)
