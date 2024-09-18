@@ -83,6 +83,7 @@ py_version = 310
 src_paths = ["src", "tests"]
 
 [tool.pydocstringformatter]
+write = true
 exit-code = true
 max-line-length = 127
-style = "pep257,numpy"
+style = ["pep257", "numpydoc"]
