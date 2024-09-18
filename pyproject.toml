@@ -119,6 +119,10 @@ load-plugins = [
     "pylint.extensions.typing",
 ]
 
+[tool.pylint.basic]
+# override module naming expectations to allow PascalCase for file names instead of just snake case.
+module-rgx = "(?:(?P<snake>[a-z_]+)|(?P<pascal>([A-Z][a-z]*)+))$"
+
 [tool.pylint.format]
 max-line-length = 127
 
