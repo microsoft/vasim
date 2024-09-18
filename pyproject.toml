@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=64", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -29,7 +29,7 @@ maintainers = [
 ]
 
 version = "0.1.0"
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 dependencies = [
     # TODO: Remove version pinning or make it version dependent.
     "cvxpy~=1.5.2",
