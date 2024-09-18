@@ -85,7 +85,7 @@ jobs:
         file: ./coverage.xml
         flags: unittests
         token: ${{ secrets.CODECOV_TOKEN }}
-    - name: Test build
+    - name: Test build whl
       run: |
         python -m pip install build
         python -m build
