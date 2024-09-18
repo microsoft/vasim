@@ -78,7 +78,13 @@ python -m pip install pre-commit
 pre-commit install
 ```
 
-And before you commit, you can run it like this `pre-commit run --all-files` and should see output such as:
+And before you commit, you can run it like so
+
+```sh
+pre-commit run --all-files
+```
+
+and should see output such as:
 
 ```txt
 Flake8...........................Passed
@@ -104,7 +110,10 @@ We generally use all pep8 checks, with the exception of line length 127.
 To do a quick check-up before commit, try:
 
 ```sh
+black .
+isort .
 flake8 . --count  --max-complexity=10 --max-line-length=127 --statistics
+pylint src/ tests/
 ```
 
 #### Coverage
