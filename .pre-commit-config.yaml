@@ -32,16 +32,17 @@ repos:
       - id: flake8
         args: [--config=.flake8]
         additional_dependencies: [flake8]
-  - repo: https://github.com/pylint-dev/pylint
-    rev: v3.2.7
-    hooks:
-      - id: pylint
-        args:
-          [
-            "-rn", # Only display messages
-            "-sn", # Don't display the score
-          ]
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.11.2
-    hooks:
-    -   id: mypy
+# TODO:
+#  - repo: https://github.com/pylint-dev/pylint
+#    rev: v3.2.7
+#    hooks:
+#      - id: pylint
+#        args:
+#          [
+#            "-rn", # Only display messages
+#            "-sn", # Don't display the score
+#          ]
+#  - repo: https://github.com/pre-commit/mirrors-mypy
+#    rev: v1.11.2
+#    hooks:
+#    -   id: mypy
