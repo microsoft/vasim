@@ -9,9 +9,12 @@ import logging
 import os
 from abc import abstractmethod
 
+from vasim.recommender.cluster_state_provider import ClusterStateProvider
+
 
 class Recommender:
-    def __init__(self, cluster_state_provider, save_metadata=True):
+
+    def __init__(self, cluster_state_provider: ClusterStateProvider, save_metadata: bool = True) -> None:
         """
         This is the base class for all recommender algorithms.
 
