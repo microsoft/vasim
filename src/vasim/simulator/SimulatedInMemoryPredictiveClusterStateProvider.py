@@ -16,11 +16,11 @@ from vasim.simulator.SimulatedBaseClusterStateProvider import SimulatedBaseClust
 
 class SimulatedInMemoryPredictiveClusterStateProvider(SimulatedBaseClusterStateProvider, PredictiveFileClusterStateProvider):
     def __init__(self, data_dir="data/performance_log", window=40, decision_file_path=None,
-                 max_cpu_limit=None, granularity=None, lag=None, **kwargs):
+                 max_cpu_limit=None, lag=None, **kwargs):
         PredictiveFileClusterStateProvider.__init__(
-            self, data_dir=data_dir, window=window, decision_file_path=decision_file_path, granularity=granularity, max_cpu_limit=max_cpu_limit, lag=lag, **kwargs)
+            self, data_dir=data_dir, window=window, decision_file_path=decision_file_path, max_cpu_limit=max_cpu_limit, lag=lag, **kwargs)
         SimulatedBaseClusterStateProvider.__init__(
-            self, data_dir=data_dir, window=window, decision_file_path=decision_file_path, granularity=granularity, max_cpu_limit=max_cpu_limit, lag=lag, **kwargs)
+            self, data_dir=data_dir, window=window, decision_file_path=decision_file_path, max_cpu_limit=max_cpu_limit, lag=lag, **kwargs)
 
     # we read updated file every time
     def read_metrics_data(self):

@@ -30,7 +30,7 @@ class FileClusterStateProvider(ClusterStateProvider):
     """
 
     def __init__(self, data_dir=None, features=["cpu"], window=40, decision_file_path=None, lag=5.0,
-                 granularity=1, min_cpu_limit=1, max_cpu_limit=None, save_metadata=True, **kwargs):
+                 min_cpu_limit=1, max_cpu_limit=None, save_metadata=True, **kwargs):
         """
         Parameters:
             data_dir (str): The directory where the csvs are stored.
@@ -38,7 +38,6 @@ class FileClusterStateProvider(ClusterStateProvider):
             window (int): Window in minutes to capture VALID data in order to evaluate PP curve
             decision_file_path (str): The path to the file where Doppler will write decisions
             lag (float): Number of minutes to wait after making a decision
-            granularity (int): Granularity desired for the price-performance curve, formerly "coredelta"
             min_cpu_limit (int): The minimum number of cores to recommend (When set to None it assumes 1)
             max_cpu_limit (int): The maximum number of cores to recommend. (When set to None, it assumes max on the machine)
             save_metadata (bool): Whether to save metadata to a file in the data_dir
@@ -186,18 +185,6 @@ class FileClusterStateProvider(ClusterStateProvider):
         recorded_data = recorded_data[recorded_data["time"] >= start_time]
         recorded_data = recorded_data[recorded_data["time"] <= end_time]
         return recorded_data, end_time
-
-    def create_resource_limits(self):
-        # Infact I think we need to remove most of this file, as it won't be used in the simulator.
-        vcpus_increments = self.config.general_config['max_cpu_limit'] * self.config.general_config['granularity'] + 1
-        new_resource_limits = pd.DataFrame(
-            data={"cpu": np.linspace(0, self.config.general_config['max_cpu_limit'], num=vcpus_increments)})
-        new_resource_limits[
-            "new_price"] = new_resource_limits["cpu"]  # we removed price from the model
-        # TODO: where is this used?
-        new_resource_limits["sku"] = new_resource_limits["cpu"].apply(
-            lambda x: str(round(x, 2)) + "vcpu")
-        return new_resource_limits
 
     def get_last_decision_time(self, recorded_data):
         # Check if the decisions file exists
