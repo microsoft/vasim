@@ -15,13 +15,20 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from vasim.recommender.cluster_state_provider.ClusterStateConfig import (
+    ClusterStateConfig,
+)
 from vasim.recommender.DummyAdditiveRecommender import SimpleAdditiveRecommender
 from vasim.recommender.DummyMultiplierRecommender import SimpleMultiplierRecommender
-from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
-from vasim.simulator.SimulatedInfraScaler import SimulatedInfraScaler
-from vasim.simulator.SimulatedClusterStateProviderFactory import SimulatedClusterStateProviderFactory
-from vasim.simulator.analysis.plot_utils import plot_cpu_usage_and_new_limit_plotnine, calculate_and_return_metrics_to_target
+from vasim.simulator.analysis.plot_utils import (
+    calculate_and_return_metrics_to_target,
+    plot_cpu_usage_and_new_limit_plotnine,
+)
 from vasim.simulator.ParameterTuning import create_uuid
+from vasim.simulator.SimulatedClusterStateProviderFactory import (
+    SimulatedClusterStateProviderFactory,
+)
+from vasim.simulator.SimulatedInfraScaler import SimulatedInfraScaler
 
 
 class InMemoryRunnerSimulator:
@@ -31,11 +38,21 @@ class InMemoryRunnerSimulator:
     It contains the run method that simulates the cluster state and runs the recommender algorithm.
     """
 
-    def __init__(self, data_dir, config_path=None, initial_cpu_limit=None, lag=None, algorithm='multiplicative',
-                 config=None, target_simulation_dir=None, if_resample=True):
+    def __init__(
+        self,
+        data_dir,
+        config_path=None,
+        initial_cpu_limit=None,
+        lag=None,
+        algorithm="multiplicative",
+        config=None,
+        target_simulation_dir=None,
+        if_resample=True,
+    ):
         worker_id = create_uuid()
         target_simulation_dir = target_simulation_dir or os.path.join(
-            f"{data_dir}_simulations", f"target_{worker_id}")  # TODO: remove hardcode
+            f"{data_dir}_simulations", f"target_{worker_id}"
+        )  # TODO: remove hardcode
         # Create the directory if it doesn't exist
         os.makedirs(target_simulation_dir, exist_ok=True)
 
@@ -66,7 +83,7 @@ class InMemoryRunnerSimulator:
         file_handler = logging.FileHandler(log_file)
         file_handler.setLevel(logging.WARNING)
 
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
 
@@ -77,20 +94,22 @@ class InMemoryRunnerSimulator:
 
     def _create_cluster_state_provider(self, data_dir, config, target_simulation_dir=None):
         out_filename = f"{target_simulation_dir or data_dir}/decisions.txt"  # TODO: remove hardcode. ALSO: todo, this is csv
-        return SimulatedClusterStateProviderFactory(data_dir=data_dir, out_filename=out_filename, config=config).create_provider(
-            predictive=config.prediction_config)
+        return SimulatedClusterStateProviderFactory(
+            data_dir=data_dir, out_filename=out_filename, config=config
+        ).create_provider(predictive=config.prediction_config)
 
     def _get_experiment_time_range(self):
         return self.cluster_state_provider.start_time, self.cluster_state_provider.end_time
 
     def _create_infra_scaler(self):
-        return SimulatedInfraScaler(self.cluster_state_provider, self.experiment_start_time,
-                                    self.config.general_config.get("recovery_time", 15))
+        return SimulatedInfraScaler(
+            self.cluster_state_provider, self.experiment_start_time, self.config.general_config.get("recovery_time", 15)
+        )
 
     def _create_recommender_algorithm(self, algorithm):
-        if algorithm == 'multiplicative':
+        if algorithm == "multiplicative":
             return SimpleMultiplierRecommender(self.cluster_state_provider)
-        elif algorithm == 'additive':
+        elif algorithm == "additive":
             return SimpleAdditiveRecommender(self.cluster_state_provider)
         # Add your own algorithm here!!!
         # TODO: Make this more dynamic
@@ -102,17 +121,17 @@ class InMemoryRunnerSimulator:
         out_file = Path(out_filename)
 
         if not out_file.exists():
-            f = open(out_file, 'a')
+            f = open(out_file, "a")
             f.write("{},{},{}\n".format("LATEST_TIME", "CURR_LIMIT", "NEW_LIMIT"))
             f.flush()
         else:
-            f = open(out_file, 'a')
+            f = open(out_file, "a")
 
         return f
 
     def _configure_sleep_interval(self, lag, config):
         # TODO: there may be some double-storing of the lag parameter here
-        self.sleep_interval_minutes = lag or config.general_config['lag']
+        self.sleep_interval_minutes = lag or config.general_config["lag"]
 
     def output_decision(self, latest_time, current_limit, new_limit):
         if latest_time is not None:
@@ -132,12 +151,14 @@ class InMemoryRunnerSimulator:
 
         #        save metrics to file
         if save_to_file and metrics != {}:
-            with open(f"{self.target_simulation_dir}/calc_metrics.json", 'w') as f:
+            with open(f"{self.target_simulation_dir}/calc_metrics.json", "w") as f:
                 json.dump(metrics, f)
             self.cluster_state_provider.config.to_json(f"{self.target_simulation_dir}/metadata.json")
-            plot_cpu_usage_and_new_limit_plotnine(self.cluster_state_provider.data_dir,
-                                                  decision_file_path=f"{self.target_simulation_dir}/decisions.txt",
-                                                  if_resample=self.if_resample)
+            plot_cpu_usage_and_new_limit_plotnine(
+                self.cluster_state_provider.data_dir,
+                decision_file_path=f"{self.target_simulation_dir}/decisions.txt",
+                if_resample=self.if_resample,
+            )
         return metrics
 
     def run_simulation(self):
@@ -149,8 +170,10 @@ class InMemoryRunnerSimulator:
         print(f"Setting number of cores to {self.initial_cpu_limit}")
         self.cluster_state_provider.set_cpu_limit(self.initial_cpu_limit)
 
-        while self.cluster_state_provider.current_time + pd.Timedelta(
-                minutes=self.sleep_interval_minutes) < self.cluster_state_provider.end_time:
+        while (
+            self.cluster_state_provider.current_time + pd.Timedelta(minutes=self.sleep_interval_minutes)
+            < self.cluster_state_provider.end_time
+        ):
 
             # Core simulation logic (without yielding progress)
             self._execute_simulation_step()
@@ -172,8 +195,10 @@ class InMemoryRunnerSimulator:
         total_time = self.cluster_state_provider.end_time - self.cluster_state_provider.current_time
         time_elapsed = pd.Timedelta(minutes=0)
 
-        while self.cluster_state_provider.current_time + pd.Timedelta(
-                minutes=self.sleep_interval_minutes) < self.cluster_state_provider.end_time:
+        while (
+            self.cluster_state_provider.current_time + pd.Timedelta(minutes=self.sleep_interval_minutes)
+            < self.cluster_state_provider.end_time
+        ):
 
             # Core simulation logic (with progress tracking)
             self._execute_simulation_step()
@@ -218,17 +243,22 @@ def main():
     """
     TODO: Do we want to remove main here? It might confuse users, but might be useful for testing.
     """
-    parser = argparse.ArgumentParser(description='InMemoryRunnerSimulator Command Line Interface')
-    parser.add_argument('--algorithm', choices=['oracle', 'multiplicative', "additive"], default="multiplicative",
-                        help='Name of the algorithm (e.g., "oracle", "multiplicative")')
-    parser.add_argument('--data_dir', help='Path to the data directory')
-    parser.add_argument('--config_path', help='Path to the config file')
-    parser.add_argument('--lag', type=int, default=10, help='Lag value (default: 10)')
+    parser = argparse.ArgumentParser(description="InMemoryRunnerSimulator Command Line Interface")
+    parser.add_argument(
+        "--algorithm",
+        choices=["oracle", "multiplicative", "additive"],
+        default="multiplicative",
+        help='Name of the algorithm (e.g., "oracle", "multiplicative")',
+    )
+    parser.add_argument("--data_dir", help="Path to the data directory")
+    parser.add_argument("--config_path", help="Path to the config file")
+    parser.add_argument("--lag", type=int, default=10, help="Lag value (default: 10)")
 
     args = parser.parse_args()
 
-    runner = InMemoryRunnerSimulator(data_dir=args.data_dir, algorithm=args.algorithm,
-                                     config_path=args.config_path, lag=args.lag)
+    runner = InMemoryRunnerSimulator(
+        data_dir=args.data_dir, algorithm=args.algorithm, config_path=args.config_path, lag=args.lag
+    )
     runner.run_simulation()
 
 

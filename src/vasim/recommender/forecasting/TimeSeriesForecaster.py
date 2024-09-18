@@ -81,7 +81,7 @@ class TimeSeriesForecaster:
         """
         y_pred = self._forecast(data, forecast_horizon)
         # make y_pred a dataframe with time and cpu columns
-        y_pred['time'] = y_pred.index
+        y_pred["time"] = y_pred.index
         y_pred = y_pred.rename(columns={0: "cpu"})
         y_pred = y_pred.reset_index(drop=True)
         return y_pred

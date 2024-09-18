@@ -6,9 +6,10 @@
 # --------------------------------------------------------------------------
 #
 import os
-import unittest
 import shutil
+import unittest
 from pathlib import Path
+
 from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
 
 
@@ -63,6 +64,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
             # TODO rename decisions.txt to be csv. It's not a txt file.
             # We'll read it as a csv file. so
             import csv
+
             reader = csv.reader(f)
             next(reader)  # skip the header
             # We'll look at the first column of lines 1 and 2, and use a  time diff
@@ -72,6 +74,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
             third_time = next(reader)[0]
             # We'll convert the times to datetime objects
             from datetime import datetime
+
             first_time = datetime.strptime(first_time, "%Y-%m-%d %H:%M:%S")
             second_time = datetime.strptime(second_time, "%Y-%m-%d %H:%M:%S")
             # We'll calculate the difference in minutes
@@ -79,6 +82,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
             # open the metadata file to get the lag parameter
             with open(os.path.join(sim_dir, "metadata.json"), "r") as f:
                 import json
+
                 metadata = json.load(f)
                 lag_read_in = metadata["general_config"]["lag"]
                 assert lag_read_in == 10, f"Expected the lag parameter to be 5, but got {lag_read_in}"
@@ -98,8 +102,12 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         # assert file exists
         assert os.path.exists(self.target_dir)
 
-        runner = InMemoryRunnerSimulator(self.target_dir, initial_cpu_limit=14, algorithm="additive",
-                                         config_path=f"{self.target_dir}/metadata_alt_config_lag.json")
+        runner = InMemoryRunnerSimulator(
+            self.target_dir,
+            initial_cpu_limit=14,
+            algorithm="additive",
+            config_path=f"{self.target_dir}/metadata_alt_config_lag.json",
+        )
         results = runner.run_simulation()
         assert results is not None
 
@@ -119,6 +127,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
             # TODO rename decisions.txt to be csv. It's not a txt file.
             # We'll read it as a csv file. so
             import csv
+
             reader = csv.reader(f)
             next(reader)  # skip the header
             # We'll look at the first column of lines 1 and 2, and use a  time diff
@@ -128,6 +137,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
             third_time = next(reader)[0]
             # We'll convert the times to datetime objects
             from datetime import datetime
+
             first_time = datetime.strptime(first_time, "%Y-%m-%d %H:%M:%S")
             second_time = datetime.strptime(second_time, "%Y-%m-%d %H:%M:%S")
             # We'll calculate the difference in minutes
@@ -135,6 +145,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
             # open the metadata file to get the lag parameter
             with open(os.path.join(sim_dir, "metadata.json"), "r") as f:
                 import json
+
                 metadata = json.load(f)
                 lag_read_in = metadata["general_config"]["lag"]
                 assert lag_read_in == 5, f"Expected the lag parameter to be 5, but got {lag_read_in}"

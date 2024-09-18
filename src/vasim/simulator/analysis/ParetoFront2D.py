@@ -46,10 +46,10 @@ class ParetoFront2D(ParetoFrontier):
             best_config = self.get_best_config_for_alpha(alpha)
             self.result[alpha] = best_config
             self.alphas.append(alpha)
-            self.pareto_configs.add(best_config['uuid'])
+            self.pareto_configs.add(best_config["uuid"])
         # Save the result to csv if a directory is provided
         if self.files is not None:
-            result_df = pd.DataFrame.from_dict(self.result, orient='index')
+            result_df = pd.DataFrame.from_dict(self.result, orient="index")
             result_df.to_csv(f"{self.files}/pareto_frontier_denominator_{self.denominator}2d.csv")
 
     def get_best_config_for_alpha(self, alpha):
@@ -67,17 +67,17 @@ class ParetoFront2D(ParetoFrontier):
             return None  # Handle case when objectives Series is empty
 
         # Ensure objectives Series is numeric
-        objectives = pd.to_numeric(objectives, errors='coerce')
+        objectives = pd.to_numeric(objectives, errors="coerce")
 
         # Find the index of the row with the minimum objective value
         min_index = objectives.idxmin()
 
         # Extract the best configuration details
         best_config = {
-            'uuid': self.df.loc[min_index, 'uuid'],
+            "uuid": self.df.loc[min_index, "uuid"],
             self.dimension_1: self.df.loc[min_index, self.dimension_1],
             self.dimension_2: self.df.loc[min_index, self.dimension_2],
-            'recommender_details': self.df.loc[min_index]
+            "recommender_details": self.df.loc[min_index],
         }
 
         return best_config
@@ -91,16 +91,16 @@ class ParetoFront2D(ParetoFrontier):
         """
 
         closest_combination = None
-        closest_distance = float('inf')
+        closest_distance = float("inf")
 
         for index, row in self.workload_run_metrics.iterrows():
             dimension_1 = row[self.dimension_1]
             dimension_2 = row[self.dimension_2]
-            folder = row['folder']
-            config = row['config']
+            folder = row["folder"]
+            config = row["config"]
 
             # Calculate the Euclidean distance between the point and (0, 0)
-            distance = np.sqrt(dimension_1 ** 2 + dimension_2 ** 2)
+            distance = np.sqrt(dimension_1**2 + dimension_2**2)
 
             # Check if the current combination is closer to (0, 0, 0) than the previous closest one
             if distance < closest_distance:
@@ -117,13 +117,17 @@ class ParetoFront2D(ParetoFrontier):
     def plot_scatter_frontier(self, plot_filename="pareto_frontier"):
         fig, ax = plt.subplots()
         for alpha in self.alphas:
-            ax.scatter(self.result[alpha][self.dimension_2] / self.denominator, self.result[alpha][self.dimension_1]
-                       / self.denominator, label=f'alpha={alpha:.3f}', s=5)
+            ax.scatter(
+                self.result[alpha][self.dimension_2] / self.denominator,
+                self.result[alpha][self.dimension_1] / self.denominator,
+                label=f"alpha={alpha:.3f}",
+                s=5,
+            )
             ax.annotate(alpha, (self.result[alpha][self.dimension_2], self.result[alpha][self.dimension_1]))
         # ax.legend()
-        ax.set_ylabel(f'{self.dimension_1}')
-        ax.set_xlabel(f'{self.dimension_2} CPU time')
-        ax.set_title('Pareto frontier')
+        ax.set_ylabel(f"{self.dimension_1}")
+        ax.set_xlabel(f"{self.dimension_2} CPU time")
+        ax.set_title("Pareto frontier")
 
         plt.show()
         plt.savefig(f"{plot_filename}.pdf")
@@ -138,22 +142,29 @@ class ParetoFront2D(ParetoFrontier):
         y_values = self.df[self.dimension_1] / self.denominator
         fig, ax = plt.subplots(figsize=(4, 3))
 
-        plt.rcParams['pdf.fonttype'] = 42
-        plt.rcParams['ps.fonttype'] = 42
-        plt.rcParams['text.usetex'] = False
+        plt.rcParams["pdf.fonttype"] = 42
+        plt.rcParams["ps.fonttype"] = 42
+        plt.rcParams["text.usetex"] = False
 
         plt.scatter(x_values, y_values, s=5, alpha=0.5)
 
         for alpha in self.alphas:
-            folder = self.result[alpha]['uuid']
+            folder = self.result[alpha]["uuid"]
             # For easier labels, save only the the trailing characters after the last '-'
-            folder = folder.split('-')[-1]
+            folder = folder.split("-")[-1]
 
-            ax.scatter(self.result[alpha][self.dimension_2] / self.denominator, self.result[alpha][self.dimension_1]
-                       / self.denominator, label=f'alpha={alpha:.3f}', s=20, marker='x', color='red')
+            ax.scatter(
+                self.result[alpha][self.dimension_2] / self.denominator,
+                self.result[alpha][self.dimension_1] / self.denominator,
+                label=f"alpha={alpha:.3f}",
+                s=20,
+                marker="x",
+                color="red",
+            )
             # Now we'll add the folder name to the point, with a light gray font
-            ax.annotate(folder, (self.result[alpha][self.dimension_2], self.result[alpha][self.dimension_1]),
-                        fontsize=6, color='gray')
+            ax.annotate(
+                folder, (self.result[alpha][self.dimension_2], self.result[alpha][self.dimension_1]), fontsize=6, color="gray"
+            )
 
             # ax.annotate(alpha, (metrics['sum_insufficient_cpu'], metrics['sum_slack']))
             # self.plot_folders.append((self.result[alpha]['folder'], self.result[alpha][self.dimension_1], self.result[alpha][self.dimension_2]))
@@ -161,15 +172,36 @@ class ParetoFront2D(ParetoFrontier):
         # Now plot the point closest to (0, 0)
         closest_combination = self.find_closest_to_zero()
         # label it on the left side of the point
-        ax.scatter(closest_combination[3] / self.denominator, closest_combination[2]
-                   / self.denominator, s=50, marker='+', color='green')
+        ax.scatter(
+            closest_combination[3] / self.denominator,
+            closest_combination[2] / self.denominator,
+            s=50,
+            marker="+",
+            color="green",
+        )
         # For easier labels, save only the the trailing characters after the last '-'
-        folder_closest = closest_combination[0].split('-')[-1]
-        ax.annotate(folder_closest, (closest_combination[3], closest_combination[2],), fontsize=15, color='black')
+        folder_closest = closest_combination[0].split("-")[-1]
+        ax.annotate(
+            folder_closest,
+            (
+                closest_combination[3],
+                closest_combination[2],
+            ),
+            fontsize=15,
+            color="black",
+        )
 
         # put a small note at the bottom about how axes do not start at 0.
-        plt.text(0.5, 0.01, 'Note: Axes do not start at 0. Best config in green',
-                 ha='center', va='center', transform=ax.transAxes, fontsize=8, color='gray')
+        plt.text(
+            0.5,
+            0.01,
+            "Note: Axes do not start at 0. Best config in green",
+            ha="center",
+            va="center",
+            transform=ax.transAxes,
+            fontsize=8,
+            color="gray",
+        )
 
         plt.ylabel(f"{self.dimension_1}", rotation=90)
         plt.xlabel(f"{self.dimension_2}")

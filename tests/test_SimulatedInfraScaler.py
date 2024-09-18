@@ -5,14 +5,15 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
-import os
-import unittest
-import shutil
 import json
+import os
+import shutil
+import unittest
 from datetime import datetime, timedelta
-from vasim.simulator.SimulatedInfraScaler import SimulatedInfraScaler
-from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
 from pathlib import Path
+
+from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
+from vasim.simulator.SimulatedInfraScaler import SimulatedInfraScaler
 
 
 class TestSimulatedInfraScaler(unittest.TestCase):
@@ -49,8 +50,12 @@ class TestSimulatedInfraScaler(unittest.TestCase):
             config = json.load(f)
             self.assertEqual(config["general_config"]["recovery_time"], 5)
 
-        self.runner = InMemoryRunnerSimulator(self.target_dir, initial_cpu_limit=14,
-                                              algorithm="multiplicative", config_path=f"{self.target_dir}/metadata_alt_config.json")
+        self.runner = InMemoryRunnerSimulator(
+            self.target_dir,
+            initial_cpu_limit=14,
+            algorithm="multiplicative",
+            config_path=f"{self.target_dir}/metadata_alt_config.json",
+        )
 
         # now assert that the config is the same as the one we loaded
         self.assertEqual(self.runner.config.general_config["recovery_time"], 5)

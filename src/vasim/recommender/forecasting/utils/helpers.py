@@ -7,8 +7,8 @@
 #
 import time
 
-from sktime.forecasting.model_selection import temporal_train_test_split
 import pandas as pd
+from sktime.forecasting.model_selection import temporal_train_test_split
 
 
 def timeit(func):
@@ -21,6 +21,7 @@ def timeit(func):
     Returns:
         function: The wrapped function with execution time measurement.
     """
+
     def wrapper(*args, **kwargs):
         start = time.time()
         result = func(*args, **kwargs)
@@ -96,7 +97,7 @@ class DataProcessor:
         Returns:
             pd.DataFrame: The resampled DataFrame.
         """
-        df = df.set_index('time')
+        df = df.set_index("time")
         df.index = pd.to_datetime(df.index)
         df = df.resample(freq).mean().ffill()
         return df

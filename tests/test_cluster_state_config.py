@@ -5,29 +5,24 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
-from pathlib import Path
-import unittest
 import json
 import os
+import unittest
+from pathlib import Path
 from unittest.mock import mock_open, patch
 
-from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
+from vasim.recommender.cluster_state_provider.ClusterStateConfig import (
+    ClusterStateConfig,
+)
 
 
 class TestClusterStateConfig(unittest.TestCase):
 
     def setUp(self):
         self.config_data = {
-            "general_config": {
-                "window": 20
-            },
-            "algo_specific_config": {
-                "addend": 2
-            },
-            "prediction_config": {
-                "frequency_minutes": 5,
-                "model": "naive"
-            }
+            "general_config": {"window": 20},
+            "algo_specific_config": {"addend": 2},
+            "prediction_config": {"frequency_minutes": 5, "model": "naive"},
         }
 
     def test_init_with_config_dict(self):
@@ -35,20 +30,20 @@ class TestClusterStateConfig(unittest.TestCase):
         config = ClusterStateConfig(config_dict=config_dict)
 
         # Test that the values are correctly assigned
-        self.assertEqual(config.general_config['window'], 20)
-        self.assertEqual(config.algo_specific_config['addend'], 2)
-        self.assertEqual(config.prediction_config['frequency_minutes'], 5)
+        self.assertEqual(config.general_config["window"], 20)
+        self.assertEqual(config.algo_specific_config["addend"], 2)
+        self.assertEqual(config.prediction_config["frequency_minutes"], 5)
 
     def test_load_from_json(self):
         json_data = json.dumps(self.config_data)
 
-        with patch('builtins.open', mock_open(read_data=json_data)):
+        with patch("builtins.open", mock_open(read_data=json_data)):
             config = ClusterStateConfig(filename="dummy.json")
 
         # Test that the JSON data was loaded correctly
-        self.assertEqual(config.general_config['window'], 20)
-        self.assertEqual(config.algo_specific_config['addend'], 2)
-        self.assertEqual(config.prediction_config['frequency_minutes'], 5)
+        self.assertEqual(config.general_config["window"], 20)
+        self.assertEqual(config.algo_specific_config["addend"], 2)
+        self.assertEqual(config.prediction_config["frequency_minutes"], 5)
 
     def test_to_json(self):
         config = ClusterStateConfig(self.config_data)
@@ -62,19 +57,19 @@ class TestClusterStateConfig(unittest.TestCase):
                 config.to_json("output.json")
 
                 # Check that 'open' was called with the correct filepath and mode
-                mocked_file.assert_called_once_with("output.json", 'w')
+                mocked_file.assert_called_once_with("output.json", "w")
 
                 # Ensure that 'json.dump' was called with the correct dictionary and file handle
                 mock_json_dump.assert_called_once_with(expected_dict, mocked_file(), indent=4)
 
     def test_setattr(self):
         config = ClusterStateConfig()
-        config.general_config['window'] = 10
-        config.algo_specific_config['addend'] = 5
+        config.general_config["window"] = 10
+        config.algo_specific_config["addend"] = 5
 
         # Check if attributes are set and accessible
-        self.assertEqual(config.general_config['window'], 10)
-        self.assertEqual(config.algo_specific_config['addend'], 5)
+        self.assertEqual(config.general_config["window"], 10)
+        self.assertEqual(config.algo_specific_config["addend"], 5)
 
     def test_load_from_dict(self):
         config_dict = self.config_data
@@ -82,8 +77,8 @@ class TestClusterStateConfig(unittest.TestCase):
         config.load_from_dict(config_dict)
 
         # Ensure dictionary values are loaded properly
-        self.assertEqual(config.general_config['window'], 20)
-        self.assertEqual(config.prediction_config['model'], "naive")
+        self.assertEqual(config.general_config["window"], 20)
+        self.assertEqual(config.prediction_config["model"], "naive")
 
     def test_empty_initialization(self):
         config = ClusterStateConfig()
@@ -101,26 +96,26 @@ class TestClusterStateConfig(unittest.TestCase):
         config = ClusterStateConfig(filename=data_path)
 
         # Test the general configuration values
-        self.assertEqual(config.general_config['window'], 20)
-        self.assertEqual(config.general_config['lag'], 10)
+        self.assertEqual(config.general_config["window"], 20)
+        self.assertEqual(config.general_config["lag"], 10)
 
         # Test the algorithm-specific configuration
-        self.assertEqual(config.algo_specific_config['addend'], 2)
-        self.assertEqual(config.algo_specific_config['multiplier'], 2)
+        self.assertEqual(config.algo_specific_config["addend"], 2)
+        self.assertEqual(config.algo_specific_config["multiplier"], 2)
 
         # Test prediction configuration
-        self.assertEqual(config.prediction_config['waiting_before_predict'], 1440)
-        self.assertEqual(config.prediction_config['forecasting_models'], "naive")
+        self.assertEqual(config.prediction_config["waiting_before_predict"], 1440)
+        self.assertEqual(config.prediction_config["forecasting_models"], "naive")
 
     def test_exception_in_to_json(self):
         config = ClusterStateConfig(config_dict=self.config_data)
 
         # Simulate an error when trying to write to a file
-        with patch('builtins.open', mock_open()) as mocked_file:
+        with patch("builtins.open", mock_open()) as mocked_file:
             mocked_file.side_effect = Exception("File write error")
 
             # Capture logs at the ERROR level
-            with self.assertLogs('root', level='ERROR') as log:
+            with self.assertLogs("root", level="ERROR") as log:
                 try:
                     config.to_json("dummy.json")
                 except Exception:
@@ -130,5 +125,5 @@ class TestClusterStateConfig(unittest.TestCase):
             self.assertIn("Error writing JSON file", log.output[0])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -36,8 +36,12 @@ class Recommender:
 
     def _setup_logger(self):
         # TODO: I think we can simplify this by just using the config.uuid as the logger name
-        if hasattr(self.cluster_state_provider, 'config') and self.cluster_state_provider.config is not None and hasattr(self.cluster_state_provider.config, "uuid"):
-            return logging.getLogger(f'{self.cluster_state_provider.config.uuid}')
+        if (
+            hasattr(self.cluster_state_provider, "config")
+            and self.cluster_state_provider.config is not None
+            and hasattr(self.cluster_state_provider.config, "uuid")
+        ):
+            return logging.getLogger(f"{self.cluster_state_provider.config.uuid}")
         else:
             return logging.getLogger()
 

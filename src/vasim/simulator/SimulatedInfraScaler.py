@@ -27,7 +27,7 @@ class SimulatedInfraScaler:
         self.recovery_time = recovery_time
 
         # Set up logging in the target path, so it will be stored with the simulation data
-        log_file = Path(self.cluster_state_provider.decision_file_path).parent.joinpath('updatelog.txt')
+        log_file = Path(self.cluster_state_provider.decision_file_path).parent.joinpath("updatelog.txt")
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
         self.logger.addHandler(logging.FileHandler(log_file))
@@ -58,16 +58,17 @@ class SimulatedInfraScaler:
             # We only want to scale if the recovery time has passed since the last scaling event
             # or if there was no previous scaling event
             if self.last_scaling_time is None or (time_now - self.last_scaling_time).seconds > self.recovery_time * 60:
-                self.logger.info(">>>attempting to scale to %d cores from %d",
-                                 new_limit, current_cpu_limit)
+                self.logger.info(">>>attempting to scale to %d cores from %d", new_limit, current_cpu_limit)
                 if new_limit < self.cluster_state_provider.config.general_config["min_cpu_limit"]:
                     self.logger.info(">>>not scaling, would go below min cores")
                     self.cluster_state_provider.set_cpu_limit(
-                        self.cluster_state_provider.config.general_config["min_cpu_limit"])
+                        self.cluster_state_provider.config.general_config["min_cpu_limit"]
+                    )
                     self.logger.info(">>>corrected to min cores")
                 elif new_limit > self.cluster_state_provider.config.general_config["max_cpu_limit"]:
                     self.cluster_state_provider.set_cpu_limit(
-                        self.cluster_state_provider.config.general_config["max_cpu_limit"])
+                        self.cluster_state_provider.config.general_config["max_cpu_limit"]
+                    )
                     self.logger.info(">>>corrected to max cores")
                 else:
                     self.cluster_state_provider.set_cpu_limit(new_limit)
@@ -76,10 +77,17 @@ class SimulatedInfraScaler:
                 self.logger.info("Having a post-scaling %d minute nap.", self.recovery_time)
                 return True
             elif self.last_scaling_time is not None:
-                self.logger.info("Waiting to scale %d minutes, current minutes %d, new_limit: %d",
-                                 self.recovery_time * 60 - (time_now - self.last_scaling_time).seconds // 60, minutes,
-                                 new_limit)
+                self.logger.info(
+                    "Waiting to scale %d minutes, current minutes %d, new_limit: %d",
+                    self.recovery_time * 60 - (time_now - self.last_scaling_time).seconds // 60,
+                    minutes,
+                    new_limit,
+                )
         else:
-            self.logger.info("Waiting to scale %d minutes, current minutes %d, decision of cores to add or subtract: %d",
-                             0, minutes, new_limit)
+            self.logger.info(
+                "Waiting to scale %d minutes, current minutes %d, decision of cores to add or subtract: %d",
+                0,
+                minutes,
+                new_limit,
+            )
         return False

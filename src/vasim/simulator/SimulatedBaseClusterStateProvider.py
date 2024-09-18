@@ -10,13 +10,16 @@ from pathlib import Path
 
 import pandas as pd
 
-from vasim.recommender.cluster_state_provider.ClusterStateProvider import ClusterStateProvider
+from vasim.recommender.cluster_state_provider.ClusterStateProvider import (
+    ClusterStateProvider,
+)
 
 
 class SimulatedBaseClusterStateProvider(ClusterStateProvider):
     # TODO: I am not sure if this class is used? it is not tested if so.
-    def __init__(self, data_dir="data/performance_log", window=40, decision_file_path=None,
-                 max_cpu_limit=None, lag=None, **kwargs):
+    def __init__(
+        self, data_dir="data/performance_log", window=40, decision_file_path=None, max_cpu_limit=None, lag=None, **kwargs
+    ):
 
         self.logger = logging.getLogger()
         self.logger.info("SimulatedBaseClusterStateProvider init")
@@ -35,21 +38,21 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         # TODO: This is a temporary solution. We will need to read data in chunks
         csv_paths = list(self.data_dir.glob("**/*.csv"))
         if csv_paths == []:
-            self.logger.error(f'Error reading csvs from {self.data_dir}. Your csv_paths are empty.')
+            self.logger.error(f"Error reading csvs from {self.data_dir}. Your csv_paths are empty.")
 
             print("Error reading csvs")
-            raise FileNotFoundError(f'Error reading csvs from {self.data_dir}. Your csv_paths are empty.')
+            raise FileNotFoundError(f"Error reading csvs from {self.data_dir}. Your csv_paths are empty.")
 
         # Process data
         self.recorded_data = self.process_data(csv_paths)
-        self.start_time = pd.Timestamp(self.recorded_data['time'].iloc[0])
-        self.end_time = pd.Timestamp(self.recorded_data['time'].iloc[-1])
+        self.start_time = pd.Timestamp(self.recorded_data["time"].iloc[0])
+        self.end_time = pd.Timestamp(self.recorded_data["time"].iloc[-1])
 
-        self.recorded_data['time'] = pd.to_datetime(self.recorded_data['time'])
-        self.recorded_data['timeindex'] = self.recorded_data['time']
+        self.recorded_data["time"] = pd.to_datetime(self.recorded_data["time"])
+        self.recorded_data["timeindex"] = self.recorded_data["time"]
 
         # self.recorded_data.set_index('time')  # Replace 'timestamp_column_name' with the actual column name of timestamps
-        self.recorded_data.set_index('timeindex', inplace=True)
+        self.recorded_data.set_index("timeindex", inplace=True)
         self.current_time = self.start_time
         self.last_scaling_time = self.start_time
 
@@ -76,12 +79,12 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         custom_header = "TIMESTAMP,CPU_USAGE_ACTUAL"
 
         # Open the file for writing
-        with open(filename, 'w') as file:
+        with open(filename, "w") as file:
             # Write the custom header as the first line
-            file.write(custom_header + '\n')
+            file.write(custom_header + "\n")
 
             # Use pandas to write the DataFrame data without a header
-            self.recorded_data.to_csv(file, index=False, date_format='%Y.%m.%d-%H:%M:%S:%f', header=False)
+            self.recorded_data.to_csv(file, index=False, date_format="%Y.%m.%d-%H:%M:%S:%f", header=False)
 
     def get_last_decision_time(self, recorded_data):
         # check is redundant, but we keep it for now. This will speed up the simulation

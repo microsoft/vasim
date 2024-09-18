@@ -52,23 +52,23 @@ class ClusterStateConfig(dict):  # Inheriting from dict
 
     def load_from_dict(self, config_dict):
         # Load the config sections from a dictionary
-        self.general_config = config_dict.get('general_config', {})
-        self.algo_specific_config = config_dict.get('algo_specific_config', {})
-        self.prediction_config = config_dict.get('prediction_config', {})
+        self.general_config = config_dict.get("general_config", {})
+        self.algo_specific_config = config_dict.get("algo_specific_config", {})
+        self.prediction_config = config_dict.get("prediction_config", {})
 
     def load_from_json(self, filename):
         # Load the configuration from a JSON file
-        with open(filename, 'r') as f:
+        with open(filename, "r") as f:
             data = json.load(f)
             self.load_from_dict(data)
 
     def to_json(self, filepath):
         try:
-            with open(filepath, 'w') as f:
+            with open(filepath, "w") as f:
                 full_dict = {
                     "general_config": self.general_config,
                     "algo_specific_config": self.algo_specific_config,
-                    "prediction_config": self.prediction_config
+                    "prediction_config": self.prediction_config,
                 }
                 json.dump(full_dict, f, indent=4)
         except Exception as e:
