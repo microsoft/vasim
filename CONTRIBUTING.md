@@ -93,11 +93,12 @@ flake8 . --count  --max-complexity=10 --max-line-length=127 --statistics
 #### Coverage
 
 For coverage, we use [coverage.py](https://coverage.readthedocs.io/en/) in our Github Actions.
-Run  `python -m pip install coverage` if you don't already have this, and any code you commit should generally not significantly impact coverage.
+Run  `python -m pip install coverage pytest-cov` if you don't already have this, and any code you commit should generally not significantly impact coverage.
 
-We strive to not let check-ins decrease coverage.
+We strive to not let check-ins decrease coverage (as configured in [`pyproject.toml`](./pyproject.toml)).
+
 To run all unit tests:
 
 ```sh
-coverage run -m pytest tests
+pytest
 ```
