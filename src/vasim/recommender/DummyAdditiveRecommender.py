@@ -5,14 +5,17 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
-import logging
-
+"""Simple Additive Recommender."""
 import numpy as np
 
 from vasim.recommender.Recommender import Recommender
 
 
 class SimpleAdditiveRecommender(Recommender):
+    """Simple Additive Recommender class."""
+
+    # pylint: disable=too-few-public-methods
+
     def __init__(self, cluster_state_provider, save_metadata=True):
         """
         Parameters:
@@ -48,6 +51,6 @@ class SimpleAdditiveRecommender(Recommender):
         # Now round the scaling factor to the nearest 0.5 core. Always round up.
         new_limit = np.ceil(new_limit * 2) / 2
 
-        self.logger.debug(f"Smoothed max: {smoothed_max}, New cpu limit: {new_limit}")
+        self.logger.debug("Smoothed max: %s, New cpu limit: %s", smoothed_max, new_limit)
 
         return new_limit
