@@ -92,7 +92,6 @@ jobs:
         python -m build
     - name: Test pip install whl
       run: |
-        python -m pip install venv
         python -m venv test-install-venv
         source test-install-venv/bin/activate
         whl_file=$(ls -1 dist/vasim-*.whl)
