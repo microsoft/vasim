@@ -18,8 +18,15 @@ from vasim.simulator.SimulatedBaseClusterStateProvider import (
 
 
 class SimulatedInMemoryClusterStateProvider(SimulatedBaseClusterStateProvider, FileClusterStateProvider):
+
     def __init__(
-        self, data_dir="data/performance_log", window=40, decision_file_path=None, max_cpu_limit=None, lag=None, **kwargs
+        self,
+        data_dir="data/performance_log",
+        window=40,
+        decision_file_path=None,
+        max_cpu_limit=None,
+        lag=None,
+        **kwargs,
     ):
 
         FileClusterStateProvider.__init__(

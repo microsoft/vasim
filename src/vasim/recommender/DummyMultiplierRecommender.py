@@ -28,7 +28,8 @@ class SimpleMultiplierRecommender(Recommender):
         # Here is an example of accessing the general config in addition to the algo specific config/user params.
         # (In this case, we didn't add smoothing_window to the algo specific config), so we use the general config as a fallback.
         self.smoothing_window = self.algo_params.get(
-            "smoothing_window", self.config.get("general_config", {}).get("window", 5)
+            "smoothing_window",
+            self.config.get("general_config", {}).get("window", 5),
         )
 
     def run(self, recorded_data):

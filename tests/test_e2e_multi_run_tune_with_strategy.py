@@ -109,7 +109,9 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         self.assertAlmostEqual(results[0][1]["sum_insufficient_cpu"], expected["sum_insufficient_cpu"], places=2)
         self.assertAlmostEqual(results[0][1]["num_insufficient_cpu"], expected["num_insufficient_cpu"], places=2)
         self.assertAlmostEqual(
-            results[0][1]["insufficient_observations_percentage"], expected["insufficient_observations_percentage"], places=2
+            results[0][1]["insufficient_observations_percentage"],
+            expected["insufficient_observations_percentage"],
+            places=2,
         )
         self.assertAlmostEqual(results[0][1]["slack_percentage"], expected["slack_percentage"], places=2)
 
@@ -179,7 +181,9 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         self.assertAlmostEqual(results[0][1]["sum_insufficient_cpu"], expected["sum_insufficient_cpu"], places=2)
         self.assertAlmostEqual(results[0][1]["num_insufficient_cpu"], expected["num_insufficient_cpu"], places=2)
         self.assertAlmostEqual(
-            results[0][1]["insufficient_observations_percentage"], expected["insufficient_observations_percentage"], places=2
+            results[0][1]["insufficient_observations_percentage"],
+            expected["insufficient_observations_percentage"],
+            places=2,
         )
         self.assertAlmostEqual(results[0][1]["slack_percentage"], expected["slack_percentage"], places=2)
 

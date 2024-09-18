@@ -18,7 +18,13 @@ from vasim.recommender.cluster_state_provider.ClusterStateProvider import (
 class SimulatedBaseClusterStateProvider(ClusterStateProvider):
     # TODO: I am not sure if this class is used? it is not tested if so.
     def __init__(
-        self, data_dir="data/performance_log", window=40, decision_file_path=None, max_cpu_limit=None, lag=None, **kwargs
+        self,
+        data_dir="data/performance_log",
+        window=40,
+        decision_file_path=None,
+        max_cpu_limit=None,
+        lag=None,
+        **kwargs,
     ):
 
         self.logger = logging.getLogger()

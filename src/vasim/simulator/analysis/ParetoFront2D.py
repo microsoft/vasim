@@ -158,7 +158,10 @@ class ParetoFront2D(ParetoFrontier):
             )
             # Now we'll add the folder name to the point, with a light gray font
             ax.annotate(
-                folder, (self.result[alpha][self.dimension_2], self.result[alpha][self.dimension_1]), fontsize=6, color="gray"
+                folder,
+                (self.result[alpha][self.dimension_2], self.result[alpha][self.dimension_1]),
+                fontsize=6,
+                color="gray",
             )
 
             # ax.annotate(alpha, (metrics['sum_insufficient_cpu'], metrics['sum_slack']))

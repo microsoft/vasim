@@ -130,7 +130,10 @@ def _create_modified_configs(
         ]
     elif strategy == "random":
         modified_configs = generate_random_configs(
-            algo_specific_params_to_tune, general_params_to_tune, predictive_params_to_tune, num_combinations
+            algo_specific_params_to_tune,
+            general_params_to_tune,
+            predictive_params_to_tune,
+            num_combinations,
         )
     # TODO: Implement other strategies, such as MLOS.
     else:
@@ -255,7 +258,12 @@ def tune_with_strategy(
 
     # Generate the modified configs based on the specified strategy
     modified_configs = _create_modified_configs(
-        baseconfig, algo_specific_params_to_tune, general_params_to_tune, predictive_params_to_tune, strategy, num_combinations
+        baseconfig,
+        algo_specific_params_to_tune,
+        general_params_to_tune,
+        predictive_params_to_tune,
+        strategy,
+        num_combinations,
     )
 
     # Initialize the pool of worker processes

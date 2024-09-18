@@ -50,7 +50,8 @@ class InMemoryRunnerSimulator:
     ):
         worker_id = create_uuid()
         target_simulation_dir = target_simulation_dir or os.path.join(
-            f"{data_dir}_simulations", f"target_{worker_id}"
+            f"{data_dir}_simulations",
+            f"target_{worker_id}",
         )  # TODO: remove hardcode
         # Create the directory if it doesn't exist
         os.makedirs(target_simulation_dir, exist_ok=True)
@@ -94,7 +95,9 @@ class InMemoryRunnerSimulator:
     def _create_cluster_state_provider(self, data_dir, config, target_simulation_dir=None):
         out_filename = f"{target_simulation_dir or data_dir}/decisions.txt"  # TODO: remove hardcode. ALSO: todo, this is csv
         return SimulatedClusterStateProviderFactory(
-            data_dir=data_dir, out_filename=out_filename, config=config
+            data_dir=data_dir,
+            out_filename=out_filename,
+            config=config,
         ).create_provider(predictive=config.prediction_config)
 
     def _get_experiment_time_range(self):
@@ -102,7 +105,9 @@ class InMemoryRunnerSimulator:
 
     def _create_infra_scaler(self):
         return SimulatedInfraScaler(
-            self.cluster_state_provider, self.experiment_start_time, self.config.general_config.get("recovery_time", 15)
+            self.cluster_state_provider,
+            self.experiment_start_time,
+            self.config.general_config.get("recovery_time", 15),
         )
 
     def _create_recommender_algorithm(self, algorithm):
