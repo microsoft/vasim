@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=64", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -29,7 +29,7 @@ maintainers = [
 ]
 
 version = "0.1.0"
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 dependencies = [
     # TODO: Remove version pinning or make it version dependent.
     "cvxpy~=1.5.2",
@@ -47,6 +47,8 @@ dependencies = [
     "autopep8",
     "flake8",
     "pytest",
+    "pytest-cov",
+    "pytest-xdist",
     "coverage",
     "pre-commit",
 ]
@@ -60,3 +62,9 @@ Issues = "https://github.com/microsoft/vasim/issues"
 # Tell setuptools where to find the package.
 [tool.setuptools]
 package-dir = {"" = "src"}
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+# parallelize tests with xdist
+# produce coverage report
+addopts = "-n auto -s -v --cov=src/ --cov-fail-under=70 --cov-report=xml"
