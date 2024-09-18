@@ -52,7 +52,7 @@ class TestSimulatedInMemoryPredictiveClusterStateProvider(unittest.TestCase):
 
         sim_inmem_p_prov = SimulatedInMemoryPredictiveClusterStateProvider(window=40, lag=10, data_dir=self.target_dir,
                                                                            decision_file_path=self.target_dir / "decisions.txt",
-                                                                           max_cpu_limit=14, granularity=1, config=self.config,
+                                                                           max_cpu_limit=14, config=self.config,
                                                                            prediction_config=self.config.prediction_config,
                                                                            general_config=self.config.general_config)
 
@@ -100,7 +100,7 @@ class TestSimulatedInMemoryPredictiveClusterStateProvider(unittest.TestCase):
 
         file_cs_prov = FileClusterStateProvider(window=40, lag=10, data_dir=self.target_dir,
                                                 decision_file_path=self.target_dir / "decisions.txt",
-                                                max_cpu_limit=14, granularity=1, config=self.config,
+                                                max_cpu_limit=14, config=self.config,
                                                 prediction_config=self.config.prediction_config,
                                                 general_config=self.config.general_config)
 

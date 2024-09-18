@@ -12,7 +12,6 @@ This project welcomes contributions and suggestions.
 
 ## Getting Started
 
-
 ### Pull requests
 
 If you are new to GitHub [here](https://help.github.com/categories/collaborating-with-issues-and-pull-requests/) is a detailed help source on getting involved with development on GitHub.
@@ -32,18 +31,36 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 
 ## Developing
 
+### Setup
+
 The simplest setup (assuming you already have Python installed) is as follows:
 
 > Note: you are encouraged to use a virtual environment with either [`conda`](https://docs.anaconda.com/miniconda/) or [`venv`](https://docs.python.org/3/library/venv.html) to avoid conflicts with other Python packages.
 
+#### `venv`
+
 ```sh
 # Clone the repo:
-git clone https://github.com/microsoft/vasim.git .
+git clone https://github.com/microsoft/vasim.git
 cd vasim
 # Create a virtual environment (venv example):
 python -m venv .venv
 # Activate the virtual environment:
 source .venv/bin/activate
+# Install the package in editable mode with dev dependencies:
+python -m pip install -e ".[dev]"
+```
+
+#### `conda`
+
+```sh
+# Clone the repo:
+git clone https://github.com/microsoft/vasim.git
+cd vasim
+# Create a virtual environment (conda example):
+conda create -n vasim python=3.10
+# Activate the virtual environment:
+conda activate vasim
 # Install the package in editable mode with dev dependencies:
 python -m pip install -e ".[dev]"
 ```
