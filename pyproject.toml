@@ -46,6 +46,8 @@ dependencies = [
 "dev" = [
     "autopep8",
     "flake8",
+    "pylint",
+    "mypy",
     "black",
     "isort",
     "pydocstringformatter",
@@ -87,3 +89,63 @@ write = true
 exit-code = true
 max-line-length = 127
 style = ["pep257", "numpydoc"]
+
+[tool.pylint.main]
+fail-on = [
+    "missing-function-docstring",
+    "unused-import",
+]
+
+# Specify a score threshold under which the program will exit with error.
+fail-under = 9.0
+
+# Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
+# number of processors available to use, and will cap the count on Windows to
+# avoid hangs.
+jobs = 0
+
+# Load some extra checkers.
+load-plugins = [
+    "pylint.extensions.bad_builtin",
+    "pylint.extensions.code_style",
+    "pylint.extensions.docparams",
+    "pylint.extensions.docstyle",
+    "pylint.extensions.for_any_all",
+    "pylint.extensions.mccabe",
+    "pylint.extensions.no_self_use",
+    "pylint.extensions.private_import",
+    "pylint.extensions.redefined_loop_name",
+    "pylint.extensions.redefined_variable_type",
+    "pylint.extensions.set_membership",
+    "pylint.extensions.typing",
+]
+
+[tool.pylint.format]
+max-line-length = 127
+
+[tool.pylint."messages control"]
+disable = [
+    "fixme",
+    "no-else-return",
+    "consider-using-assignment-expr",
+    "deprecated-typing-alias",            # disable for now - only deprecated recently
+    "docstring-first-line-empty",
+    "consider-alternative-union-syntax",  # disable for now - still supporting python 3.8
+    "missing-raises-doc",
+]
+
+[tool.pylint.string]
+check-quote-consistency = true
+check-str-concat-over-line-jumps = true
+
+[tool.mypy]
+#ignore_missing_imports = true
+warn_unused_configs = true
+warn_unused_ignores = true
+warn_unreachable = true
+warn_return_any = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+strict = true
+#allow_any_generics = true
+hide_error_codes = false
