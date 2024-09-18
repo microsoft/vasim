@@ -19,7 +19,9 @@ from vasim.simulator.ParameterTuning import tune_with_strategy
 
 class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
     """
-    This is a true run of simulator end to end. It is not a unit test.
+    This is a true run of simulator end to end.
+
+    It is not a unit test.
 
     It calls tune_with_strategy, which performs a tuning run of the simulator, trying different configurations.
     """
@@ -45,9 +47,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         cls.patcher = patcher
 
     def test_pareto2d(self):
-        """
-        This test will tune the simulator with a few parameters and then plot the results on a pareto curve.
-        """
+        """This test will tune the simulator with a few parameters and then plot the results on a pareto curve."""
         # First create some test data to tune
         config_path = f"{self.source_dir}/metadata.json"
         algo_specific_params_to_tune = {

@@ -24,6 +24,7 @@ from vasim.recommender.cluster_state_provider.ClusterStateProvider import (
 class FileClusterStateProvider(ClusterStateProvider):
     """
     This class requires a Kubernetes cluster to run.
+
     It reads data from the cluster and uses it to make decisions.
 
     It is not part of the simulator, but is used in the production environment.
@@ -47,6 +48,7 @@ class FileClusterStateProvider(ClusterStateProvider):
     ):
         """
         Parameters:
+
             data_dir (str): The directory where the csvs are stored.
             features (list): The features to use for the model. Currently always ['cpu']. TODO: memory
             window (int): Window in minutes to capture VALID data in order to evaluate PP curve
@@ -75,8 +77,8 @@ class FileClusterStateProvider(ClusterStateProvider):
 
     def get_current_cpu_limit(self):
         """
-        Returns
-        -------
+        ---
+
         cores : int
             The number of cores currently being used.
         """

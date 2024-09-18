@@ -16,7 +16,9 @@ from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
 
 class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
     """
-    This is a true run of simulator end to end. It is not a unit test.
+    This is a true run of simulator end to end.
+
+    It is not a unit test.
 
     It calls InMemoryRunnerSimulator, which performs a single run of the simulator without tuning.
     """
@@ -40,9 +42,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         cls.patcher = patcher
 
     def test_run_multiplicative_algo(self):
-        """
-        Test a single run of the simulator with the multiplicative algorithm
-        """
+        """Test a single run of the simulator with the multiplicative algorithm."""
         runner = InMemoryRunnerSimulator(self.target_dir, initial_cpu_limit=14, algorithm="multiplicative")
         assert runner.initial_cpu_limit == 14
         results = runner.run_simulation()
@@ -91,9 +91,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         self.assertAlmostEqual(results["slack_percentage"], expected["slack_percentage"], places=2)
 
     def test_run_additive_algo(self):
-        """
-        Test a single run of the simulator with the additive algorithm
-        """
+        """Test a single run of the simulator with the additive algorithm."""
         runner = InMemoryRunnerSimulator(self.target_dir, initial_cpu_limit=14, algorithm="additive")
         results = runner.run_simulation()
         assert results is not None

@@ -15,7 +15,9 @@ from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
 
 class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
     """
-    This is a true run of simulator end to end. It is not a unit test.
+    This is a true run of simulator end to end.
+
+    It is not a unit test.
 
     It calls InMemoryRunnerSimulator, which performs a single run of the simulator without tuning.
     """
@@ -36,6 +38,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
     def test_lag_parameter_10(self):
         """
         The lag parameter defines the number of minutes to wait before making a prediction.
+
         This test checks that the lag parameter is being used correctly.
 
         We often set it to 10, so we'll start with that.
@@ -95,6 +98,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
     def test_lag_parameter_5(self):
         """
         The lag parameter defines the number of minutes to wait before making a prediction.
+
         In the alt config, it is set to 5 minutes. (Usually it is 10 minutes)
         This test checks that the lag parameter is being used correctly.
         """

@@ -66,7 +66,8 @@ class SimulatedInMemoryPredictiveClusterStateProvider(SimulatedBaseClusterStateP
 
     def get_next_recorded_data(self):
         """
-        Returns the performance data inside the window and the last time in the data
+        Returns the performance data inside the window and the last time in the data.
+
         :return: performance data, end_time
         performance data: DataFrame
         end_time: Timestamp

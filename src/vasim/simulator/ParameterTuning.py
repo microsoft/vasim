@@ -29,7 +29,6 @@ It generates modified configurations based on the specified tuning strategy and 
 Finally, it returns the best configuration and its metric value.
 
 Some helper functions are also included for generating modified configurations and running the simulator with a given configuration.
-
 """
 
 
@@ -41,10 +40,7 @@ def _create_modified_configs(
     strategy: str,
     num_combinations: int,
 ) -> List[ClusterStateConfig]:
-    """
-    This is a helper function that generates modified configurations based on the specified tuning strategy.
-
-    """
+    """This is a helper function that generates modified configurations based on the specified tuning strategy."""
 
     def evaluate_config(
         algo_config_params: Dict[str, any], general_config_params: Dict[str, any], predictive_params: Dict[str, any]
@@ -104,6 +100,7 @@ def _create_modified_configs(
 def create_uuid():
     """
     This function creates a unique identifier to be used as a worker ID.
+
     We return a slightly shorter version of the uuid for manageability.
 
     It will be of the format: cfg-368079f0-9164 for example.
@@ -117,6 +114,7 @@ def create_uuid():
 def _tune_parameters(config, data_dir=None, lag=None, algorithm=None, initial_cpu_limit=None):
     """
     This is a helper function that runs the simulator with a given configuration and returns the resulting metrics.
+
     It is intended to be used with the multiprocessing.Pool.starmap method.
     It is called by the tune_with_strategy function.
     """
@@ -188,6 +186,7 @@ def tune_with_strategy(
 ):
     """
     This function is the main entry point for tuning the simulator parameters.
+
     TODO: Refactor this function, as it's a bit burried in the code.
     TODO: lag is already in the config, don't have it separately here i think.
 
@@ -205,7 +204,6 @@ def tune_with_strategy(
     - lag: The lag parameter defines the number of minutes to wait before making a prediction.
     - algorithm: The algorithm to use for the simulation. Currently, only "multiplicative" and "additive" are supported.
     - initial_cpu_limit: The initial number of cores to use for the simulation. (Ex: the number of cores before you start autoscaling)
-
     """
 
     # Load the base configuration from the specified file

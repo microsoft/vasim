@@ -18,7 +18,6 @@ class Recommender:
         Parameters:
             cluster_state_provider (ClusterStateProvider): The cluster state provider such as FileClusterStateProvider.
             save_metadata (bool): Whether to save metadata to a file. For tuning this makes tracking easier.
-
         """
 
         # For now, we are just passing the cluster_state_provider and config for logging purposes.
@@ -56,7 +55,9 @@ class Recommender:
     @abstractmethod
     def run(self, recorded_data):
         """
-        This function is not intended to be called directly. It is an example of the method that should be implemented.
+        This function is not intended to be called directly.
+
+        It is an example of the method that should be implemented.
 
         This method runs the recommender algorithm and returns the new number of cores to scale to.
 

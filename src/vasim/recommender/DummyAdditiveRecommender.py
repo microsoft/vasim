@@ -16,6 +16,7 @@ class SimpleAdditiveRecommender(Recommender):
     def __init__(self, cluster_state_provider, save_metadata=True):
         """
         Parameters:
+
             cluster_state_provider (ClusterStateProvider): The cluster state provider such as FileClusterStateProvider.
             save_metadata (bool): Whether to save metadata to a file.
         """

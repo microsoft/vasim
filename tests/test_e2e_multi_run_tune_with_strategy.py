@@ -14,7 +14,9 @@ from unittest.mock import MagicMock, patch
 from vasim.simulator.ParameterTuning import tune_with_strategy
 
 """
-This is a true run of simulator end to end. It is not a unit test.
+This is a true run of simulator end to end.
+
+It is not a unit test.
 
 It calls tune_with_strategy, which performs a tuning run of the simulator, trying different configurations.
 """
@@ -43,7 +45,8 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
 
     def test_run_tuning_grid(self):
         """
-        Now use the tuning function to test the tuning process
+        Now use the tuning function to test the tuning process.
+
         We will use the tune_with_strategy function. This function will run the simulator multiple times with
         different configurations and return the best configuration and the metrics for that configuration.
         """
@@ -114,9 +117,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         print(results)
 
     def test_run_tuning_grid_withpred(self):
-        """
-        This version provides a predictive parameter to tune as well.
-        """
+        """This version provides a predictive parameter to tune as well."""
 
         config_path = f"{self.source_dir}/metadata.json"
         general_params_to_tune = {
@@ -189,6 +190,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
     def test_run_tuning_random(self):
         """
         This version used the random strategy to tune the parameters.
+
         We won't check the results, just that the function runs without error.
         """
 

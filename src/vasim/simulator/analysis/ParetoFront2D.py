@@ -16,9 +16,7 @@ from vasim.simulator.analysis.ParetoFrontier import ParetoFrontier
 
 
 def calculate_objective(alpha, sum_slack, sum_insufficient_cpu):
-    """
-    KS: what does this do? How was this formula derived?
-    """
+    """KS: what does this do? How was this formula derived?"""
     return alpha * sum_slack + sum_insufficient_cpu
 
 
@@ -26,6 +24,7 @@ class ParetoFront2D(ParetoFrontier):
     def __init__(self, df, dimension_1="sum_slack", dimension_2="sum_insufficient_cpu", directory_to_save_files=None):
         """
         This class is used to find the Pareto frontier of a 2D space.
+
         :param df: DataFrame containing the data to be analyzed.
         :param dimension_1: The first dimension to be considered. This is the y-axis.
         :param dimension_2: The second dimension to be considered. This is the x-axis.
@@ -53,9 +52,7 @@ class ParetoFront2D(ParetoFrontier):
             result_df.to_csv(f"{self.files}/pareto_frontier_denominator_{self.denominator}2d.csv")
 
     def get_best_config_for_alpha(self, alpha):
-        """
-        TODO: KS: what does this do?
-        """
+        """TODO: KS: what does this do?"""
         sum_slack = self.df[self.dimension_1]
         sum_insufficient_cpu = self.df[self.dimension_2]
         objectives = calculate_objective(alpha, sum_slack, sum_insufficient_cpu)
@@ -133,9 +130,7 @@ class ParetoFront2D(ParetoFrontier):
         plt.savefig(f"{plot_filename}.pdf")
 
     def plot_scatter_with_pareto(self):
-        """
-        If no path was provided (self.files), the plot will be displayed only.
-        """
+        """If no path was provided (self.files), the plot will be displayed only."""
         # colors = ['blue' if val else 'green' for val in df['predictive']]
 
         x_values = self.df[self.dimension_2] / self.denominator

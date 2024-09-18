@@ -162,9 +162,7 @@ class InMemoryRunnerSimulator:
         return metrics
 
     def run_simulation(self):
-        """
-        Run the simulation to completion and return the final metrics.
-        """
+        """Run the simulation to completion and return the final metrics."""
 
         print(f"Starting simulation at {self.experiment_start_time} and continuing till {self.experiment_end_time}")
         print(f"Setting number of cores to {self.initial_cpu_limit}")
@@ -185,9 +183,7 @@ class InMemoryRunnerSimulator:
         return self.get_metrics()
 
     def run_simulation_with_progress(self):
-        """
-        Run the simulation, yielding progress updates as the simulation progresses, followed by the final result.
-        """
+        """Run the simulation, yielding progress updates as the simulation progresses, followed by the final result."""
         print(f"Starting simulation at {self.experiment_start_time} and continuing till {self.experiment_end_time}")
         print(f"Setting number of cores to {self.initial_cpu_limit}")
         self.cluster_state_provider.set_cpu_limit(self.initial_cpu_limit)
@@ -212,9 +208,7 @@ class InMemoryRunnerSimulator:
         self.cluster_state_provider.flush_metrics_data(f"{self.target_simulation_dir}/perf_event_log.csv")
 
     def _execute_simulation_step(self):
-        """
-        This function holds the core simulation logic shared by both run_simulation and run_simulation_with_progress.
-        """
+        """This function holds the core simulation logic shared by both run_simulation and run_simulation_with_progress."""
         # Get the next window of data to simulate
         recorded_data, latest_time = self.cluster_state_provider.get_next_recorded_data()
 
@@ -240,9 +234,7 @@ class InMemoryRunnerSimulator:
 
 
 def main():
-    """
-    TODO: Do we want to remove main here? It might confuse users, but might be useful for testing.
-    """
+    """TODO: Do we want to remove main here? It might confuse users, but might be useful for testing."""
     parser = argparse.ArgumentParser(description="InMemoryRunnerSimulator Command Line Interface")
     parser.add_argument(
         "--algorithm",

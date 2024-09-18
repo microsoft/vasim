@@ -28,9 +28,9 @@ from vasim.simulator.SimulatedInMemoryPredictiveClusterStateProvider import (
 
 class TestSimulatedInMemoryPredictiveClusterStateProvider(unittest.TestCase):
     """
-    Although this is testing the PredictiveFileClusterStateProvider, it is using the SimulatedInMemoryPredictiveClusterStateProvider
-    There is no prediction for this because the datasize is too small to trigger the prediction.
+    Although this is testing the PredictiveFileClusterStateProvider, it is using the SimulatedInMemoryPredictiveClusterStateProvider.
 
+    There is no prediction for this because the datasize is too small to trigger the prediction.
     """
 
     def setUp(self):
@@ -56,9 +56,7 @@ class TestSimulatedInMemoryPredictiveClusterStateProvider(unittest.TestCase):
         self.config = ClusterStateConfig(filename=self.source_dir / "metadata.json")
 
     def test_read_metrics_data(self):
-        """
-        Test the read_metrics_data method, which is the window of data to process next
-        """
+        """Test the read_metrics_data method, which is the window of data to process next."""
 
         sim_inmem_p_prov = SimulatedInMemoryPredictiveClusterStateProvider(
             window=40,
@@ -112,9 +110,7 @@ class TestSimulatedInMemoryPredictiveClusterStateProvider(unittest.TestCase):
         self.assertEqual(result["cpu"].values.tolist(), expected_result["cpu"].values.tolist())
 
     def test_get_next_recorded_data(self):
-        """
-        Test the read_metrics_data method, which is the window of data to process next
-        """
+        """Test the read_metrics_data method, which is the window of data to process next."""
 
         file_cs_prov = FileClusterStateProvider(
             window=40,

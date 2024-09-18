@@ -11,13 +11,14 @@ from pathlib import Path
 
 class SimulatedInfraScaler:
     """
-    In any real system, performing the actual scaling introduces a big delay. This is because the system needs to
+    In any real system, performing the actual scaling introduces a big delay.
+
+    This is because the system needs to
     provision the new resources, and then the new resources need to be warmed up. This is often a slow process, and
     failing to replicate it makes the simulator inaccurate. Therefore, we simulate the scaling process by introducing a
     recovery time. This recovery time is the time it takes for the system to recover after a scaling event. During
     this time, the system is not allowed to scale again. This is a very important aspect of the simulation, as it
     ensures that the system does not scale too frequently, which can be very expensive in a real system.
-
     """
 
     def __init__(self, cluster_state_provider, start_timestamp, recovery_time):
@@ -38,6 +39,7 @@ class SimulatedInfraScaler:
     def scale(self, new_limit, time_now):
         """
         This function scales the simulated cluster by the decision (amount_to_scale_by) amount.
+
         It will only scale if the recovery time has passed
         since the last scaling event. It will also not scale if the decision is 0, only log.
 
@@ -50,7 +52,6 @@ class SimulatedInfraScaler:
 
         :param decision: The number of cores to add or subtract
         :param time_now: The current time
-
         """
         minutes = time_now.minute
         current_cpu_limit = self.cluster_state_provider.get_current_cpu_limit()
