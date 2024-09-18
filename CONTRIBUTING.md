@@ -17,7 +17,7 @@ This project welcomes contributions and suggestions.
 If you are new to GitHub [here](https://help.github.com/categories/collaborating-with-issues-and-pull-requests/) is a detailed help source on getting involved with development on GitHub.
 
 As a first time contributor, you will be invited to sign the Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com. You will only need to do this once across all repos using our CLA.
+the rights to use your contribution. For details, visit <https://cla.opensource.microsoft.com>. You will only need to do this once across all repos using our CLA.
 
 Your pull request needs to reference a filed issue. Please fill in the template that is populated for the pull request. Only pull requests addressing small typos can have no issues associated with them.
 
@@ -67,9 +67,9 @@ python -m pip install -e ".[dev]"
 
 ### Tools
 
-#### Pre-commit
+#### pre-commit
 
-This project uses [pre-commit](https://pre-commit.com/) hooks.
+This project uses [pre-commit](https://pre-commit.com/) hooks to enforce good coding practices via linters and formatters.
 
 To setup `pre-commit` to your `git` hook do the following:
 
@@ -78,7 +78,7 @@ python -m pip install pre-commit
 pre-commit install
 ```
 
-And before you commit, you can run it like so
+And before you commit, you can run it like this:
 
 ```sh
 pre-commit run --all-files
@@ -99,22 +99,17 @@ Flake8............................Failed
 - exit code: 1
 ```
 
+See [`pre-commit-config.yaml`](./.pre-commit-config.yaml) for the complete list of checks, most of which use [`pyproject.toml`](./pyproject.toml) for the configuration.
+
 #### Naming Convention
 
 Scripts should be named in `snake_case` and classes in `CamelCase`.
 
 #### Formatting
 
-We generally use all pep8 checks, with the exception of line length 127.
+We generally use all [pep8](https://peps.python.org/pep-0008/) checks, with the exception of line length 127.
 
-To do a quick check-up before commit, try:
-
-```sh
-black .
-isort .
-flake8 . --count  --max-complexity=10 --max-line-length=127 --statistics
-pylint src/ tests/
-```
+Tools like `black`, `isort`, `flake8`, and others are used to enforce this and are invoked as a part of the [`pre-commit`](#pre-commit) hooks mentioned above.
 
 #### Coverage
 
@@ -128,3 +123,19 @@ To run all unit tests:
 ```sh
 pytest
 ```
+
+### Maintainers
+
+#### Release Publishing Steps
+
+1. Create a PR to update the version in `pyproject.toml` to the new `M.m.p` version.
+2. Once merged to `main`, create a tag with the new version:
+
+    ```sh
+    git checkout main
+    git pull
+    git tag -a vM.m.p -m "Release vM.m.p"
+    git push --tags
+    ```
+
+3. Create a release on GitHub with the tag and the release notes.

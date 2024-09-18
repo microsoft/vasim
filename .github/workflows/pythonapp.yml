@@ -43,48 +43,27 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Formatters check
-      if: ${{ matrix.python-version == env.MAIN_PYTHON_VERS }}
-      run: |
-        python -m pip install black isort pydocstringformatter
-        black --check .
-        isort --check .
-        pydocstringformatter .
-        git diff --exit-code
-    - name: Lint with flake8
+    - name: Update pip
       run: |
         python -m pip install --upgrade pip
-        python -m pip install flake8
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # The GitHub editor is 127 chars wide
-        flake8 . --count  --max-complexity=10 --max-line-length=127 --statistics
-    - name: Lint with pylint
+
+    - name: Check formating and linting with pre-commit hooks
+      if: ${{ matrix.python-version == env.MAIN_PYTHON_VERS }}
       run: |
-        python -m pip install pylint
-        pylint
-    - name: Apply LICENSE
-      run: |
-        python -m pip install licenseheaders
-        licenseheaders -t .mit-license.tmpl -E .py -f
-        CHANGED_FILES=$(git diff --name-only .)
-        if [ -n "$CHANGED_FILES" ]; then
-          echo "Error: The following files are missing the required license header:"
-          echo "$CHANGED_FILES"
-          exit -1
-        else
-          echo "All files have the required license headers."
-        fi
-    - name: Install basic dependencies # TODO: separate out "test" dependencies in setup.py
+        python -m pip install pre-commit
+        pre-commit run --all-files
+        git diff --exit-code
+
+    - name: Install basic and test dependencies
       run: |
         python -m pip install -e .[dev]
-        python -m pip install jupyter
     - name: Tests with coverage reporting
       run : |
         # Run tests in parallel with coverage (configured via pyproject.toml)
         pytest
     - name: Test notebooks
       run: |
+        python -m pip install jupyter
         find . -name '*.ipynb' -print0 | xargs -0 -n1 -P0 python -m jupyter execute
         if [ $? != 0 ]; then
           echo "ERROR: Notebooks execution failed." >&2
@@ -93,11 +72,29 @@ jobs:
           echo "Notebooks executed successfully."
         fi
     - name: Upload coverage to Codecov
+      if: ${{ matrix.python-version == env.MAIN_PYTHON_VERS }}
       uses: codecov/codecov-action@v4
       with:
         file: ./coverage.xml
         flags: unittests
         token: ${{ secrets.CODECOV_TOKEN }}
+
+    - name: Test build whl
+      run: |
+        python -m pip install build
+        python -m build
+    - name: Test pip install whl
+      run: |
+        python -m venv test-install-venv
+        source test-install-venv/bin/activate
+        whl_file=$(ls -1 dist/vasim-*.whl)
+        test $(echo "$whl_file" | wc -l) -eq 1 || { echo "Error: Incorrect number of wheel files found: '$whl_file'"; exit 1; }
+        python -m pip install "$whl_file[dev]"
+        # Run a single basic test that uses the package modules.
+        grep -q '^from vasim.recommender' tests/test_metrics_data_window.py
+        grep -q '^from vasim.simulator' tests/test_metrics_data_window.py
+        pytest --no-cov -n0 tests/test_metrics_data_window.py
+        deactivate
 
   # TODO: set this up later too. It needs to be in a separate block below due to the permissions
   # page-build:
