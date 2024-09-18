@@ -6,7 +6,6 @@
         "recovery_time": 5,
         "window": 20,
         "lag": 10,
-        "granularity": 1,
         "max_cpu_limit": 25,
         "min_cpu_limit": 2.0
     },
