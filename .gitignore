@@ -158,3 +158,5 @@ cython_debug/
 # MAC
 **.DS_STORE
 
+# git config dir (for ripgrep)
+.git/
