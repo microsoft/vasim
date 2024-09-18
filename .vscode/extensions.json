@@ -1,5 +1,6 @@
 {
     "recommendations": [
+        "davidanson.vscode-markdownlint",
         "donjayamanne.python-environment-manager",
         "ms-python.black-formatter",
         "ms-python.debugpy",
