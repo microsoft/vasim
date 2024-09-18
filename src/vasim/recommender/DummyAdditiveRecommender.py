@@ -6,7 +6,9 @@
 # --------------------------------------------------------------------------
 #
 import logging
+
 import numpy as np
+
 from vasim.recommender.Recommender import Recommender
 
 
@@ -14,6 +16,7 @@ class SimpleAdditiveRecommender(Recommender):
     def __init__(self, cluster_state_provider, save_metadata=True):
         """
         Parameters:
+
             cluster_state_provider (ClusterStateProvider): The cluster state provider such as FileClusterStateProvider.
             save_metadata (bool): Whether to save metadata to a file.
         """
@@ -36,7 +39,7 @@ class SimpleAdditiveRecommender(Recommender):
 
         # Calculate the smoothed maximum value. This will look at all the cores in the
         # performance data window and take the maximum value.
-        smoothed_max = recorded_data['cpu'].to_numpy().max()
+        smoothed_max = recorded_data["cpu"].to_numpy().max()
 
         # Add the addend to the smoothed maximum to get the new number of cores
         # The Addend provides a buffer to the maximum value.

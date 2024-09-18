@@ -6,16 +6,19 @@
 # --------------------------------------------------------------------------
 #
 import os
-import unittest
 import shutil
-from unittest.mock import patch, MagicMock
-from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
+import unittest
 from pathlib import Path
+from unittest.mock import MagicMock, patch
+
+from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
 
 
 class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
     """
-    This is a true run of simulator end to end. It is not a unit test.
+    This is a true run of simulator end to end.
+
+    It is not a unit test.
 
     It calls InMemoryRunnerSimulator, which performs a single run of the simulator without tuning.
     """
@@ -34,14 +37,12 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        patcher = patch('builtins.print', MagicMock())  # Mock the print function globally
+        patcher = patch("builtins.print", MagicMock())  # Mock the print function globally
         patcher.start()
         cls.patcher = patcher
 
     def test_run_multiplicative_algo(self):
-        """
-        Test a single run of the simulator with the multiplicative algorithm
-        """
+        """Test a single run of the simulator with the multiplicative algorithm."""
         runner = InMemoryRunnerSimulator(self.target_dir, initial_cpu_limit=14, algorithm="multiplicative")
         assert runner.initial_cpu_limit == 14
         results = runner.run_simulation()
@@ -62,11 +63,19 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         # With the multiplicative algorithm, we expect the average slack to be large because the multiplier is 2, mean
         # the desired CPU usage is twice the actual CPU usage.
 
-        expected = {"average_slack": 9.255356800676894, "average_insufficient_cpu": 8.710042679209252e-06,
-                    "sum_slack": 106260.75142857143, "sum_insufficient_cpu": 0.10000000000000142, "num_scalings": 466,
-                    "num_insufficient_cpu": 1, "insufficient_observations_percentage": 0.008710042679209128,
-                    "slack_percentage": 51.50325900419567, "median_insufficient_cpu": 0.0,
-                    "median_slack": 9.845714285714289, "max_slack": 16.759999999999998}
+        expected = {
+            "average_slack": 9.255356800676894,
+            "average_insufficient_cpu": 8.710042679209252e-06,
+            "sum_slack": 106260.75142857143,
+            "sum_insufficient_cpu": 0.10000000000000142,
+            "num_scalings": 466,
+            "num_insufficient_cpu": 1,
+            "insufficient_observations_percentage": 0.008710042679209128,
+            "slack_percentage": 51.50325900419567,
+            "median_insufficient_cpu": 0.0,
+            "median_slack": 9.845714285714289,
+            "max_slack": 16.759999999999998,
+        }
         self.assertAlmostEqual(results["average_slack"], expected["average_slack"], places=2)
         self.assertAlmostEqual(results["median_slack"], expected["median_slack"], places=2)
         self.assertAlmostEqual(results["sum_slack"], expected["sum_slack"], places=2)
@@ -76,14 +85,15 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         self.assertAlmostEqual(results["median_insufficient_cpu"], expected["median_insufficient_cpu"], places=2)
         self.assertAlmostEqual(results["sum_insufficient_cpu"], expected["sum_insufficient_cpu"], places=2)
         self.assertAlmostEqual(results["num_insufficient_cpu"], expected["num_insufficient_cpu"], places=2)
-        self.assertAlmostEqual(results["insufficient_observations_percentage"],
-                               expected["insufficient_observations_percentage"], places=2)
+        self.assertAlmostEqual(
+            results["insufficient_observations_percentage"],
+            expected["insufficient_observations_percentage"],
+            places=2,
+        )
         self.assertAlmostEqual(results["slack_percentage"], expected["slack_percentage"], places=2)
 
     def test_run_additive_algo(self):
-        """
-        Test a single run of the simulator with the additive algorithm
-        """
+        """Test a single run of the simulator with the additive algorithm."""
         runner = InMemoryRunnerSimulator(self.target_dir, initial_cpu_limit=14, algorithm="additive")
         results = runner.run_simulation()
         assert results is not None
@@ -111,7 +121,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
             "slack_percentage": 23.19009122417309,
             "median_insufficient_cpu": 0.0,
             "median_slack": 2.539999999999999,
-            "max_slack": 14.4
+            "max_slack": 14.4,
         }
 
         # We expect the average slack to be between 2 and 3, because the addend is 2, meaning we want to keep
@@ -129,8 +139,11 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         self.assertAlmostEqual(results["median_insufficient_cpu"], expected["median_insufficient_cpu"], places=2)
         self.assertAlmostEqual(results["sum_insufficient_cpu"], expected["sum_insufficient_cpu"], places=2)
         self.assertAlmostEqual(results["num_insufficient_cpu"], expected["num_insufficient_cpu"], places=2)
-        self.assertAlmostEqual(results["insufficient_observations_percentage"],
-                               expected["insufficient_observations_percentage"], places=2)
+        self.assertAlmostEqual(
+            results["insufficient_observations_percentage"],
+            expected["insufficient_observations_percentage"],
+            places=2,
+        )
         self.assertAlmostEqual(results["slack_percentage"], expected["slack_percentage"], places=2)
 
     def tearDown(self):

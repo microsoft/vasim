@@ -47,6 +47,9 @@ dependencies = [
     "autopep8",
     "flake8",
     "pylint",
+    "black",
+    "isort",
+    "pydocstringformatter",
     "pytest",
     "pytest-cov",
     "pytest-xdist",
@@ -63,6 +66,22 @@ Issues = "https://github.com/microsoft/vasim/issues"
 # Tell setuptools where to find the package.
 [tool.setuptools]
 package-dir = {"" = "src"}
+
+[tool.black]
+line-length = 127
+target-version = ["py39", "py310"]
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+py_version = 310
+src_paths = ["src", "tests"]
+
+[tool.pydocstringformatter]
+write = true
+exit-code = true
+max-line-length = 127
+style = ["pep257", "numpydoc"]
 
 [tool.pytest.ini_options]
 minversion = "6.0"

@@ -5,8 +5,9 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
-import unittest
 import time
+import unittest
+
 from vasim.recommender.forecasting.utils.helpers import timeit
 
 
@@ -48,5 +49,5 @@ class TestTimeitDecorator(unittest.TestCase):
         self.assertEqual(result, 5)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

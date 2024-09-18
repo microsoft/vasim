@@ -5,10 +5,18 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
-from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
-from vasim.simulator.SimulatedBaseClusterStateProvider import SimulatedBaseClusterStateProvider
-from vasim.simulator.SimulatedInMemoryClusterStateProvider import SimulatedInMemoryClusterStateProvider
-from vasim.simulator.SimulatedInMemoryPredictiveClusterStateProvider import SimulatedInMemoryPredictiveClusterStateProvider
+from vasim.recommender.cluster_state_provider.ClusterStateConfig import (
+    ClusterStateConfig,
+)
+from vasim.simulator.SimulatedBaseClusterStateProvider import (
+    SimulatedBaseClusterStateProvider,
+)
+from vasim.simulator.SimulatedInMemoryClusterStateProvider import (
+    SimulatedInMemoryClusterStateProvider,
+)
+from vasim.simulator.SimulatedInMemoryPredictiveClusterStateProvider import (
+    SimulatedInMemoryPredictiveClusterStateProvider,
+)
 
 
 class SimulatedClusterStateProviderFactory:
@@ -25,20 +33,20 @@ class SimulatedClusterStateProviderFactory:
             return SimulatedInMemoryPredictiveClusterStateProvider(
                 data_dir=self.data_dir,
                 prediction_config=self.prediction_config,
-                max_cpu_limit=self.config.general_config['max_cpu_limit'],
+                max_cpu_limit=self.config.general_config["max_cpu_limit"],
                 decision_file_path=self.out_filename,
-                lag=self.config.general_config['lag'],
-                window=self.config.general_config['window'],
-                min_cpu_limit=self.config.general_config['min_cpu_limit'],
-                config=self.config
+                lag=self.config.general_config["lag"],
+                window=self.config.general_config["window"],
+                min_cpu_limit=self.config.general_config["min_cpu_limit"],
+                config=self.config,
             )
         else:
             return SimulatedInMemoryClusterStateProvider(
                 data_dir=self.data_dir,
-                max_cpu_limit=self.config.general_config['max_cpu_limit'],
+                max_cpu_limit=self.config.general_config["max_cpu_limit"],
                 decision_file_path=self.out_filename,
-                lag=self.config.general_config['lag'],
-                window=self.config.general_config['window'],
-                min_cpu_limit=self.config.general_config['min_cpu_limit'],
-                config=self.config
+                lag=self.config.general_config["lag"],
+                window=self.config.general_config["window"],
+                min_cpu_limit=self.config.general_config["min_cpu_limit"],
+                config=self.config,
             )
