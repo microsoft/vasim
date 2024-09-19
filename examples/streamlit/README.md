@@ -24,18 +24,24 @@ This is a Streamlit-based application for visualizing, simulating, and tuning au
 ## Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/microsoft/vasim.git
    cd vasim
    ```
+
 2. Install dependencies
-   ```
+
+   ```sh
    pip install .
-   pip install examples/streamlit/requirements.txt 
+   pip install examples/streamlit/requirements.txt
    ```
 
-3. Run. It will start your web app and output link to access via browser (e.g. Local URL: http://localhost:8501)
+3. Run. It will start your web app and output link to access via browser
+   <!-- markdown-link-check-disable -->
+   (e.g. Local URL: http://localhost:8501)
+   <!-- markdown-link-check-enable -->
 
-   ```
+   ```sh
    streamlit run examples/streamlit/web_demo.py
    ```
