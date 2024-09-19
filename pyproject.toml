@@ -47,6 +47,7 @@ dependencies = [
     "flake8",
     "pylint",
     "mypy",
+        "pandas-stubs",
     "black",
     "isort",
     "pydocstringformatter",
