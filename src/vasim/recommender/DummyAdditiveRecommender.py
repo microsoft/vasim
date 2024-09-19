@@ -5,11 +5,11 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
-
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
 
+from vasim.recommender.cluster_state_provider import ClusterStateProvider
 from vasim.recommender.Recommender import Recommender
 
 
@@ -18,7 +18,7 @@ class SimpleAdditiveRecommender(Recommender):
 
     # pylint: disable=too-few-public-methods
 
-    def __init__(self, cluster_state_provider, save_metadata=True) -> None:
+    def __init__(self, cluster_state_provider: ClusterStateProvider, save_metadata: bool = True) -> None:
         """
         Parameters:
 

@@ -9,6 +9,7 @@ import logging
 import os
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Optional
 
 import pandas as pd
 
@@ -74,7 +75,7 @@ class FileClusterStateProvider(ClusterStateProvider):
         self.decision_file_path = decision_file_path or "data/decisions.txt"
         self.save_metadata = save_metadata
 
-    def get_current_cpu_limit(self):
+    def get_current_cpu_limit(self) -> Optional[int]:
         """
         ---
 
