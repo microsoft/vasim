@@ -16,6 +16,8 @@ from vasim.recommender.cluster_state_provider.ClusterStateProvider import (
 
 
 class SimulatedBaseClusterStateProvider(ClusterStateProvider):
+    # pylint: disable=too-many-instance-attributes
+
     # TODO: I am not sure if this class is used? it is not tested if so.
     def __init__(
         self,
@@ -26,6 +28,7 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         lag=None,
         **kwargs,
     ):
+        # pylint: disable=too-many-arguments
 
         self.logger = logging.getLogger()
         self.logger.info("SimulatedBaseClusterStateProvider init")
@@ -43,9 +46,8 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         # Read all data from file
         # TODO: This is a temporary solution. We will need to read data in chunks
         csv_paths = list(self.data_dir.glob("**/*.csv"))
-        if csv_paths == []:
-            self.logger.error(f"Error reading csvs from {self.data_dir}. Your csv_paths are empty.")
-
+        if not csv_paths:
+            self.logger.error("Error reading csvs from %s. Your csv_paths are empty.", self.data_dir)
             print("Error reading csvs")
             raise FileNotFoundError(f"Error reading csvs from {self.data_dir}. Your csv_paths are empty.")
 
@@ -61,6 +63,9 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         self.recorded_data.set_index("timeindex", inplace=True)
         self.current_time = self.start_time
         self.last_scaling_time = self.start_time
+
+    def get_next_recorded_data(self):
+        raise NotImplementedError()
 
     def set_cpu_limit(self, new_cpu_limit):
         if new_cpu_limit != self.curr_cpu_limit:
@@ -85,14 +90,17 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         custom_header = "TIMESTAMP,CPU_USAGE_ACTUAL"
 
         # Open the file for writing
-        with open(filename, "w") as file:
+        with open(filename, "w", encoding="utf-8") as file:
             # Write the custom header as the first line
             file.write(custom_header + "\n")
 
             # Use pandas to write the DataFrame data without a header
             self.recorded_data.to_csv(file, index=False, date_format="%Y.%m.%d-%H:%M:%S:%f", header=False)
 
-    def get_last_decision_time(self, recorded_data):
+    def get_last_decision_time(
+        self,
+        recorded_data,  # pylint: disable=unused-argument
+    ):
         # check is redundant, but we keep it for now. This will speed up the simulation
         return pd.Timestamp(self.current_time) - pd.Timedelta(minutes=self.lag)
 

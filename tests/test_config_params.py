@@ -5,9 +5,12 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+import csv
+import json
 import os
 import shutil
 import unittest
+from datetime import datetime
 from pathlib import Path
 
 from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
@@ -63,11 +66,9 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         # So we expect the first decision to be made at 10 minutes
         # and subsequent decisions to be made every 10 minutes. Let's open the decisions.txt file
         # and compare the times to the expected times from the csv.
-        with open(os.path.join(sim_dir, "decisions.txt"), "r") as f:
+        with open(os.path.join(sim_dir, "decisions.txt"), "r", encoding="utf-8") as f:
             # TODO rename decisions.txt to be csv. It's not a txt file.
-            # We'll read it as a csv file. so
-            import csv
-
+            # We'll read it as a csv file.
             reader = csv.reader(f)
             next(reader)  # skip the header
             # We'll look at the first column of lines 1 and 2, and use a  time diff
@@ -76,16 +77,12 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
             second_time = next(reader)[0]
             third_time = next(reader)[0]
             # We'll convert the times to datetime objects
-            from datetime import datetime
-
             first_time = datetime.strptime(first_time, "%Y-%m-%d %H:%M:%S")
             second_time = datetime.strptime(second_time, "%Y-%m-%d %H:%M:%S")
             # We'll calculate the difference in minutes
             diff = (second_time - first_time).total_seconds() / 60
             # open the metadata file to get the lag parameter
-            with open(os.path.join(sim_dir, "metadata.json"), "r") as f:
-                import json
-
+            with open(os.path.join(sim_dir, "metadata.json"), "r", encoding="utf-8") as f:
                 metadata = json.load(f)
                 lag_read_in = metadata["general_config"]["lag"]
                 assert lag_read_in == 10, f"Expected the lag parameter to be 5, but got {lag_read_in}"
@@ -127,11 +124,9 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         # So we expect the first decision to be made at 5 minutes
         # and subsequent decisions to be made every 5 minutes. Let's open the decisions.txt file
         # and compare the times to the expected times from the csv.
-        with open(os.path.join(sim_dir, "decisions.txt"), "r") as f:
+        with open(os.path.join(sim_dir, "decisions.txt"), "r", encoding="utf-8") as f:
             # TODO rename decisions.txt to be csv. It's not a txt file.
-            # We'll read it as a csv file. so
-            import csv
-
+            # We'll read it as a csv file.
             reader = csv.reader(f)
             next(reader)  # skip the header
             # We'll look at the first column of lines 1 and 2, and use a  time diff
@@ -140,16 +135,12 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
             second_time = next(reader)[0]
             third_time = next(reader)[0]
             # We'll convert the times to datetime objects
-            from datetime import datetime
-
             first_time = datetime.strptime(first_time, "%Y-%m-%d %H:%M:%S")
             second_time = datetime.strptime(second_time, "%Y-%m-%d %H:%M:%S")
             # We'll calculate the difference in minutes
             diff = (second_time - first_time).total_seconds() / 60
             # open the metadata file to get the lag parameter
-            with open(os.path.join(sim_dir, "metadata.json"), "r") as f:
-                import json
-
+            with open(os.path.join(sim_dir, "metadata.json"), "r", encoding="utf-8") as f:
                 metadata = json.load(f)
                 lag_read_in = metadata["general_config"]["lag"]
                 assert lag_read_in == 5, f"Expected the lag parameter to be 5, but got {lag_read_in}"

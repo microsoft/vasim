@@ -9,7 +9,6 @@ import argparse
 import json
 import logging
 import os
-import uuid
 from pathlib import Path
 
 import numpy as np
@@ -38,6 +37,8 @@ class InMemoryRunnerSimulator:
     It contains the run method that simulates the cluster state and runs the recommender algorithm.
     """
 
+    # pylint: disable=too-many-instance-attributes
+
     def __init__(
         self,
         data_dir,
@@ -48,6 +49,7 @@ class InMemoryRunnerSimulator:
         target_simulation_dir=None,
         if_resample=True,
     ):
+        # pylint: disable=too-many-arguments
         worker_id = create_uuid()
         target_simulation_dir = target_simulation_dir or os.path.join(
             f"{data_dir}_simulations",
@@ -75,7 +77,8 @@ class InMemoryRunnerSimulator:
 
         self.sleep_interval_minutes = self.config.general_config["lag"]
 
-    def _setup_logger(self, data_dir):
+    @staticmethod
+    def _setup_logger(data_dir):
         logger = logging.getLogger()
         logger.setLevel(logging.ERROR)
 
@@ -89,10 +92,12 @@ class InMemoryRunnerSimulator:
 
         return logger
 
-    def _load_config(self, config_path):
+    @staticmethod
+    def _load_config(config_path):
         return ClusterStateConfig(filename=config_path)
 
-    def _create_cluster_state_provider(self, data_dir, config, target_simulation_dir=None):
+    @staticmethod
+    def _create_cluster_state_provider(data_dir, config, target_simulation_dir=None):
         out_filename = f"{target_simulation_dir or data_dir}/decisions.txt"  # TODO: remove hardcode. ALSO: todo, this is csv
         return SimulatedClusterStateProviderFactory(
             data_dir=data_dir,
@@ -120,22 +125,23 @@ class InMemoryRunnerSimulator:
         else:
             raise ValueError(f"Unknown algorithm: {algorithm}")
 
-    def _initialize_output_file(self, data_dir):
+    @staticmethod
+    def _initialize_output_file(data_dir):
         out_filename = f"{data_dir}/decisions.txt"
         out_file = Path(out_filename)
 
         if not out_file.exists():
-            f = open(out_file, "a")
-            f.write("{},{},{}\n".format("LATEST_TIME", "CURR_LIMIT", "NEW_LIMIT"))
+            f = open(out_file, "a", encoding="utf-8")
+            f.write("LATEST_TIME,CURR_LIMIT,NEW_LIMIT\n")
             f.flush()
         else:
-            f = open(out_file, "a")
+            f = open(out_file, "a", encoding="utf-8")
 
         return f
 
     def output_decision(self, latest_time, current_limit, new_limit):
         if latest_time is not None:
-            to_write = "{},{},{}\n".format(latest_time, current_limit, new_limit)
+            to_write = f"{latest_time},{current_limit},{new_limit}\n"
             self.out_file.write(to_write)
             self.out_file.flush()
         else:
@@ -150,8 +156,8 @@ class InMemoryRunnerSimulator:
                 metrics[key] = int(value)
 
         #        save metrics to file
-        if save_to_file and metrics != {}:
-            with open(f"{self.target_simulation_dir}/calc_metrics.json", "w") as f:
+        if save_to_file and metrics:
+            with open(f"{self.target_simulation_dir}/calc_metrics.json", "w", encoding="utf-8") as f:
                 json.dump(metrics, f)
             self.cluster_state_provider.config.to_json(f"{self.target_simulation_dir}/metadata.json")
             plot_cpu_usage_and_new_limit_plotnine(

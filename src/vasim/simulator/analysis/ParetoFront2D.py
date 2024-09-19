@@ -6,7 +6,6 @@
 # --------------------------------------------------------------------------
 #
 import random
-import time
 
 import numpy as np
 import pandas as pd
@@ -21,6 +20,7 @@ def calculate_objective(alpha, sum_slack, sum_insufficient_cpu):
 
 
 class ParetoFront2D(ParetoFrontier):
+    # pylint: disable=too-many-instance-attributes
     def __init__(self, df, dimension_1="sum_slack", dimension_2="sum_insufficient_cpu", directory_to_save_files=None):
         """
         This class is used to find the Pareto frontier of a 2D space.
@@ -40,7 +40,7 @@ class ParetoFront2D(ParetoFrontier):
         self.denominator = 1
         self.files = directory_to_save_files
         # TODO: I think the 500 needs to be a function of the number of configurations (size of df)
-        for x_ in range(500):
+        for _ in range(500):
             alpha = np.exp(random.uniform(-50, 50))
             best_config = self.get_best_config_for_alpha(alpha)
             self.result[alpha] = best_config
@@ -90,7 +90,7 @@ class ParetoFront2D(ParetoFrontier):
         closest_combination = None
         closest_distance = float("inf")
 
-        for index, row in self.workload_run_metrics.iterrows():
+        for _index, row in self.workload_run_metrics.iterrows():
             dimension_1 = row[self.dimension_1]
             dimension_2 = row[self.dimension_2]
             folder = row["folder"]
@@ -112,7 +112,7 @@ class ParetoFront2D(ParetoFrontier):
         return closest_combination
 
     def plot_scatter_frontier(self, plot_filename="pareto_frontier"):
-        fig, ax = plt.subplots()
+        _fig, ax = plt.subplots()
         for alpha in self.alphas:
             ax.scatter(
                 self.result[alpha][self.dimension_2] / self.denominator,
@@ -165,7 +165,13 @@ class ParetoFront2D(ParetoFrontier):
             )
 
             # ax.annotate(alpha, (metrics['sum_insufficient_cpu'], metrics['sum_slack']))
-            # self.plot_folders.append((self.result[alpha]['folder'], self.result[alpha][self.dimension_1], self.result[alpha][self.dimension_2]))
+            # self.plot_folders.append(
+            #    (
+            #        self.result[alpha]["folder"],
+            #        self.result[alpha][self.dimension_1],
+            #        self.result[alpha][self.dimension_2],
+            #    )
+            # )
 
         # Now plot the point closest to (0, 0)
         closest_combination = self.find_closest_to_zero()
