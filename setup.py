@@ -12,8 +12,11 @@ import re
 
 from setuptools import setup
 
+# Adjust this version number to match the current release.
+# See maintainers notes in CONTRIBUTING.md for details.
+# Note: the "-dev" suffix is used to indicate a development version for local
+# testing and should remain (it will be stripped off for the release version).
 VERSION = "0.1.2-dev"
-version = f"v{VERSION.replace('-dev', '')}"
 
 
 # A simple routine to read and adjust the README.md for this module into a format
@@ -40,7 +43,8 @@ def _get_long_desc_from_readme(base_url: str) -> dict:
         }
 
 
+version_tag = f"v{VERSION.replace('-dev', '')}"  # alternatively: "main"
 setup(
     version=VERSION,
-    **_get_long_desc_from_readme(f"https://github.com/microsoft/vasim/tree/{version}/"),
+    **_get_long_desc_from_readme(f"https://github.com/microsoft/vasim/tree/{version_tag}/"),
 )
