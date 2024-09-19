@@ -39,6 +39,7 @@ def create_pareto_curve_from_folder(original_data, tuned_data, cached_df=None, p
         original_data (str): The original data folder with the performance log csv files.
         tuned_data (str): The tuned data folder with different configurations.
         cached_df (str, Optional): The cached dataframe to avoid reprocessing the results.
+        plot_surface (bool, Optional): Whether to plot the surface graph. Defaults to True.
 
     Returns:
         ParetoFront2D: The ParetoFront2D object.

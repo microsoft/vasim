@@ -7,7 +7,7 @@
 #
 import json
 import os
-from abc import ABC, abstractmethod
+from abc import ABC
 
 import numpy as np
 import pandas as pd
@@ -25,7 +25,7 @@ class ParetoFrontier(ABC):
         pass
 
     def filter_out_less_than_by_dimension(self, dimension, value):
-        return list(filter(lambda x: x[2][dimension] <= value, self.workload_run_metrics))
+        return [x for x in self.workload_run_metrics if x[2][dimension] <= value]
 
     def find_closest_to_zero(self):
         pass
@@ -47,7 +47,7 @@ class ParetoFrontier(ABC):
 
     @staticmethod
     def read_metrics(file_path):
-        with open(file_path, "r") as file:
+        with open(file_path, "r", encoding="utf-8") as file:
             return json.load(file)
 
     @staticmethod
