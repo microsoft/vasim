@@ -116,7 +116,7 @@ Scripts should be named in `snake_case` and classes in `CamelCase`.
 
 We generally use all [pep8](https://peps.python.org/pep-0008/) checks, with the exception of line length 127.
 
-Tools like `black`, `isort`, `flake8`, `pylint`, and others are used to enforce this and are invoked as a part of the [`pre-commit`](#pre-commit) hooks mentioned above.
+Tools like `black`, `isort`, `flake8`, `pylint`, `mypy`, and others are used to enforce this and are invoked as a part of the [`pre-commit`](#pre-commit) hooks mentioned above.
 
 #### Coverage
 
