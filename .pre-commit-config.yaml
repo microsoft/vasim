@@ -1,4 +1,12 @@
 repos:
+#
+# formatters:
+#
+  - repo: https://github.com/johann-petrak/licenseheaders
+    rev: v0.8.8
+    hooks:
+      - id: licenseheaders
+        args: ['-t', '.mit-license.tmpl', '-E', '.py', '-f']
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2
     hooks:
@@ -19,6 +27,9 @@ repos:
     rev: v0.7.3
     hooks:
       - id: pydocstringformatter
+#
+# linters
+#
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v1.2.3
     hooks:
@@ -38,8 +49,4 @@ repos:
             "-rn", # Only display messages
             "-sn", # Don't display the score
           ]
-  - repo: https://github.com/johann-petrak/licenseheaders
-    rev: v0.8.8
-    hooks:
-      - id: licenseheaders
-        args: ['-t', '.mit-license.tmpl', '-E', '.py', '-f']
+
