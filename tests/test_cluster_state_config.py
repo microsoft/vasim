@@ -166,7 +166,7 @@ class TestClusterStateConfig(unittest.TestCase):
             with self.assertLogs("root", level="ERROR") as log:
                 try:
                     config.to_json("dummy.json")
-                except Exception:
+                except Exception:  # pylint: disable=broad-exception-caught  # FIXME
                     pass  # Exception is expected, so we suppress it here
 
             # Ensure the error message was logged

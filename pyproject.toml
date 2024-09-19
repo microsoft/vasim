@@ -96,7 +96,6 @@ disable = [
     "missing-module-docstring",
     "missing-class-docstring",
     "missing-raises-doc",
-    "broad-exception-caught",
 ]
 fail-on = [
     # TODO:

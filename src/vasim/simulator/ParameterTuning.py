@@ -200,7 +200,7 @@ def _tune_parameters(config, data_dir=None, algorithm=None, initial_cpu_limit=No
         )
         metrics = runner.run_simulation()
         return config, metrics
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # FIXME
         traceback.print_exc()
         sys.stdout = original_stdout
         print(e)
