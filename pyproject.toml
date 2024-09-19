@@ -67,6 +67,12 @@ Issues = "https://github.com/microsoft/vasim/issues"
 [tool.setuptools]
 package-dir = {"" = "src"}
 
+[tool.pytest.ini_options]
+minversion = "6.0"
+# parallelize tests with xdist
+# produce coverage report
+addopts = "-n auto -s -v --cov=src/ --cov-fail-under=70 --cov-report=xml"
+
 [tool.black]
 line-length = 127
 target-version = ["py39", "py310"]
@@ -82,12 +88,6 @@ write = true
 exit-code = true
 max-line-length = 127
 style = ["pep257", "numpydoc"]
-
-[tool.pytest.ini_options]
-minversion = "6.0"
-# parallelize tests with xdist
-# produce coverage report
-addopts = "-n auto -s -v --cov=src/ --cov-fail-under=70 --cov-report=xml"
 
 [tool.pylint.main]
 # FIXME: Remove these exceptions to add enforce more documentation and other checks.
