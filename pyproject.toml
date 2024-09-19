@@ -90,7 +90,7 @@ minversion = "6.0"
 addopts = "-n auto -s -v --cov=src/ --cov-fail-under=70 --cov-report=xml"
 
 [tool.pylint.main]
-# FIXME:
+# FIXME: Remove these exceptions to add enforce more documentation and other checks.
 disable = [
     "missing-function-docstring",
     "missing-module-docstring",

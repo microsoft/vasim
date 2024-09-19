@@ -5,7 +5,7 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
-"""Simple Additive Recommender."""
+
 import numpy as np
 
 from vasim.recommender.Recommender import Recommender
