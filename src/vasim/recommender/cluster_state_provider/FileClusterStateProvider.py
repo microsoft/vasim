@@ -88,7 +88,7 @@ class FileClusterStateProvider(ClusterStateProvider):
                 pass
 
             cores, _ = get_current_cpu_limit_pods()[0]
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # FIXME
             self.logger.error("Error getting current cores. Retry later.", exc_info=e)
             print("Error getting current cores. Retry later.")
             print(e)
@@ -174,7 +174,7 @@ class FileClusterStateProvider(ClusterStateProvider):
                     temp_data["time"] = temp_data["TIMESTAMP"].apply(lambda x: datetime.strptime(x, "%Y.%m.%d-%H:%M:%S:%f"))
                     temp_data = temp_data[["time"] + self.features]
                     recorded_data = pd.concat([recorded_data, temp_data], axis=0)
-                except Exception as e:
+                except Exception as e:  # pylint: disable=broad-exception-caught  # FIXME
                     self.logger.error("Error reading %s", path, exc_info=e)
                     continue
         return recorded_data

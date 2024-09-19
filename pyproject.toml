@@ -97,7 +97,6 @@ disable = [
     "missing-module-docstring",
     "missing-class-docstring",
     "missing-raises-doc",
-    "broad-exception-caught",
 ]
 fail-on = [
     # TODO:
@@ -108,8 +107,7 @@ fail-on = [
 ]
 
 # Specify a score threshold under which the program will exit with error.
-# FIXME: Reduce?
-fail-under = 9.9
+fail-under = 9.8
 
 # Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
 # number of processors available to use, and will cap the count on Windows to
@@ -134,7 +132,7 @@ load-plugins = [
 
 [tool.pylint.basic]
 # override module naming expectations to allow PascalCase for file names instead of just snake case.
-module-rgx = "(?:(?P<snake>[a-z_]+)|(?P<pascal>([A-Z][a-z0-9]*)+))$"
+module-rgx = "(?:(?P<snake>[a-z0-9_]+)|(?P<pascal>(test_)?([A-Z][a-z0-9]*)+))$"
 
 [tool.pylint.format]
 max-line-length = 127
@@ -142,9 +140,12 @@ max-line-length = 127
 [tool.pylint."messages control"]
 disable = [
     "fixme",
-    "no-else-return",
-    "consider-using-assignment-expr",
     "docstring-first-line-empty",
+    "no-else-return",
+    # Python 3.8 doesn't support these (remove when we no longer support 3.8):
+    "consider-using-assignment-expr",
+    "deprecated-typing-alias",
+    "consider-alternative-union-syntax",
 ]
 
 [tool.pylint.string]

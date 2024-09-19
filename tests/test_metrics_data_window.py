@@ -28,7 +28,9 @@ from vasim.simulator.SimulatedInMemoryPredictiveClusterStateProvider import (
 
 class TestSimulatedInMemoryPredictiveClusterStateProvider(unittest.TestCase):
     """
-    Although this is testing the PredictiveFileClusterStateProvider, it is using the SimulatedInMemoryPredictiveClusterStateProvider.
+    Although this is testing the PredictiveFileClusterStateProvider, it is using the.
+
+    SimulatedInMemoryPredictiveClusterStateProvider.
 
     There is no prediction for this because the datasize is too small to trigger the prediction.
     """
@@ -148,7 +150,7 @@ class TestSimulatedInMemoryPredictiveClusterStateProvider(unittest.TestCase):
             # and patch read_metrics_data to return the data we want as shown above
             with patch.object(FileClusterStateProvider, "read_metrics_data", return_value=recorded_data):
                 # Call the method
-                recorded_data, end_time = file_cs_prov.get_next_recorded_data()
+                recorded_data, _end_time = file_cs_prov.get_next_recorded_data()
 
         # Verify the result
         expected_result = pd.DataFrame(

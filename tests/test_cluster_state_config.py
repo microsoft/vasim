@@ -6,9 +6,7 @@
 # --------------------------------------------------------------------------
 #
 import json
-import os
 import unittest
-from pathlib import Path
 from unittest.mock import mock_open, patch
 
 from vasim.recommender.cluster_state_provider.ClusterStateConfig import (
@@ -24,6 +22,7 @@ from vasim.recommender.cluster_state_provider.ConfigStateConstants import (
 
 
 class TestClusterStateConfig(unittest.TestCase):
+    # pylint: disable=no-self-use
 
     def setUp(self):
         self.config_data = {
@@ -115,7 +114,7 @@ class TestClusterStateConfig(unittest.TestCase):
     def test_load_from_dict(self):
         config_dict = self.config_data
         config = ClusterStateConfig()
-        config._load_from_dict(config_dict)
+        config._load_from_dict(config_dict)  # pylint: disable=protected-access
 
         # Ensure dictionary values are loaded properly
         self.assertEqual(config.general_config["window"], 20)
@@ -167,7 +166,7 @@ class TestClusterStateConfig(unittest.TestCase):
             with self.assertLogs("root", level="ERROR") as log:
                 try:
                     config.to_json("dummy.json")
-                except Exception:
+                except Exception:  # pylint: disable=broad-exception-caught  # FIXME
                     pass  # Exception is expected, so we suppress it here
 
             # Ensure the error message was logged

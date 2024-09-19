@@ -109,7 +109,7 @@ class ClusterStateConfig(dict):
                     "prediction_config": self.prediction_config,
                 }
                 json.dump(full_dict, f, indent=4)
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # FIXME
             logging.error("Error writing JSON file: %s", filepath, exc_info=e)
             raise
 

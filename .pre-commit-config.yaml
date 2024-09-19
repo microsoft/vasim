@@ -1,5 +1,7 @@
 repos:
-  # Formatters first:
+#
+# formatters:
+#
   - repo: https://github.com/johann-petrak/licenseheaders
     rev: v0.8.8
     hooks:
@@ -25,29 +27,29 @@ repos:
     rev: v0.7.3
     hooks:
       - id: pydocstringformatter
-  # Now linters:
+#
+# linters
+#
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v1.2.3
     hooks:
       - id: flake8
         args: [--config=.flake8]
         additional_dependencies: [flake8]
-# TODO:
-#  - repo: https://github.com/pylint-dev/pylint
-#    rev: v3.2.7
-#    hooks:
-#      - id: pylint
-#        args:
-#          [
-#            "-rn", # Only display messages
-#            "-sn", # Don't display the score
-#          ]
-#  - repo: https://github.com/pre-commit/mirrors-mypy
-#    rev: v1.11.2
-#    hooks:
-#    -   id: mypy
-  - repo: https://github.com/johann-petrak/licenseheaders
-    rev: v0.8.8
+  - repo: local
     hooks:
-      - id: licenseheaders
-        args: ['-t', '.mit-license.tmpl', '-E', '.py', '-f']
+      - id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        types: [python]
+        require_serial: true
+        args:
+          [
+            "-rn", # Only display messages
+            "-sn", # Don't display the score
+          ]
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.11.2
+    hooks:
+    -   id: mypy

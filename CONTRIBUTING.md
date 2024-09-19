@@ -101,6 +101,13 @@ Flake8............................Failed
 
 See [`pre-commit-config.yaml`](./.pre-commit-config.yaml) for the complete list of checks, most of which use [`pyproject.toml`](./pyproject.toml) for the configuration.
 
+##### Temporarily Skipping a Hook
+
+```sh
+# To temporarily skip the pylint and flake8 checks, for instance, do the following:
+SKIP="flake8,pylint" git commit -a -m "wip: hacking"
+```
+
 #### Naming Convention
 
 Scripts should be named in `snake_case` and classes in `CamelCase`.

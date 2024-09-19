@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------
 #
 
+# pylint: disable=no-member # FIXME
+
 # utils.py
 import multiprocessing
 import os
-import uuid
 from pathlib import Path
 
 import pandas as pd
@@ -145,7 +146,7 @@ def run_simulation(algorithm, data_dir, initial_cores_count, config):
                 # Handle final metrics
                 progress_bar.progress(1.0)  # Mark progress as complete
                 break
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # FIXME
         st.error(f"An error occurred during the simulation: {str(e)}")
         raise
     finally:
