@@ -7,11 +7,11 @@
 #
 
 # General Config Defaults
-DEFAULT_WINDOW = 60   # minutes
+DEFAULT_WINDOW = 60  # minutes
 DEFAULT_LAG = 15
 DEFAULT_MAX_CPU_LIMIT = 20
 DEFAULT_MIN_CPU_LIMIT = 1
-RECOVERY_TIME = 15   # minutes
+RECOVERY_TIME = 15  # minutes
 
 # Prediction Config Defaults
 DEFAULT_WAITING_BEFORE_PREDICT = 1440

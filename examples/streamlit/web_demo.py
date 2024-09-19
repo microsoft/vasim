@@ -9,11 +9,15 @@ import glob
 import itertools
 import json
 import os
-from examples.streamlit.utils import run_simulation, unflatten_dict
-import streamlit as st
-import pandas as pd
+
 import matplotlib.pyplot as plt
-from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
+import pandas as pd
+import streamlit as st
+from examples.streamlit.utils import run_simulation, unflatten_dict
+
+from vasim.recommender.cluster_state_provider.ClusterStateConfig import (
+    ClusterStateConfig,
+)
 from vasim.simulator.ParameterTuning import tune_with_strategy
 
 st.set_page_config(layout="wide")
@@ -23,13 +27,10 @@ st.title("VASIM Autoscaling Simulator Toolkit Presentation")
 @st.cache_data()
 def create_charts(data):
     # Create a new DataFrame for Streamlit line_chart
-    chart_data = pd.DataFrame({
-        'TIMESTAMP': data['TIMESTAMP'],
-        'CPU_USAGE_ACTUAL': data['CPU_USAGE_ACTUAL']
-    })
+    chart_data = pd.DataFrame({"TIMESTAMP": data["TIMESTAMP"], "CPU_USAGE_ACTUAL": data["CPU_USAGE_ACTUAL"]})
 
     # Plot the DataFrame using Streamlit line_chart
-    st.sidebar.line_chart(chart_data.set_index('TIMESTAMP'))
+    st.sidebar.line_chart(chart_data.set_index("TIMESTAMP"))
     st.sidebar.success("Workload visualization finished for {}".format(selected_csv))
 
 
@@ -48,14 +49,15 @@ def process_parameter_input(param_name):
     user_input = st.text_input(f"Enter values for {param_name} (comma-separated):")
 
     # Process user input and return a list of values
-    param_values = [float(x.strip()) for x in user_input.split(',')] if user_input else []
+    param_values = [float(x.strip()) for x in user_input.split(",")] if user_input else []
     return param_values
 
 
 # Sidebar for simulation options
 st.sidebar.title("Simulation Options")
-simulation_option = st.sidebar.radio("Select Simulation Option", [
-                                     "Simulation Run", "Simulation Tuning", "Simulation Tuning History"])
+simulation_option = st.sidebar.radio(
+    "Select Simulation Option", ["Simulation Run", "Simulation Tuning", "Simulation Tuning History"]
+)
 
 # Sidebar for workload visualization and navigation
 st.sidebar.title("Workload Visualization")
@@ -68,7 +70,7 @@ parent_data_input_directory = st.sidebar.text_input("Enter the directory path fo
 # Function to get all CSV files recursively from a directory
 
 
-def get_files_with_extension(directory, format_suffix='.csv'):
+def get_files_with_extension(directory, format_suffix=".csv"):
     files = []
     for root, _, filenames in os.walk(directory):
         for filename in filenames:
@@ -85,9 +87,9 @@ if not csv_files:
     st.sidebar.error("No CSV files found in the directory.")
 else:
     # Display the list of CSV files in the sidebar
-    selected_csv = st.sidebar.selectbox('Select a CSV file:', csv_files)
+    selected_csv = st.sidebar.selectbox("Select a CSV file:", csv_files)
 
-selected_algorithm_names = st.sidebar.selectbox('Select an algorithm:', ['additive', 'multiplicative'])
+selected_algorithm_names = st.sidebar.selectbox("Select an algorithm:", ["additive", "multiplicative"])
 
 # Get all JSON files recursively from the data input directory
 json_config_files = get_files_with_extension(parent_data_input_directory, ".json")
@@ -97,7 +99,7 @@ if not json_config_files:
     st.sidebar.error("No json files found in the directory.")
 else:
     # Display the list of CSV files in the sidebar
-    config_path_run = st.sidebar.selectbox('Select a json file:', json_config_files)
+    config_path_run = st.sidebar.selectbox("Select a json file:", json_config_files)
 
 # Check if file exists
 if not os.path.exists(config_path_run):
@@ -111,36 +113,33 @@ with open(config_path_run) as json_file_run:
 data_dir = os.path.dirname(selected_csv)
 # Check if there's a selected CSV file
 if selected_csv:
-    if st.sidebar.button('Visualize workload'):
+    if st.sidebar.button("Visualize workload"):
         df = pd.read_csv(selected_csv)
-        df['TIMESTAMP'] = pd.to_datetime(df['TIMESTAMP'], format='%Y.%m.%d-%H:%M:%S:%f')
-        df['TIMESTAMP'] = pd.DatetimeIndex(df['TIMESTAMP']).floor('min')
-        df = df.drop_duplicates(subset=['TIMESTAMP'], keep='last')
-        perf_log_resampled = df.set_index('TIMESTAMP').resample('1T').ffill().reset_index()
+        df["TIMESTAMP"] = pd.to_datetime(df["TIMESTAMP"], format="%Y.%m.%d-%H:%M:%S:%f")
+        df["TIMESTAMP"] = pd.DatetimeIndex(df["TIMESTAMP"]).floor("min")
+        df = df.drop_duplicates(subset=["TIMESTAMP"], keep="last")
+        perf_log_resampled = df.set_index("TIMESTAMP").resample("1T").ffill().reset_index()
 
         # Display the chart in the left sidebar
-        chart_data = pd.DataFrame({
-            'TIMESTAMP': df['TIMESTAMP'],
-            'CPU_USAGE_ACTUAL': df['CPU_USAGE_ACTUAL']
-        })
+        chart_data = pd.DataFrame({"TIMESTAMP": df["TIMESTAMP"], "CPU_USAGE_ACTUAL": df["CPU_USAGE_ACTUAL"]})
         create_charts(chart_data)
 # Page 1: Simulation Run
 if simulation_option == "Simulation Run":
     st.title("Simulation Run")
 
-    initial_cores_count_run = st.slider('Select the initial core count:', 1, 20, 7)
+    initial_cores_count_run = st.slider("Select the initial core count:", 1, 20, 7)
 
     # Display the DataFrame with an editable data editor
     edited_data_run = st.data_editor(df_run)
 
     # Convert the edited data back to JSON
-    edited_json_run = edited_data_run.to_dict(orient='records')[0]
+    edited_json_run = edited_data_run.to_dict(orient="records")[0]
     edited_json_run = unflatten_dict(edited_json_run)
     # Display the edited JSON data
     st.json(edited_json_run)
 
     # Create a button to run the algorithm for simulation run
-    if st.button('Run Simulation'):
+    if st.button("Run Simulation"):
         config_run = ClusterStateConfig(config_dict=edited_json_run)
         run_simulation(selected_algorithm_names, data_dir, initial_cores_count_run, config_run)
 else:

@@ -5,11 +5,12 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+import multiprocessing
+import os
+import time
+
 import pandas as pd
 
-import multiprocessing
-import time
-import os
 from vasim.simulator.analysis.ParetoFront2D import ParetoFront2D
 from vasim.simulator.analysis.ParetoFrontier import ParetoFrontier
 from vasim.simulator.analysis.plot_utils import plot_cpu_usage_and_new_limit_reformat
@@ -17,8 +18,9 @@ from vasim.simulator.analysis.plot_utils import plot_cpu_usage_and_new_limit_ref
 
 def _load_results_parallel(target_folder):
     with multiprocessing.Pool() as pool:
-        results = pool.starmap(ParetoFrontier.process_folder, ((target_folder, folder)
-                                                               for folder in os.listdir(target_folder)))
+        results = pool.starmap(
+            ParetoFrontier.process_folder, ((target_folder, folder) for folder in os.listdir(target_folder))
+        )
 
     # Filter out None values from the results
     filtered_results = [result for result in results if result is not None]

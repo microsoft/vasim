@@ -46,6 +46,9 @@ dependencies = [
 "dev" = [
     "autopep8",
     "flake8",
+    "black",
+    "isort",
+    "pydocstringformatter",
     "pytest",
     "pytest-cov",
     "pytest-xdist",
@@ -68,3 +71,19 @@ minversion = "6.0"
 # parallelize tests with xdist
 # produce coverage report
 addopts = "-n auto -s -v --cov=src/ --cov-fail-under=70 --cov-report=xml"
+
+[tool.black]
+line-length = 127
+target-version = ["py39", "py310"]
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+py_version = 310
+src_paths = ["src", "tests"]
+
+[tool.pydocstringformatter]
+write = true
+exit-code = true
+max-line-length = 127
+style = ["pep257", "numpydoc"]
