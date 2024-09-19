@@ -133,7 +133,7 @@ load-plugins = [
 
 [tool.pylint.basic]
 # override module naming expectations to allow PascalCase for file names instead of just snake case.
-module-rgx = "(?:(?P<snake>[a-z_]+)|(?P<pascal>([A-Z][a-z0-9]*)+))$"
+module-rgx = "(?:(?P<snake>[a-z0-9_]+)|(?P<pascal>(test_)?([A-Z][a-z0-9]*)+))$"
 
 [tool.pylint.format]
 max-line-length = 127
@@ -142,8 +142,11 @@ max-line-length = 127
 disable = [
     "fixme",
     "no-else-return",
-    "consider-using-assignment-expr",
     "docstring-first-line-empty",
+    # Python 3.8 doesn't support these:
+    "consider-using-assignment-expr",
+    "deprecated-typing-alias",
+    "consider-alternative-union-syntax",
 ]
 
 [tool.pylint.string]

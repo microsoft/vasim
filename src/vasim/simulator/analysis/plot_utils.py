@@ -24,10 +24,13 @@ def read_data(decision_file_path, perf_log_file_path, if_resample=True):
     Resampling is done to ensure that the data is at 1 minute intervals. Some data may be missing
     or duplicated, depending on the publisher.
 
-    :param decision_file_path: The path to the decisions.txt file.
-    :param perf_log_file_path: The path to the performance log file.
-    :param if_resample: If True, the data will be resampled to 1 minute intervals.
-    :return: The decision and performance log dataframes.
+    Parameters:
+        decision_file_path (str): The path to the decisions.txt file.
+        perf_log_file_path (str): The path to the performance log file.
+        if_resample (bool, Optional): If True, the data will be resampled to 1 minute intervals.
+
+    Returns:
+        The decision and performance log dataframes.
     """
     if not os.path.exists(decision_file_path):
         raise FileNotFoundError(f"Decision file not found at path: {decision_file_path}")
@@ -38,7 +41,7 @@ def read_data(decision_file_path, perf_log_file_path, if_resample=True):
     decision_df.drop_duplicates(subset=["LATEST_TIME"], inplace=True)
     decision_df["LATEST_TIME"] = pd.to_datetime(decision_df["LATEST_TIME"])
     if if_resample:
-        decision_df["LATEST_TIME"] = pd.DatetimeIndex(decision_df["LATEST_TIME"]).floor("min")
+        decision_df["LATEST_TIME"] = pd.DatetimeIndex(decision_df["LATEST_TIME"]).floor("min")  # pylint: disable=no-member
         decision_df.drop_duplicates(subset=["LATEST_TIME"], keep="last", inplace=True)
     else:
         decision_df["LATEST_TIME"] = pd.DatetimeIndex(decision_df["LATEST_TIME"])
@@ -46,7 +49,7 @@ def read_data(decision_file_path, perf_log_file_path, if_resample=True):
     perf_df = pd.read_csv(perf_log_file_path)
     perf_df["TIMESTAMP"] = pd.to_datetime(perf_df["TIMESTAMP"], format="%Y.%m.%d-%H:%M:%S:%f")
     if if_resample:
-        perf_df["TIMESTAMP"] = pd.DatetimeIndex(perf_df["TIMESTAMP"]).floor("min")
+        perf_df["TIMESTAMP"] = pd.DatetimeIndex(perf_df["TIMESTAMP"]).floor("min")  # pylint: disable=no-member
         perf_df = perf_df.drop_duplicates(subset=["TIMESTAMP"], keep="last")
     else:
         perf_df["TIMESTAMP"] = pd.DatetimeIndex(perf_df["TIMESTAMP"])

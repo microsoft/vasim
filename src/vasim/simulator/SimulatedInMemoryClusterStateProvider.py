@@ -47,7 +47,8 @@ class SimulatedInMemoryClusterStateProvider(SimulatedBaseClusterStateProvider, F
             **kwargs,
         )
 
-    # we read updated file every time
+    def get_next_recorded_data(self):
+        raise NotImplementedError()
 
     def read_metrics_data(self):
         # Return data till current time
