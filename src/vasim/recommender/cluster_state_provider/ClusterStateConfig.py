@@ -84,7 +84,7 @@ class ClusterStateConfig(dict):
     def get(self, key, default=None):
         # Implement the get method to access sections like a dictionary
         try:
-            return self.__getitem__(key)
+            return self[key]
         except KeyError:
             return default
 
@@ -96,21 +96,21 @@ class ClusterStateConfig(dict):
 
     def _load_from_json(self, filename):
         # Load the configuration from a JSON file
-        with open(filename, "r") as f:
+        with open(filename, "r", encoding="utf-8") as f:
             data = json.load(f)
             self._load_from_dict(data)
 
     def to_json(self, filepath):
         try:
-            with open(filepath, "w") as f:
+            with open(filepath, "w", encoding="utf-8") as f:
                 full_dict = {
                     "general_config": self.general_config,
                     "algo_specific_config": self.algo_specific_config,
                     "prediction_config": self.prediction_config,
                 }
                 json.dump(full_dict, f, indent=4)
-        except Exception as e:
-            logging.error(f"Error writing JSON file: {e}")
+        except Exception as e:  # pylint: disable=broad-exception-caught  # FIXME
+            logging.error("Error writing JSON file: %s", filepath, exc_info=e)
             raise
 
     def validate_config(self):
@@ -126,7 +126,9 @@ class ClusterStateConfig(dict):
         for key in general_required_keys:
             if key not in self.general_config:
                 logging.warning(
-                    f"Missing key '{key}' in general_config. Using default value: {self.defaults['general_config'][key]}"
+                    "Missing key '%s' in general_config. Using default value: %s",
+                    key,
+                    self.defaults["general_config"][key],
                 )
                 self.general_config[key] = self.defaults["general_config"][key]
 
@@ -143,7 +145,9 @@ class ClusterStateConfig(dict):
 
                 if key not in self.prediction_config:
                     logging.warning(
-                        f"Missing key '{key}' in prediction_config. Using default value: {self.defaults['prediction_config'][key]}"
+                        "Missing key '%s' in prediction_config. Using default value: '%s'",
+                        key,
+                        self.defaults["prediction_config"][key],
                     )
                     self.prediction_config[key] = self.defaults["prediction_config"][key]
         else:
@@ -158,7 +162,9 @@ class ClusterStateConfig(dict):
         # Ensure that min_cpu_limit is less than or equal to max_cpu_limit
         if self.general_config["min_cpu_limit"] > self.general_config["max_cpu_limit"]:
             logging.warning(
-                f"min_cpu_limit ({self.general_config['min_cpu_limit']}) is greater than max_cpu_limit ({self.general_config['max_cpu_limit']}). Using default limits."
+                "min_cpu_limit (%s) is greater than max_cpu_limit (%s). Using default limits.",
+                self.general_config["min_cpu_limit"],
+                self.general_config["max_cpu_limit"],
             )
             self.general_config["min_cpu_limit"] = self.defaults["general_config"]["min_cpu_limit"]
             self.general_config["max_cpu_limit"] = self.defaults["general_config"]["max_cpu_limit"]
@@ -170,5 +176,10 @@ class ClusterStateConfig(dict):
         Logs and uses the default value if the check fails.
         """
         if not isinstance(value, int) or value <= 0:
-            logging.warning(f"Invalid value for '{key}': {value}. Using default value: {self.defaults['general_config'][key]}")
+            logging.warning(
+                "Invalid value for '%s': %s. Using default value: %s",
+                key,
+                value,
+                self.defaults["general_config"][key],
+            )
             self.general_config[key] = self.defaults["general_config"][key]

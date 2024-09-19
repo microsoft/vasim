@@ -7,8 +7,6 @@
 #
 from datetime import timedelta
 
-import numpy as np
-
 from vasim.recommender.cluster_state_provider.PredictiveFileClusterStateProvider import (
     PredictiveFileClusterStateProvider,
 )
@@ -18,9 +16,17 @@ from vasim.simulator.SimulatedBaseClusterStateProvider import (
 
 
 class SimulatedInMemoryPredictiveClusterStateProvider(SimulatedBaseClusterStateProvider, PredictiveFileClusterStateProvider):
+
     def __init__(
-        self, data_dir="data/performance_log", window=40, decision_file_path=None, max_cpu_limit=None, lag=None, **kwargs
+        self,
+        data_dir="data/performance_log",
+        window=40,
+        decision_file_path=None,
+        max_cpu_limit=None,
+        lag=None,
+        **kwargs,
     ):
+        # pylint: disable=too-many-arguments
         PredictiveFileClusterStateProvider.__init__(
             self,
             data_dir=data_dir,
@@ -50,7 +56,7 @@ class SimulatedInMemoryPredictiveClusterStateProvider(SimulatedBaseClusterStateP
         td_window = timedelta(minutes=self.config.general_config["window"])
         filtered_data = self.recorded_data.loc[self.current_time - td_window : self.current_time]
 
-        self.logger.info(f"current_time: {self.current_time}; filtered_data length: {len(filtered_data)}")
+        self.logger.info("current_time: %s; filtered_data length: %s", self.current_time, len(filtered_data))
         return filtered_data
 
     def _get_all_performance_data(self):
@@ -60,7 +66,7 @@ class SimulatedInMemoryPredictiveClusterStateProvider(SimulatedBaseClusterStateP
 
         # add lag to current time
         filtered_data = self.recorded_data.loc[self.start_time : self.current_time]
-        self.logger.info(f"current_time: {self.current_time}; filtered_data length: {len(filtered_data)}")
+        self.logger.info("current_time: %s; filtered_data length: %s", self.current_time, len(filtered_data))
 
         return filtered_data
 
@@ -80,7 +86,7 @@ class SimulatedInMemoryPredictiveClusterStateProvider(SimulatedBaseClusterStateP
         custom_header = "TIMESTAMP,CPU_USAGE_ACTUAL"
 
         # Open the file for writing
-        with open(filename, "w") as file:
+        with open(filename, "w", encoding="utf-8") as file:
             # Write the custom header as the first line
             file.write(custom_header + "\n")
 

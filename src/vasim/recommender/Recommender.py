@@ -11,6 +11,7 @@ from abc import abstractmethod
 
 
 class Recommender:
+    # pylint: disable=too-few-public-methods
     def __init__(self, cluster_state_provider, save_metadata=True):
         """
         This is the base class for all recommender algorithms.

@@ -5,12 +5,13 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
-import glob
-import itertools
+
+# pylint: disable=no-member # FIXME
+
 import json
 import os
+from typing import Optional
 
-import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
 from examples.streamlit.utils import run_simulation, unflatten_dict
@@ -18,7 +19,6 @@ from examples.streamlit.utils import run_simulation, unflatten_dict
 from vasim.recommender.cluster_state_provider.ClusterStateConfig import (
     ClusterStateConfig,
 )
-from vasim.simulator.ParameterTuning import tune_with_strategy
 
 st.set_page_config(layout="wide")
 st.title("VASIM Autoscaling Simulator Toolkit Presentation")
@@ -31,7 +31,8 @@ def create_charts(data):
 
     # Plot the DataFrame using Streamlit line_chart
     st.sidebar.line_chart(chart_data.set_index("TIMESTAMP"))
-    st.sidebar.success("Workload visualization finished for {}".format(selected_csv))
+    # pylint: disable=possibly-used-before-assignment # FIXME
+    st.sidebar.success(f"Workload visualization finished for {selected_csv}")
 
 
 def process_params_to_tune(selected_params):
@@ -95,6 +96,7 @@ selected_algorithm_names = st.sidebar.selectbox("Select an algorithm:", ["additi
 json_config_files = get_files_with_extension(parent_data_input_directory, ".json")
 
 # Check if there are CSV files available
+config_path_run: Optional[str] = None
 if not json_config_files:
     st.sidebar.error("No json files found in the directory.")
 else:
@@ -102,11 +104,11 @@ else:
     config_path_run = st.sidebar.selectbox("Select a json file:", json_config_files)
 
 # Check if file exists
-if not os.path.exists(config_path_run):
+if not config_path_run or not os.path.exists(config_path_run):
     st.error(f"Error loading JSON file: {config_path_run} does not exist")
     st.stop()
 
-with open(config_path_run) as json_file_run:
+with open(config_path_run, mode="r", encoding="utf-8") as json_file_run:
     data_run = json.load(json_file_run)
     df_run = pd.json_normalize(data_run)
 

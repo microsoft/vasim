@@ -5,6 +5,7 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
 import os
 import shutil
 import unittest
@@ -13,16 +14,16 @@ from unittest.mock import MagicMock, patch
 
 from vasim.simulator.ParameterTuning import tune_with_strategy
 
-"""
-This is a true run of simulator end to end.
-
-It is not a unit test.
-
-It calls tune_with_strategy, which performs a tuning run of the simulator, trying different configurations.
-"""
-
 
 class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
+    """
+    This is a true run of simulator end to end.
+
+    It is not a unit test.
+
+    It calls tune_with_strategy, which performs a tuning run of the simulator, trying different configurations.
+    """
+
     def setUp(self):
 
         # For this test we'll use the "mini" dataset, which is a smaller version of the full dataset
@@ -94,7 +95,8 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
             "max_slack": 22.98857142857143,
         }
 
-        # TODO: There is a bug with 'grid' in that it always trys all combinations, even if num_combinations is less than the total.
+        # TODO: There is a bug with 'grid' in that it always trys all combinations,
+        # even if num_combinations is less than the total.
         # assert len(results) == num_combinations
         # check the first result's combinations, which is deterministic because we're using grid
         self.assertEqual(results[0][0].general_config["window"], 60)
@@ -135,8 +137,10 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         strategy = "grid"  # "grid" and "random" are the only two strategies available currently
         data_dir = self.target_dir
         num_workers = 8  # how many threads to spin up. Each thread will run a separate simulation, twice in this case
-        # TODO: There is a bug with 'grid' in that it always trys all combinations, even if num_combinations is less than the total.
-        # how many combinations to try, there are 16 (2 * 4 * 2) total possible combinations. (For grid, it will try all)
+        # TODO: There is a bug with 'grid' in that it always trys all combinations,
+        # even if num_combinations is less than the total.
+        # how many combinations to try, there are 16 (2 * 4 * 2) total possible
+        # combinations. (For grid, it will try all)
         num_combinations = 16
         results = tune_with_strategy(
             config_path,

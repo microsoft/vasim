@@ -10,12 +10,8 @@ import os
 from datetime import datetime, timedelta
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
-from vasim.recommender.cluster_state_provider.ClusterStateConfig import (
-    ClusterStateConfig,
-)
 from vasim.recommender.cluster_state_provider.ClusterStateProvider import (
     ClusterStateProvider,
 )
@@ -37,15 +33,16 @@ class FileClusterStateProvider(ClusterStateProvider):
     def __init__(
         self,
         data_dir=None,
-        features=["cpu"],
+        features=None,
         window=40,
         decision_file_path=None,
         lag=5.0,
-        min_cpu_limit=1,
-        max_cpu_limit=None,
+        min_cpu_limit=1,  # pylint: disable=unused-argument   # FIXME
+        max_cpu_limit=None,  # pylint: disable=unused-argument   # FIXME
         save_metadata=True,
         **kwargs,
     ):
+        # pylint: disable=too-many-arguments
         """
         Parameters:
 
@@ -58,6 +55,8 @@ class FileClusterStateProvider(ClusterStateProvider):
             max_cpu_limit (int): The maximum number of cores to recommend. (When set to None, it assumes max on the machine)
             save_metadata (bool): Whether to save metadata to a file in the data_dir
         """
+        if features is None:
+            features = ["cpu"]
 
         if "config" in kwargs:
             # keyword argument 'param_name' exists
@@ -66,9 +65,9 @@ class FileClusterStateProvider(ClusterStateProvider):
         self.logger = logging.getLogger()
 
         self.data_dir = Path(data_dir) or Path().absolute() / "data"
-        if list(self.data_dir.glob("**/*.csv")) == []:
-            self.logger.error("Error: no csvs found in data_dir {}".format(self.data_dir))
-            raise SystemExit("Error: no csvs found in data_dir {}".format(self.data_dir))
+        if not list(self.data_dir.glob("**/*.csv")):
+            self.logger.error("Error: no csvs found in data_dir %s", self.data_dir)
+            raise SystemExit(f"Error: no csvs found in data_dir {self.data_dir}")
         # TODO: rename this, it's a bit confusing. It's not the features of the model, it's the features of the data.
         self.features = features or []
         # TODO: a lot of the code below needs testing
@@ -89,8 +88,8 @@ class FileClusterStateProvider(ClusterStateProvider):
                 pass
 
             cores, _ = get_current_cpu_limit_pods()[0]
-        except Exception as e:
-            self.logger.error(f"Error getting current cores. Retry later. {e}")
+        except Exception as e:  # pylint: disable=broad-exception-caught  # FIXME
+            self.logger.error("Error getting current cores. Retry later.", exc_info=e)
             print("Error getting current cores. Retry later.")
             print(e)
             return None
@@ -102,8 +101,8 @@ class FileClusterStateProvider(ClusterStateProvider):
         # TODO: This is not a scalable way to check for csvs
         # if the data is large, this will take a long time. Need to chunk.
         csv_paths = list(self.data_dir.glob("**/*.csv"))
-        if csv_paths == []:
-            self.logger.error(f"Error reading csvs from {self.data_dir}")
+        if not csv_paths:
+            self.logger.error("Error reading csvs from %s", self.data_dir)
 
             print("Error reading csvs")
             return None, None
@@ -159,10 +158,13 @@ class FileClusterStateProvider(ClusterStateProvider):
 
         return recorded_data, end_time
 
-    def process_data(self, csv_paths):
+    def process_data(self, data=None):
+        assert data is not None, "No data provided to process"
+        assert isinstance(data, list), "Data must be a list"
+        csv_paths = data
         recorded_data = pd.DataFrame()
-        for i, path in enumerate(csv_paths):
-            path = str(path)
+        for _, csv_path in enumerate(csv_paths):
+            path = str(csv_path)
             # The CSVs must have the word "perf_event_log" in them, else we ignore
             # This is to prevent accidentally reading other CSVs in the directory
             if "perf_event_log" in path:
@@ -172,18 +174,9 @@ class FileClusterStateProvider(ClusterStateProvider):
                     temp_data["time"] = temp_data["TIMESTAMP"].apply(lambda x: datetime.strptime(x, "%Y.%m.%d-%H:%M:%S:%f"))
                     temp_data = temp_data[["time"] + self.features]
                     recorded_data = pd.concat([recorded_data, temp_data], axis=0)
-                except Exception as e:
-                    self.logger.error(f"Error reading {path} {e}")
+                except Exception as e:  # pylint: disable=broad-exception-caught  # FIXME
+                    self.logger.error("Error reading %s", path, exc_info=e)
                     continue
-        return recorded_data
-
-    def drop_duplicates(self, recorded_data):
-        recorded_data = recorded_data.drop_duplicates()
-        return recorded_data
-
-    def sort_data(self, recorded_data):
-        recorded_data = recorded_data.assign(time=pd.to_datetime(recorded_data["time"]))
-        recorded_data = recorded_data.sort_values(by="time")
         return recorded_data
 
     def truncate_data(self, recorded_data, last_decision_time):
@@ -203,7 +196,7 @@ class FileClusterStateProvider(ClusterStateProvider):
     def get_last_decision_time(self, recorded_data):
         # Check if the decisions file exists
         if not os.path.exists(self.decision_file_path):
-            self.logger.warning("No decisions file found!  Path was: {}".format(self.decision_file_path))
+            self.logger.warning("No decisions file found!  Path was: %s", self.decision_file_path)
             last_decision_time = recorded_data["time"].iloc[0]
         else:
             # Read in the decisions txt file to see when the last decision was made

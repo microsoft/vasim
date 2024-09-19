@@ -10,6 +10,7 @@ from pathlib import Path
 
 
 class SimulatedInfraScaler:
+    # pylint: disable=too-few-public-methods
     """
     In any real system, performing the actual scaling introduces a big delay.
 
@@ -50,8 +51,9 @@ class SimulatedInfraScaler:
 
         TODO: Write unit tests for this.
 
-        :param decision: The number of cores to add or subtract
-        :param time_now: The current time
+        Parameters:
+            new_limit (int): The new number of cores to scale to
+            time_now (datetime): The current time
         """
         minutes = time_now.minute
         current_cpu_limit = self.cluster_state_provider.get_current_cpu_limit()

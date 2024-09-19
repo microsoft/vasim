@@ -20,6 +20,7 @@ from vasim.simulator.SimulatedInMemoryPredictiveClusterStateProvider import (
 
 
 class SimulatedClusterStateProviderFactory:
+    # pylint: disable=too-few-public-methods
     def __init__(self, data_dir: str, out_filename: str, config: ClusterStateConfig):
         self.config = config
         self.data_dir = data_dir
