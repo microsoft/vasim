@@ -19,7 +19,6 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Topic :: Scientific/Engineering :: Information Analysis",
     "Topic :: Scientific/Engineering :: Visualization",
-    "Topic :: Scientific/Engineering :: Simulation",
     "Topic :: System",
 ]
 license = { "file" = "LICENSE" }
@@ -28,7 +27,7 @@ maintainers = [
     { name = "VASim Maintainers", email = "vasim-maintainers@service.microsoft.com" },
 ]
 
-version = "0.1.0"
+version = "0.1.2"
 requires-python = ">=3.9"
 dependencies = [
     # TODO: Remove version pinning or make it version dependent.
