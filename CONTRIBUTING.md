@@ -104,8 +104,8 @@ See [`pre-commit-config.yaml`](./.pre-commit-config.yaml) for the complete list 
 ##### Temporarily Skipping a Hook
 
 ```sh
-# To temporarily skip the pylint and flake8 checks, for instance, do the following:
-SKIP="flake8,pylint" git commit -a -m "wip: hacking"
+# To temporarily skip the pylint and mypy checks, for instance, do the following:
+SKIP="pylint,mypy" git commit -a -m "wip: hacking"
 ```
 
 #### Naming Convention
