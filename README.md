@@ -29,10 +29,10 @@ Our documentation and working example is in our [notebook](examples/using_vasim.
 ### Additionally:
 
 * Within each folder, there is a README explaining the code.
-  * [simulator](simulator/README.md)
-  * [recommender](recommender/README.md)
-  * [forecasting](recommender/forecasting/README.md)
-  * [cluster state](recommender/cluster_state_provider/README.md)
+  * [simulator](src/vasim/simulator/README.md)
+  * [recommender](src/vasim/recommender/README.md)
+  * [forecasting](src/vasim/recommender/forecasting/README.md)
+  * [cluster state](src/vasim/recommender/cluster_state_provider/README.md)
   * [tests](tests/README.md)
 
 * For additional usage examples, see any test in the [tests](tests) folder that starts with `test_e2e`.
