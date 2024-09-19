@@ -6,8 +6,10 @@
 # --------------------------------------------------------------------------
 #
 import logging
+
 import numpy as np
 import pandas as pd
+
 from vasim.recommender.Recommender import Recommender
 
 
@@ -15,6 +17,7 @@ class SimpleMultiplierRecommender(Recommender):
     def __init__(self, cluster_state_provider, save_metadata=True):
         """
         Parameters:
+
             cluster_state_provider (ClusterStateProvider): The cluster state provider such as FileClusterStateProvider.
             save_metadata (bool): Whether to save metadata to a file.
         """
@@ -25,7 +28,9 @@ class SimpleMultiplierRecommender(Recommender):
         # Here is an example of accessing the general config in addition to the algo specific config/user params.
         # (In this case, we didn't add smoothing_window to the algo specific config), so we use the general config as a fallback.
         self.smoothing_window = self.algo_params.get(
-            "smoothing_window", self.config.get("general_config", {}).get("window", 5))
+            "smoothing_window",
+            self.config.get("general_config", {}).get("window", 5),
+        )
 
     def run(self, recorded_data):
         """
@@ -53,7 +58,7 @@ class SimpleMultiplierRecommender(Recommender):
 
     def calculate_smoothed_max(self, recorded_data):
         # Smooth the data by applying a rolling mean
-        smoothed_data = recorded_data['cpu'].rolling(window=self.smoothing_window, min_periods=1).mean()
+        smoothed_data = recorded_data["cpu"].rolling(window=self.smoothing_window, min_periods=1).mean()
 
         # Get the maximum value from the smoothed data
         smoothed_max = smoothed_data.max()
