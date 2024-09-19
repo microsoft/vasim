@@ -135,7 +135,7 @@ pytest
 
 #### Release Publishing Steps
 
-1. Create a PR to update the version in `pyproject.toml` to the new `M.m.p` version.
+1. Create a PR to update the `VERSION` in `setup.py` to the new `M.m.p` version.
 2. Once merged to `main`, create a tag with the new version:
 
     ```sh
