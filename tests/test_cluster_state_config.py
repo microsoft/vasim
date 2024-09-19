@@ -67,7 +67,7 @@ class TestClusterStateConfig(unittest.TestCase):
                 config.to_json("output.json")
 
                 # Check that 'open' was called with the correct filepath and mode
-                mocked_file.assert_called_once_with("output.json", "w")
+                mocked_file.assert_called_once_with("output.json", "w", encoding="utf-8")
 
                 # Ensure that 'json.dump' was called with the correct dictionary and file handle
                 mock_json_dump.assert_called_once_with(expected_dict, mocked_file(), indent=4)
@@ -96,7 +96,7 @@ class TestClusterStateConfig(unittest.TestCase):
                 config.to_json("output.json")
 
                 # Check that 'open' was called with the correct filepath and mode
-                mocked_file.assert_called_once_with("output.json", "w")
+                mocked_file.assert_called_once_with("output.json", "w", encoding="utf-8")
 
                 # Ensure that 'json.dump' was called with the correct dictionary and file handle
                 mock_json_dump.assert_called_once_with(expected_dict, mocked_file(), indent=4)
