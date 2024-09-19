@@ -54,7 +54,6 @@ class Oracle:
         Args:
             data (pd.DataFrame): Data to fit the model on.
         """
-        pass
 
     def predict(self, data, forecast_horizon):
         """

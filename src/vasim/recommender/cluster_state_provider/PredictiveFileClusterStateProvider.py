@@ -26,6 +26,7 @@ from vasim.recommender.forecasting.utils import DataProcessor
 
 
 class PredictiveFileClusterStateProvider(FileClusterStateProvider):
+    # pylint: disable=too-many-instance-attributes
     def __init__(self, data_dir, prediction_config, **kwargs):
         super().__init__(data_dir=data_dir, **kwargs)
 
@@ -65,7 +66,8 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
 
         return max(traditional_round(data["cpu"].max()), self.cores)
 
-    def prediction_activated(self, all_history_data=None):
+    def prediction_activated(self, data=None):
+        all_history_data = data
         if not self._prediction_activated and all_history_data is not None:
             self._prediction_activated = DataProcessor.get_workload_duration(all_history_data).total_seconds() > (
                 self.waiting_time * 60
@@ -74,14 +76,14 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
 
     def _get_all_performance_data(self):  # Verify that csvs exist in the data_dir
         csv_paths = list(self.data_dir.glob("**/*.csv"))
-        if csv_paths == []:
-            self.logger.error(f"Error reading csvs in {self.data_dir}")
+        if not csv_paths:
+            self.logger.error("Error reading csvs in %s", self.data_dir)
             print("Error reading csvs")
             return None, None
 
         # Process data
         recorded_data = self.process_data(csv_paths)
-        self.logger.debug(f"len recorded_data: {len(recorded_data)}")
+        self.logger.debug("len recorded_data: %d", len(recorded_data))
         # Drop duplicates from data
         recorded_data = self.drop_duplicates(recorded_data)
 
@@ -99,7 +101,7 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
         end_time: Timestamp
         """
         data = self._get_all_performance_data()  # we take all history to build prediction
-        perf_data, end_time = super(PredictiveFileClusterStateProvider, self).get_next_recorded_data()
+        perf_data, end_time = super().get_next_recorded_data()
 
         # TODO document this. We are building a prediction only if we have enough data,
         # but we need to document and explain what this means and how it is used.
@@ -107,7 +109,7 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
             y_pred = self.get_prediction(data)
 
             # change cores value to max in the predicted data
-            self.logger.debug(f"y_pred: {y_pred}")
+            self.logger.debug("y_pred: %s", y_pred)
 
             # join actual and predicted data
             entire_segment = pd.concat([perf_data, y_pred], ignore_index=True).tail(
@@ -122,7 +124,10 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
     def get_prediction(self, data):
 
         self.logger.debug(
-            f"total number of observations: {len(data)}. We want to predict next {self.minutes_to_predict} minutes = {self.number_of_points_to_predict} points."
+            "total number of observations: %s. We want to predict next %s minutes = %s points.",
+            len(data),
+            self.minutes_to_predict,
+            self.number_of_points_to_predict,
         )
         data = DataProcessor.resample_dataframe(data, self.freq)
         return self.data_forecaster.get_prediction(data, self.number_of_points_to_predict)

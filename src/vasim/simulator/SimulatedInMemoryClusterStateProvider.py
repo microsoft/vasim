@@ -7,8 +7,6 @@
 #
 from datetime import timedelta
 
-import numpy as np
-
 from vasim.recommender.cluster_state_provider.FileClusterStateProvider import (
     FileClusterStateProvider,
 )
@@ -28,6 +26,7 @@ class SimulatedInMemoryClusterStateProvider(SimulatedBaseClusterStateProvider, F
         lag=None,
         **kwargs,
     ):
+        # pylint: disable=too-many-arguments
 
         FileClusterStateProvider.__init__(
             self,
@@ -60,7 +59,7 @@ class SimulatedInMemoryClusterStateProvider(SimulatedBaseClusterStateProvider, F
         td_window = timedelta(minutes=self.config.general_config["window"])
         filtered_data = self.recorded_data.loc[self.current_time - td_window : self.current_time]
 
-        self.logger.info(f"current_time: {self.current_time}; filtered_data length: {len(filtered_data)}")
+        self.logger.info("current_time: %s; filtered_data length: %s", self.current_time, len(filtered_data))
         return filtered_data
 
     def flush_metrics_data(self, filename):
@@ -68,7 +67,7 @@ class SimulatedInMemoryClusterStateProvider(SimulatedBaseClusterStateProvider, F
         custom_header = "TIMESTAMP,CPU_USAGE_ACTUAL"
 
         # Open the file for writing
-        with open(filename, "w") as file:
+        with open(filename, "w", encoding="utf-8") as file:
             # Write the custom header as the first line
             file.write(custom_header + "\n")
 
