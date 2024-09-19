@@ -19,7 +19,6 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Topic :: Scientific/Engineering :: Information Analysis",
     "Topic :: Scientific/Engineering :: Visualization",
-    "Topic :: Scientific/Engineering :: Simulation",
     "Topic :: System",
 ]
 license = { "file" = "LICENSE" }
