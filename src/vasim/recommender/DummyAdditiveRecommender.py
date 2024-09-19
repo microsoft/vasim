@@ -7,6 +7,8 @@
 #
 
 import numpy as np
+import numpy.typing as npt
+import pandas as pd
 
 from vasim.recommender.Recommender import Recommender
 
@@ -16,7 +18,7 @@ class SimpleAdditiveRecommender(Recommender):
 
     # pylint: disable=too-few-public-methods
 
-    def __init__(self, cluster_state_provider, save_metadata=True):
+    def __init__(self, cluster_state_provider, save_metadata=True) -> None:
         """
         Parameters:
 
@@ -27,9 +29,9 @@ class SimpleAdditiveRecommender(Recommender):
 
         # User parameters go here. They are available in self.algo_params
         # Default addend is 2. This is the buffer to the maximum value.
-        self.addend = self.algo_params.get("addend", 2)
+        self.addend: int = int(self.algo_params.get("addend", 2))
 
-    def run(self, recorded_data):
+    def run(self, recorded_data: pd.DataFrame) -> npt.NDArray[np.float64 | np.int64]:
         """
         This method runs the recommender algorithm and returns the new number of cores to scale to (new limit).
 
@@ -42,7 +44,7 @@ class SimpleAdditiveRecommender(Recommender):
 
         # Calculate the smoothed maximum value. This will look at all the cores in the
         # performance data window and take the maximum value.
-        smoothed_max = recorded_data["cpu"].to_numpy().max()
+        smoothed_max: npt.NDArray[np.float64] = recorded_data["cpu"].to_numpy(np.float64).max()
 
         # Add the addend to the smoothed maximum to get the new number of cores
         # The Addend provides a buffer to the maximum value.
