@@ -43,7 +43,8 @@ def _get_long_desc_from_readme(base_url: str) -> dict:
         }
 
 
-version_tag = f"v{VERSION.replace('-dev', '')}"  # alternatively: "main"
+# version_tag = "main"
+version_tag = f"v{VERSION.replace('-dev', '')}"  # pylint: disable=invalid-name
 setup(
     version=VERSION,
     **_get_long_desc_from_readme(f"https://github.com/microsoft/vasim/tree/{version_tag}/"),
