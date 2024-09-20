@@ -13,7 +13,7 @@ import time
 import os
 from pathlib import Path
 import docker
-from poll_metrics import CONTAINER_NAME
+from poll_metrics import CONTAINER_NAME  # TODO: this should be in a shared file, or cmd line arg
 from LiveContainerInfraScaler import LiveContainerInfraScaler
 
 from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator

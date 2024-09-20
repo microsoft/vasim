@@ -20,11 +20,11 @@ TIMESTAMP,CPU_USAGE_ACTUAL
 """
 
 WAIT_INTERVAL = 60  # how often to poll the CPU usage
-CONTAINER_NAME = "some-cassandra1"  # the container to monitor
+CONTAINER_NAME = "some-cassandra"  # the container to monitor
 ERROR_BACKOFF = 5
 
 
-def get_curr_cpu_usage(container_name=CONTAINER_NAME):
+def get_curr_cpu_usage(container):
     """
     This demo shows only a standalone container, but it could be modified to read CPU usage from a
     Kubernetes cluster/metrics-server, or from multiple containers.
@@ -32,13 +32,11 @@ def get_curr_cpu_usage(container_name=CONTAINER_NAME):
     To modify this to work with Kubernetes, you would need to use the Kubernetes API. Contributions welcome!
     """
 
-    client = docker.from_env()
-    container = client.containers.get(container_name)
     stats = container.stats(stream=False)
 
     cpu_delta = stats['cpu_stats']['cpu_usage']['total_usage'] - stats['precpu_stats']['cpu_usage']['total_usage']
     system_cpu_delta = stats['cpu_stats']['system_cpu_usage'] - stats['precpu_stats']['system_cpu_usage']
-    number_cpus = len(stats['cpu_stats']['cpu_usage']['percpu_usage'])
+    number_cpus = stats['cpu_stats']['online_cpus']
     cpu_percentage = (cpu_delta / system_cpu_delta) * number_cpus
     return cpu_percentage
 
@@ -69,10 +67,13 @@ if __name__ == "__main__":
     else:
         f = open(monitor_file, 'a')
 
+    client = docker.from_env()
+    container = client.containers.get(CONTAINER_NAME)
+
     print("starting monitor loop. Writing to " + filename + ". Ctrl-C to exit.")
     while True:
         try:
-            usage = get_curr_cpu_usage()
+            usage = get_curr_cpu_usage(container)
             readings = "{},{}\n".format(get_timestamp(), usage)
         except KeyError:
             print("error getting data, is container running? Trying again")
