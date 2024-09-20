@@ -66,10 +66,9 @@ class FileClusterStateProvider(ClusterStateProvider):
 
         self.data_dir = Path(data_dir) or Path().absolute() / "data"
         if not list_perf_event_log_files(self.data_dir):
-            err_msg = 'Error: no csvs found in data_dir {}'.format(self.data_dir) 
-            self.logger.error(err_msg)
-            raise SystemExit(err_msg)
-        
+            self.logger.error("Error: no csvs found in data_dir %s", self.data_dir)
+            raise SystemExit(f"Error: no csvs found in data_dir {self.data_dir}")
+
         # TODO: rename this, it's a bit confusing. It's not the features of the model, it's the features of the data.
         self.features = features or []
         # TODO: a lot of the code below needs testing
@@ -104,7 +103,7 @@ class FileClusterStateProvider(ClusterStateProvider):
         # if the data is large, this will take a long time. Need to chunk.
         csv_paths = list_perf_event_log_files(self.data_dir)
         if not csv_paths:
-            self.logger.error('Error reading csvs from {}'.format(self.data_dir))
+            self.logger.error("Error reading csvs from %s", self.data_dir)
             return None, None
 
         # Process data
@@ -172,8 +171,8 @@ class FileClusterStateProvider(ClusterStateProvider):
                     lambda x: datetime.strptime(x, "%Y.%m.%d-%H:%M:%S:%f"))
                 temp_data = temp_data[["time"] + self.features]
                 recorded_data = pd.concat([recorded_data, temp_data], axis=0)
-            except Exception as e:
-                self.logger.error(f"Error reading {path} {e}")
+            except Exception as e: # pylint: disable=broad-exception-caught  # FIXME
+                self.logger.error("Error reading %s", path, exc_info=e)
                 continue
         return recorded_data
 

@@ -78,7 +78,7 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
     def _get_all_performance_data(self):  # Verify that csvs exist in the data_dir
         csv_paths = list_perf_event_log_files(self.data_dir)
         if not csv_paths:
-            self.logger.error(f"Error reading csvs in {self.data_dir}")
+            self.logger.error("Error reading csvs in %s", self.data_dir)
             return None, None
 
         # Process data

@@ -43,10 +43,9 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
 
         csv_paths = list_perf_event_log_files(self.data_dir)
         if not csv_paths:
-            err_msg = 'Error reading csvs from {}. Your csv_paths are empty.'.format(self.data_dir)
-            self.logger.error(err_msg)
-            raise FileNotFoundError(err_msg)
-
+            self.logger.error("Error reading csvs from %s. Your csv_paths are empty.", self.data_dir)
+            raise FileNotFoundError(f"Error reading csvs from {self.data_dir}. Your csv_paths are empty.")
+            
         # Process data
         # Read all data from file
         # TODO: This is a temporary solution. We will need to read data in chunks
