@@ -13,9 +13,6 @@ from pathlib import Path
 import pandas as pd
 
 from vasim.commons.utils import list_perf_event_log_files
-from vasim.recommender.cluster_state_provider.ClusterStateConfig import (
-    ClusterStateConfig,
-)
 from vasim.recommender.cluster_state_provider.ClusterStateProvider import (
     ClusterStateProvider,
 )
@@ -166,8 +163,8 @@ class FileClusterStateProvider(ClusterStateProvider):
         assert isinstance(data, list), "Data must be a list"
         csv_paths = data
         recorded_data = pd.DataFrame()
-        for path in csv_paths:
-            path = str(path)
+        for csv_path in csv_paths:
+            path = str(csv_path)
             try:
                 temp_data = pd.read_csv(path)
                 temp_data["cpu"] = temp_data["CPU_USAGE_ACTUAL"]
