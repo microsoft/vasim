@@ -12,6 +12,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from vasim.commons.utils import list_perf_event_log_files
 from vasim.recommender.cluster_state_provider.ClusterStateProvider import (
     ClusterStateProvider,
 )
@@ -65,9 +66,10 @@ class FileClusterStateProvider(ClusterStateProvider):
         self.logger = logging.getLogger()
 
         self.data_dir = Path(data_dir) or Path().absolute() / "data"
-        if not list(self.data_dir.glob("**/*.csv")):
+        if not list_perf_event_log_files(self.data_dir):
             self.logger.error("Error: no csvs found in data_dir %s", self.data_dir)
             raise SystemExit(f"Error: no csvs found in data_dir {self.data_dir}")
+
         # TODO: rename this, it's a bit confusing. It's not the features of the model, it's the features of the data.
         self.features = features or []
         # TODO: a lot of the code below needs testing
@@ -100,11 +102,9 @@ class FileClusterStateProvider(ClusterStateProvider):
         # Verify that csvs exist in the data_dir
         # TODO: This is not a scalable way to check for csvs
         # if the data is large, this will take a long time. Need to chunk.
-        csv_paths = list(self.data_dir.glob("**/*.csv"))
+        csv_paths = list_perf_event_log_files(self.data_dir)
         if not csv_paths:
             self.logger.error("Error reading csvs from %s", self.data_dir)
-
-            print("Error reading csvs")
             return None, None
 
         # Process data
@@ -163,20 +163,17 @@ class FileClusterStateProvider(ClusterStateProvider):
         assert isinstance(data, list), "Data must be a list"
         csv_paths = data
         recorded_data = pd.DataFrame()
-        for _, csv_path in enumerate(csv_paths):
+        for csv_path in csv_paths:
             path = str(csv_path)
-            # The CSVs must have the word "perf_event_log" in them, else we ignore
-            # This is to prevent accidentally reading other CSVs in the directory
-            if "perf_event_log" in path:
-                try:
-                    temp_data = pd.read_csv(path)
-                    temp_data["cpu"] = temp_data["CPU_USAGE_ACTUAL"]
-                    temp_data["time"] = temp_data["TIMESTAMP"].apply(lambda x: datetime.strptime(x, "%Y.%m.%d-%H:%M:%S:%f"))
-                    temp_data = temp_data[["time"] + self.features]
-                    recorded_data = pd.concat([recorded_data, temp_data], axis=0)
-                except Exception as e:  # pylint: disable=broad-exception-caught  # FIXME
-                    self.logger.error("Error reading %s", path, exc_info=e)
-                    continue
+            try:
+                temp_data = pd.read_csv(path)
+                temp_data["cpu"] = temp_data["CPU_USAGE_ACTUAL"]
+                temp_data["time"] = temp_data["TIMESTAMP"].apply(lambda x: datetime.strptime(x, "%Y.%m.%d-%H:%M:%S:%f"))
+                temp_data = temp_data[["time"] + self.features]
+                recorded_data = pd.concat([recorded_data, temp_data], axis=0)
+            except Exception as e:  # pylint: disable=broad-exception-caught  # FIXME
+                self.logger.error("Error reading %s", path, exc_info=e)
+                continue
         return recorded_data
 
     def truncate_data(self, recorded_data, last_decision_time):
