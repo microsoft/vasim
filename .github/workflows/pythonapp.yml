@@ -47,6 +47,10 @@ jobs:
       run: |
         python -m pip install --upgrade pip
 
+    - name: Install basic and test dependencies
+      run: |
+        python -m pip install -e .[dev]
+
     - name: Check formating and linting with pre-commit hooks
       if: ${{ matrix.python-version == env.MAIN_PYTHON_VERS }}
       run: |
@@ -54,9 +58,6 @@ jobs:
         pre-commit run --all-files
         git diff --exit-code
 
-    - name: Install basic and test dependencies
-      run: |
-        python -m pip install -e .[dev]
     - name: Tests with coverage reporting
       run : |
         # Run tests in parallel with coverage (configured via pyproject.toml)

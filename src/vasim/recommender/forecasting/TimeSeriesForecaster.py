@@ -6,6 +6,7 @@
 # --------------------------------------------------------------------------
 #
 import warnings
+from typing import List, Optional, Union
 
 import numpy as np
 from sktime.forecasting.compose import MultiplexForecaster
@@ -29,7 +30,7 @@ class TimeSeriesForecaster:
         data_dir (str): Directory containing training data.
     """
 
-    def __init__(self, data_dir=None, sp=24 * 60 * 2, selected_forecaster=["naive"]):
+    def __init__(self, data_dir=None, sp=24 * 60 * 2, selected_forecaster: Optional[Union[str, List[str]]] = None):
         """
         Initializes the TimeSeriesForecaster with the specified parameters.
 
@@ -38,6 +39,8 @@ class TimeSeriesForecaster:
             sp (int, optional): Seasonal periodicity. Defaults to 24 * 60 * 2.
             selected_forecaster (list, optional): List of selected forecasters. Defaults to ["naive"].
         """
+        if selected_forecaster is None:
+            selected_forecaster = ["naive"]
         self.window_splitter = 0.7
         self.sp = sp
         self.selected_forecaster = selected_forecaster
@@ -81,7 +84,7 @@ class TimeSeriesForecaster:
         """
         y_pred = self._forecast(data, forecast_horizon)
         # make y_pred a dataframe with time and cpu columns
-        y_pred['time'] = y_pred.index
+        y_pred["time"] = y_pred.index
         y_pred = y_pred.rename(columns={0: "cpu"})
         y_pred = y_pred.reset_index(drop=True)
         return y_pred

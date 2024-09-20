@@ -10,7 +10,6 @@ import os
 from datetime import datetime, timedelta
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 from vasim.recommender.cluster_state_provider.ClusterStateProvider import ClusterStateProvider
@@ -21,6 +20,7 @@ from vasim.commons.utils import list_perf_event_log_files
 class FileClusterStateProvider(ClusterStateProvider):
     """
     This class requires a Kubernetes cluster to run.
+
     It reads data from the cluster and uses it to make decisions.
 
     It is not part of the simulator, but is used in the production environment.
@@ -30,10 +30,22 @@ class FileClusterStateProvider(ClusterStateProvider):
     ability to run the simulator with a live k8s cluster.
     """
 
-    def __init__(self, data_dir=None, features=["cpu"], window=40, decision_file_path=None, lag=5.0,
-                 min_cpu_limit=1, max_cpu_limit=None, save_metadata=True, **kwargs):
+    def __init__(
+        self,
+        data_dir=None,
+        features=None,
+        window=40,
+        decision_file_path=None,
+        lag=5.0,
+        min_cpu_limit=1,  # pylint: disable=unused-argument   # FIXME
+        max_cpu_limit=None,  # pylint: disable=unused-argument   # FIXME
+        save_metadata=True,
+        **kwargs,
+    ):
+        # pylint: disable=too-many-arguments
         """
         Parameters:
+
             data_dir (str): The directory where the csvs are stored.
             features (list): The features to use for the model. Currently always ['cpu']. TODO: memory
             window (int): Window in minutes to capture VALID data in order to evaluate PP curve
@@ -43,10 +55,12 @@ class FileClusterStateProvider(ClusterStateProvider):
             max_cpu_limit (int): The maximum number of cores to recommend. (When set to None, it assumes max on the machine)
             save_metadata (bool): Whether to save metadata to a file in the data_dir
         """
+        if features is None:
+            features = ["cpu"]
 
-        if 'config' in kwargs:
+        if "config" in kwargs:
             # keyword argument 'param_name' exists
-            self.config = kwargs['config']
+            self.config = kwargs["config"]
 
         self.logger = logging.getLogger()
 
@@ -64,8 +78,8 @@ class FileClusterStateProvider(ClusterStateProvider):
 
     def get_current_cpu_limit(self):
         """
-        Returns
-        -------
+        ---
+
         cores : int
             The number of cores currently being used.
         """
@@ -74,9 +88,10 @@ class FileClusterStateProvider(ClusterStateProvider):
             def get_current_cpu_limit_pods():
                 # TODO: reimplement this to not be Azure-specific
                 pass
+
             cores, _ = get_current_cpu_limit_pods()[0]
-        except Exception as e:
-            self.logger.error(f'Error getting current cores. Retry later. {e}')
+        except Exception as e:  # pylint: disable=broad-exception-caught  # FIXME
+            self.logger.error("Error getting current cores. Retry later.", exc_info=e)
             print("Error getting current cores. Retry later.")
             print(e)
             return None
@@ -89,7 +104,7 @@ class FileClusterStateProvider(ClusterStateProvider):
         # if the data is large, this will take a long time. Need to chunk.
         csv_paths = list_perf_event_log_files(self.data_dir)
         if not csv_paths:
-            self.logger.error(f'Error reading csvs from {self.data_dir}')
+            self.logger.error('Error reading csvs from {}'.format(self.data_dir))
             return None, None
 
         # Process data
@@ -139,11 +154,14 @@ class FileClusterStateProvider(ClusterStateProvider):
             if cores is None:
                 self.logger.error("Error getting current cores. Retry later.")
                 return None, None
-            recorded_data = recorded_data[recorded_data["cpu"] <= self.config.general_config['max_cpu_limit']]
+            recorded_data = recorded_data[recorded_data["cpu"] <= self.config.general_config["max_cpu_limit"]]
 
         return recorded_data, end_time
 
-    def process_data(self, csv_paths):
+    def process_data(self, data=None):
+        assert data is not None, "No data provided to process"
+        assert isinstance(data, list), "Data must be a list"
+        csv_paths = data
         recorded_data = pd.DataFrame()
         for path in csv_paths:
             path = str(path)
@@ -159,27 +177,16 @@ class FileClusterStateProvider(ClusterStateProvider):
                 continue
         return recorded_data
 
-    def drop_duplicates(self, recorded_data):
-        recorded_data = recorded_data.drop_duplicates()
-        return recorded_data
-
-    def sort_data(self, recorded_data):
-        recorded_data = recorded_data.assign(time=pd.to_datetime(recorded_data["time"]))
-        recorded_data = recorded_data.sort_values(by="time")
-        return recorded_data
-
     def truncate_data(self, recorded_data, last_decision_time):
         end_time = recorded_data["time"].iloc[-1]
 
         num_observations = recorded_data.shape[0]
         if num_observations > 2:
             if last_decision_time > end_time:
-                self.logger.warning(
-                    "Last decision time is greater than end time so avoid making a decision"
-                )
+                self.logger.warning("Last decision time is greater than end time so avoid making a decision")
                 return None, None
 
-        start_time = end_time - timedelta(minutes=self.config.general_config['window'])
+        start_time = end_time - timedelta(minutes=self.config.general_config["window"])
         recorded_data = recorded_data[recorded_data["time"] >= start_time]
         recorded_data = recorded_data[recorded_data["time"] <= end_time]
         return recorded_data, end_time
@@ -187,7 +194,7 @@ class FileClusterStateProvider(ClusterStateProvider):
     def get_last_decision_time(self, recorded_data):
         # Check if the decisions file exists
         if not os.path.exists(self.decision_file_path):
-            self.logger.warning("No decisions file found!  Path was: {}".format(self.decision_file_path))
+            self.logger.warning("No decisions file found!  Path was: %s", self.decision_file_path)
             last_decision_time = recorded_data["time"].iloc[0]
         else:
             # Read in the decisions txt file to see when the last decision was made
@@ -204,16 +211,15 @@ class FileClusterStateProvider(ClusterStateProvider):
                 last_decision_time = recorded_data["time"].iloc[0]
             else:
                 # Identify the time point when the CURR_LIMIT changes (when a decision was enforced)
-                new_limit_changes = decisions[
-                    decisions["CURR_LIMIT"].shift(1) != decisions["CURR_LIMIT"]]
+                new_limit_changes = decisions[decisions["CURR_LIMIT"].shift(1) != decisions["CURR_LIMIT"]]
 
                 # Get the last time a decision was made
                 last_decision_time = new_limit_changes["LATEST_TIME"].iloc[-1]
                 # Add the lag to the last decision time
-                last_decision_time = last_decision_time + timedelta(minutes=self.config.general_config['lag'])
+                last_decision_time = last_decision_time + timedelta(minutes=self.config.general_config["lag"])
 
         return last_decision_time
 
     def get_total_cpu(self):
         # TODO: this function makes less sense in the context of the simulator
-        return self.config.general_config['max_cpu_limit']
+        return self.config.general_config["max_cpu_limit"]

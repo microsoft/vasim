@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------
 #
 import os
-import pandas as pd
 from datetime import datetime
+
+import pandas as pd
 
 
 class Oracle:
@@ -31,7 +32,7 @@ class Oracle:
         """
         dfs = []
         for file_name in os.listdir(data_dir):
-            if file_name.endswith('.csv'):
+            if file_name.endswith(".csv"):
                 # Construct the full file path
                 file_path = os.path.join(data_dir, file_name)
 
@@ -42,8 +43,7 @@ class Oracle:
         # Concatenate all DataFrames into a single DataFrame
         temp_data = pd.concat(dfs, ignore_index=True)
         temp_data["cpu"] = temp_data["CPU_USAGE_ACTUAL"]
-        temp_data["time"] = temp_data["TIMESTAMP"].apply(
-            lambda x: datetime.strptime(x, "%Y.%m.%d-%H:%M:%S:%f"))
+        temp_data["time"] = temp_data["TIMESTAMP"].apply(lambda x: datetime.strptime(x, "%Y.%m.%d-%H:%M:%S:%f"))
         temp_data = temp_data.sort_values("time", ascending=True)
         self.all_performance_data = temp_data
 
@@ -54,7 +54,6 @@ class Oracle:
         Args:
             data (pd.DataFrame): Data to fit the model on.
         """
-        pass
 
     def predict(self, data, forecast_horizon):
         """
@@ -71,9 +70,9 @@ class Oracle:
         latest_timestamp = data.index.max()
 
         # Get the forecast_horizon data points immediately after the latest timestamp from data
-        data_after_latest = temp_data[temp_data['time'] > latest_timestamp].head(forecast_horizon)
-        data_after_latest = data_after_latest[['time', 'cpu']]
+        data_after_latest = temp_data[temp_data["time"] > latest_timestamp].head(forecast_horizon)
+        data_after_latest = data_after_latest[["time", "cpu"]]
 
-        data_after_latest['timeindex'] = data_after_latest['time']
-        data_after_latest.set_index('timeindex', inplace=True)
+        data_after_latest["timeindex"] = data_after_latest["time"]
+        data_after_latest.set_index("timeindex", inplace=True)
         return data_after_latest

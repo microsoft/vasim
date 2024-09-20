@@ -5,9 +5,9 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
-import logging
+
 import numpy as np
-import pandas as pd
+
 from vasim.recommender.Recommender import Recommender
 
 
@@ -15,6 +15,7 @@ class SimpleMultiplierRecommender(Recommender):
     def __init__(self, cluster_state_provider, save_metadata=True):
         """
         Parameters:
+
             cluster_state_provider (ClusterStateProvider): The cluster state provider such as FileClusterStateProvider.
             save_metadata (bool): Whether to save metadata to a file.
         """
@@ -22,10 +23,14 @@ class SimpleMultiplierRecommender(Recommender):
 
         # User parameters go here. They are available in self.algo_params
         self.multiplier = self.algo_params.get("multiplier", 1.5)  # Default multiplier is 1.5
-        # Here is an example of accessing the general config in addition to the algo specific config/user params.
-        # (In this case, we didn't add smoothing_window to the algo specific config), so we use the general config as a fallback.
+        # Here is an example of accessing the general config in addition to the algo
+        # specific config/user params.
+        # (In this case, we didn't add smoothing_window to the algo specific
+        # config), so we use the general config as a fallback.
         self.smoothing_window = self.algo_params.get(
-            "smoothing_window", self.config.get("general_config", {}).get("window", 5))
+            "smoothing_window",
+            self.config.get("general_config", {}).get("window", 5),
+        )
 
     def run(self, recorded_data):
         """
@@ -47,17 +52,17 @@ class SimpleMultiplierRecommender(Recommender):
         # Now round the new_limit (2* the used cores) to the nearest 0.5 core. Always round up.
         new_limit = np.ceil(new_limit * 2) / 2
 
-        self.logger.debug(f"Smoothed max: {smoothed_max}, Scaling factor: {new_limit}")
+        self.logger.debug("Smoothed max: %s, Scaling factor: %s", smoothed_max, new_limit)
 
         return new_limit
 
     def calculate_smoothed_max(self, recorded_data):
         # Smooth the data by applying a rolling mean
-        smoothed_data = recorded_data['cpu'].rolling(window=self.smoothing_window, min_periods=1).mean()
+        smoothed_data = recorded_data["cpu"].rolling(window=self.smoothing_window, min_periods=1).mean()
 
         # Get the maximum value from the smoothed data
         smoothed_max = smoothed_data.max()
 
-        self.logger.debug(f"Calculated smoothed max: {smoothed_max}")
+        self.logger.debug("Calculated smoothed max: %s", smoothed_max)
 
         return smoothed_max

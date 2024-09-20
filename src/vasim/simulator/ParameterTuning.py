@@ -5,20 +5,6 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
-import copy
-import multiprocessing
-import sys
-import random
-from typing import Dict, List
-import logging
-import uuid
-import os
-import itertools
-
-from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
-
-random.seed(1234)
-
 """
 This module contains functions to tune the simulator parameters.
 
@@ -36,45 +22,65 @@ The tuning strategies include:
   of random combinations from the parameter values. This approach reduces the computational cost compared to
   grid search but may miss the optimal configuration if the search space is large and too few samples are taken.
 
-
 Helper functions are also provided to modify configurations, create unique worker IDs, and run the simulator.
 """
+import copy
+import itertools
+import logging
+import multiprocessing
+import os
+import random
+import sys
+import traceback
+import uuid
+from typing import Any, Dict, List, Optional
+
+from vasim.recommender.cluster_state_provider.ClusterStateConfig import (
+    ClusterStateConfig,
+)
+
+random.seed(1234)
 
 
-def _create_modified_configs(baseconfig: ClusterStateConfig,
-                             algo_specific_params_to_tune: Dict[str, List[any]],
-                             general_params_to_tune: Dict[str, List[any]],
-                             predictive_params_to_tune: Dict[str, List[any]],
-                             strategy: str,
-                             num_combinations: int) -> List[ClusterStateConfig]:
+def _create_modified_configs(
+    baseconfig: ClusterStateConfig,
+    algo_specific_params_to_tune: Dict[str, List[Any]],
+    general_params_to_tune: Dict[str, List[Any]],
+    predictive_params_to_tune: Dict[str, List[Any]],
+    strategy: str,
+    num_combinations: int,
+) -> List[ClusterStateConfig]:
+    # pylint: disable=too-many-arguments
     """
-    Generates modified configurations based on the specified tuning strategy, initial configuration,
-    and a set of allowed parameters and values to tune.
+    Generates modified configurations based on the specified tuning strategy, initial configuration,.
 
+    and a set of allowed parameters and values to tune.
 
     Args:
         baseconfig (ClusterStateConfig): The base configuration to modify.
-        algo_specific_params_to_tune (Dict[str, List[any]]): Algorithm-specific parameters and their possible values to tune.
-        general_params_to_tune (Dict[str, List[any]]): General configuration parameters and their possible values to tune.
-        predictive_params_to_tune (Dict[str, List[any]]): Predictive configuration parameters and their possible values to tune.
+        algo_specific_params_to_tune (Dict[str, List[Any]]): Algorithm-specific parameters and their possible values to tune.
+        general_params_to_tune (Dict[str, List[Any]]): General configuration parameters and their possible values to tune.
+        predictive_params_to_tune (Dict[str, List[Any]]): Predictive configuration
+            parameters and their possible values to tune.
         strategy (str): The tuning strategy to use ('grid' or 'random').
         num_combinations (int): The number of random combinations to generate for the 'random' strategy.
             This parameter is ignored for the 'grid' strategy.
 
     Returns:
-        List[ClusterStateConfig]: A list of modified configurations based on the specified tuning strategy and parameters for tuning.
+        List[ClusterStateConfig]: A list of modified configurations based on the
+            specified tuning strategy and parameters for tuning.
     """
 
-    def evaluate_config(algo_config_params: Dict[str, any],
-                        general_config_params: Dict[str, any],
-                        predictive_params: Dict[str, any]) -> ClusterStateConfig:
+    def evaluate_config(
+        algo_config_params: Dict[str, Any], general_config_params: Dict[str, Any], predictive_params: Dict[str, Any]
+    ) -> ClusterStateConfig:
         """
         Creates a modified configuration with updated parameter values.
 
         Args:
-            algo_config_params (Dict[str, any]): The algorithm-specific parameters.
-            general_config_params (Dict[str, any]): The general configuration parameters.
-            predictive_params (Dict[str, any]): The predictive configuration parameters.
+            algo_config_params (Dict[str, Any]): The algorithm-specific parameters.
+            general_config_params (Dict[str, Any]): The general configuration parameters.
+            predictive_params (Dict[str, Any]): The predictive configuration parameters.
 
         Returns:
             ClusterStateConfig: A modified configuration.
@@ -93,9 +99,9 @@ def _create_modified_configs(baseconfig: ClusterStateConfig,
         Generates random configurations based on provided parameters.
 
         Args:
-            algo_params_to_tune (Dict[str, List[any]]): Algorithm-specific parameters to tune.
-            general_params_to_tune (Dict[str, List[any]]): General configuration parameters to tune.
-            predictive_params_to_tune (Dict[str, List[any]]): Predictive configuration parameters to tune.
+            algo_params_to_tune (Dict[str, List[Any]]): Algorithm-specific parameters to tune.
+            general_params_to_tune (Dict[str, List[Any]]): General configuration parameters to tune.
+            predictive_params_to_tune (Dict[str, List[Any]]): Predictive configuration parameters to tune.
             num_combinations (int): Number of random combinations to generate.
 
         Returns:
@@ -105,8 +111,9 @@ def _create_modified_configs(baseconfig: ClusterStateConfig,
         for _ in range(num_combinations):
             algo_config = {config_param: random.choice(values) for config_param, values in algo_params_to_tune.items()}
             general_config = {config_param: random.choice(values) for config_param, values in general_params_to_tune.items()}
-            predictive_params = {predictive_param: random.choice(
-                values) for predictive_param, values in predictive_params_to_tune.items()}
+            predictive_params = {
+                predictive_param: random.choice(values) for predictive_param, values in predictive_params_to_tune.items()
+            }
             modified_configs.append(evaluate_config(algo_config, general_config, predictive_params))
         return modified_configs
 
@@ -115,17 +122,22 @@ def _create_modified_configs(baseconfig: ClusterStateConfig,
         general_config_param_combinations = list(itertools.product(*general_params_to_tune.values()))
         predictive_param_combinations = list(itertools.product(*predictive_params_to_tune.values()))
         modified_configs = [
-            evaluate_config(dict(zip(algo_specific_params_to_tune.keys(), algo_config_combination)),
-                            dict(zip(general_params_to_tune.keys(), general_config_combination)),
-                            dict(zip(predictive_params_to_tune.keys(), predictive_combination)))
-
+            evaluate_config(
+                dict(zip(algo_specific_params_to_tune.keys(), algo_config_combination)),
+                dict(zip(general_params_to_tune.keys(), general_config_combination)),
+                dict(zip(predictive_params_to_tune.keys(), predictive_combination)),
+            )
             for algo_config_combination in algo_specific_params_combinations
             for general_config_combination in general_config_param_combinations
             for predictive_combination in predictive_param_combinations
         ]
     elif strategy == "random":
-        modified_configs = generate_random_configs(algo_specific_params_to_tune, general_params_to_tune,
-                                                   predictive_params_to_tune, num_combinations)
+        modified_configs = generate_random_configs(
+            algo_specific_params_to_tune,
+            general_params_to_tune,
+            predictive_params_to_tune,
+            num_combinations,
+        )
     # TODO: Implement other strategies, such as MLOS.
     else:
         raise ValueError(f"Invalid strategy: {strategy}")
@@ -141,8 +153,8 @@ def create_uuid():
         str: A unique identifier string in the format 'cfg-xxxxxxxx-xxxx'.
     """
     uid = uuid.uuid4()
-    uid = uid.hex
-    return 'cfg-' + uid[:8] + '-' + uid[9:13]
+    uid_str = uid.hex
+    return "cfg-" + uid_str[:8] + "-" + uid_str[9:13]
 
 
 def _tune_parameters(config, data_dir=None, algorithm=None, initial_cpu_limit=None):
@@ -160,47 +172,61 @@ def _tune_parameters(config, data_dir=None, algorithm=None, initial_cpu_limit=No
     """
     worker_id = create_uuid()
     setattr(config, "uuid", worker_id)
-    target_dir = f'{data_dir}_tuning/target_{worker_id}'
-    os.makedirs(f'{data_dir}_tuning', exist_ok=True)
+    target_dir = f"{data_dir}_tuning/target_{worker_id}"
+    os.makedirs(f"{data_dir}_tuning", exist_ok=True)
     os.makedirs(target_dir, exist_ok=True)
-    logger = logging.getLogger(f'{config.uuid}')
+    logger = logging.getLogger(f"{config.uuid}")
     logger.setLevel(logging.ERROR)
-    log_file = f'{target_dir}/error_log.txt'
+    log_file = f"{target_dir}/error_log.txt"
     file_handler = logging.FileHandler(log_file)
     file_handler.setLevel(logging.ERROR)
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
 
     original_stdout = sys.stdout
-    logger.info(f'Starting tuning for configuration {config.uuid}')
+    logger.info("Starting tuning for configuration %s", config.uuid)
     try:
+        # pylint: disable=import-outside-toplevel
+        # pylint: disable=cyclic-import
         from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
-        runner = InMemoryRunnerSimulator(data_dir=data_dir, algorithm=algorithm, initial_cpu_limit=initial_cpu_limit, target_simulation_dir=target_dir,
-                                         config=config)
+
+        runner = InMemoryRunnerSimulator(
+            data_dir=data_dir,
+            algorithm=algorithm,
+            initial_cpu_limit=initial_cpu_limit,
+            target_simulation_dir=target_dir,
+            config=config,
+        )
         metrics = runner.run_simulation()
         return config, metrics
-    except Exception as e:
-        import traceback
+    except Exception as e:  # pylint: disable=broad-exception-caught  # FIXME
         traceback.print_exc()
         sys.stdout = original_stdout
         print(e)
-        logger.error(f'Error in tuning parameters: {e}')
+        logger.error("Error in tuning parameters", exc_info=e)
         logger.error(traceback.format_exc())
     sys.stdout = original_stdout
     return config, None
 
 
-def tune_with_strategy(config_path: str,
-                       strategy: str,
-                       num_combinations: int = 10,
-                       num_workers: int = 1,
-                       data_dir=None, algorithm=None, initial_cpu_limit=None,
-                       algo_specific_params_to_tune: Dict[str, List[any]] = [],
-                       general_params_to_tune: Dict[str, List[any]] = [],
-                       predictive_params_to_tune: Dict[str, List[any]] = []):
+def tune_with_strategy(
+    config_path: str,
+    strategy: str,
+    num_combinations: int = 10,
+    num_workers: int = 1,
+    data_dir=None,
+    algorithm=None,
+    initial_cpu_limit=None,
+    algo_specific_params_to_tune: Optional[Dict[str, List[Any]]] = None,
+    general_params_to_tune: Optional[Dict[str, List[Any]]] = None,
+    predictive_params_to_tune: Optional[Dict[str, List[Any]]] = None,
+):
+    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-locals
     """
     Tunes the simulator parameters based on a strategy and configuration file.
+
     This function is the main entry point for tuning the simulator parameters.
 
     Args:
@@ -211,9 +237,9 @@ def tune_with_strategy(config_path: str,
         data_dir (str): The directory containing simulation data.
         algorithm (str): The algorithm for the simulation.
         initial_cpu_limit (int): The initial number of CPU cores before scaling.
-        algo_specific_params_to_tune (Dict[str, List[any]]): Algorithm-specific parameters to tune.
-        general_params_to_tune (Dict[str, List[any]]): General parameters to tune.
-        predictive_params_to_tune (Dict[str, List[any]]): Predictive parameters to tune.
+        algo_specific_params_to_tune (Dict[str, List[Any]]): Algorithm-specific parameters to tune.
+        general_params_to_tune (Dict[str, List[Any]]): General parameters to tune.
+        predictive_params_to_tune (Dict[str, List[Any]]): Predictive parameters to tune.
 
     Returns:
         List[Tuple[ClusterStateConfig, Any]]: A list of tuples with the configuration and resulting metrics.
@@ -237,13 +263,20 @@ def tune_with_strategy(config_path: str,
 
     # Generate the modified configs based on the specified strategy
     modified_configs = _create_modified_configs(
-        baseconfig, algo_specific_params_to_tune, general_params_to_tune, predictive_params_to_tune, strategy, num_combinations)
+        baseconfig,
+        algo_specific_params_to_tune,
+        general_params_to_tune,
+        predictive_params_to_tune,
+        strategy,
+        num_combinations,
+    )
 
     # Initialize the pool of worker processes
     with multiprocessing.Pool(processes=num_workers) as pool:
         # Map the tuning function to the modified configs
-        param_combinations = [(modified_config, data_dir, algorithm, initial_cpu_limit)
-                              for modified_config in modified_configs]
+        param_combinations = [
+            (modified_config, data_dir, algorithm, initial_cpu_limit) for modified_config in modified_configs
+        ]
         print(f"Running {len(param_combinations)} configurations...")
         results = pool.starmap(_tune_parameters, param_combinations)
 

@@ -6,20 +6,25 @@
 # --------------------------------------------------------------------------
 #
 import os
-import unittest
 import shutil
-from unittest.mock import patch, MagicMock
+import unittest
 from pathlib import Path
-from vasim.simulator.analysis.pareto_visualization import create_pareto_curve_from_folder
+from unittest.mock import MagicMock, patch
+
+from vasim.simulator.analysis.pareto_visualization import (
+    create_pareto_curve_from_folder,
+)
 from vasim.simulator.ParameterTuning import tune_with_strategy
 
 
 class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
-    '''
-    This is a true run of simulator end to end. It is not a unit test.
+    """
+    This is a true run of simulator end to end.
+
+    It is not a unit test.
 
     It calls tune_with_strategy, which performs a tuning run of the simulator, trying different configurations.
-    '''
+    """
 
     def setUp(self):
 
@@ -37,22 +42,20 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        patcher = patch('builtins.print', MagicMock())  # Mock the print function globally
+        patcher = patch("builtins.print", MagicMock())  # Mock the print function globally
         patcher.start()
         cls.patcher = patcher
 
     def test_pareto2d(self):
-        """
-        This test will tune the simulator with a few parameters and then plot the results on a pareto curve.
-        """
+        """This test will tune the simulator with a few parameters and then plot the results on a pareto curve."""
         # First create some test data to tune
         config_path = f"{self.source_dir}/metadata.json"
         algo_specific_params_to_tune = {
             "addend": [1, 2, 3],  # the addend is the number of minutes to add to the prediction\
         }
         params_to_tune = {
-            'window': [60, 120],  # the window size is the number of minutes to consider for the prediction
-            "lag": [1, 15]  # the lag is the number of minutes to wait before making a prediction
+            "window": [60, 120],  # the window size is the number of minutes to consider for the prediction
+            "lag": [1, 15],  # the lag is the number of minutes to wait before making a prediction
         }
         predictive_params_to_tune = None
         selected_algorithm = "additive"
@@ -64,12 +67,18 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         num_combinations = 12
 
         # This will populate the self.target_dir_sim folder with the results of the tuning
-        tune_with_strategy(config_path, strategy, num_combinations=num_combinations,
-                           num_workers=num_workers, data_dir=data_dir,
-                           algorithm=selected_algorithm, initial_cpu_limit=initial_cpu_limit,
-                           algo_specific_params_to_tune=algo_specific_params_to_tune,
-                           general_params_to_tune=params_to_tune,
-                           predictive_params_to_tune=predictive_params_to_tune)
+        tune_with_strategy(
+            config_path,
+            strategy,
+            num_combinations=num_combinations,
+            num_workers=num_workers,
+            data_dir=data_dir,
+            algorithm=selected_algorithm,
+            initial_cpu_limit=initial_cpu_limit,
+            algo_specific_params_to_tune=algo_specific_params_to_tune,
+            general_params_to_tune=params_to_tune,
+            predictive_params_to_tune=predictive_params_to_tune,
+        )
 
         # Now we'll plot them
         pareto_2d = create_pareto_curve_from_folder(data_dir, self.target_dir_sim)
@@ -88,7 +97,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         # This function returns folder, config, dimension_1, and dimension_2 of the closest combination
         # We don't know what folder will be because it's random, but we can check the other values
         # We know that a config with the added value of 1 has the least slack and expect that to be the closest to zero
-        self.assertEqual(ret[1].algo_specific_config['addend'], 1)
+        self.assertEqual(ret[1].algo_specific_config["addend"], 1)
         # The other two are dimensions: the slack and the insufficient cpu
         # We pre-computed these.
         self.assertAlmostEqual(ret[2], 7800, delta=100)

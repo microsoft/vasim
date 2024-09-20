@@ -1,0 +1,12 @@
+{
+    "recommendations": [
+        "davidanson.vscode-markdownlint",
+        "donjayamanne.python-environment-manager",
+        "ms-python.black-formatter",
+        "ms-python.debugpy",
+        "ms-python.pylint",
+        "ms-python.python",
+        "njpwerner.autodocstring",
+        "tamasfe.even-better-toml",
+    ]
+}
