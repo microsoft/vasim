@@ -52,7 +52,7 @@ class FileClusterStateProvider(ClusterStateProvider):
 
         self.data_dir = Path(data_dir) or Path().absolute() / "data"
         if not list_perf_event_log_files(self.data_dir):
-            err_msg = f'Error: no csvs found in data_dir {self.data_dir}'
+            err_msg = 'Error: no csvs found in data_dir {}'.format(self.data_dir) 
             self.logger.error(err_msg)
             raise SystemExit(err_msg)
         
