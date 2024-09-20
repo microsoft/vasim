@@ -12,9 +12,13 @@ from pathlib import Path
 
 import pandas as pd
 
-from vasim.recommender.cluster_state_provider.ClusterStateProvider import ClusterStateProvider
-from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
 from vasim.commons.utils import list_perf_event_log_files
+from vasim.recommender.cluster_state_provider.ClusterStateConfig import (
+    ClusterStateConfig,
+)
+from vasim.recommender.cluster_state_provider.ClusterStateProvider import (
+    ClusterStateProvider,
+)
 
 
 class FileClusterStateProvider(ClusterStateProvider):
@@ -167,11 +171,10 @@ class FileClusterStateProvider(ClusterStateProvider):
             try:
                 temp_data = pd.read_csv(path)
                 temp_data["cpu"] = temp_data["CPU_USAGE_ACTUAL"]
-                temp_data["time"] = temp_data["TIMESTAMP"].apply(
-                    lambda x: datetime.strptime(x, "%Y.%m.%d-%H:%M:%S:%f"))
+                temp_data["time"] = temp_data["TIMESTAMP"].apply(lambda x: datetime.strptime(x, "%Y.%m.%d-%H:%M:%S:%f"))
                 temp_data = temp_data[["time"] + self.features]
                 recorded_data = pd.concat([recorded_data, temp_data], axis=0)
-            except Exception as e: # pylint: disable=broad-exception-caught  # FIXME
+            except Exception as e:  # pylint: disable=broad-exception-caught  # FIXME
                 self.logger.error("Error reading %s", path, exc_info=e)
                 continue
         return recorded_data

@@ -10,8 +10,11 @@ from pathlib import Path
 
 import pandas as pd
 
-from vasim.recommender.cluster_state_provider.ClusterStateProvider import ClusterStateProvider
 from vasim.commons.utils import list_perf_event_log_files
+from vasim.recommender.cluster_state_provider.ClusterStateProvider import (
+    ClusterStateProvider,
+)
+
 
 class SimulatedBaseClusterStateProvider(ClusterStateProvider):
     # pylint: disable=too-many-instance-attributes
@@ -45,11 +48,11 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         if not csv_paths:
             self.logger.error("Error reading csvs from %s. Your csv_paths are empty.", self.data_dir)
             raise FileNotFoundError(f"Error reading csvs from {self.data_dir}. Your csv_paths are empty.")
-            
+
         # Process data
         # Read all data from file
         # TODO: This is a temporary solution. We will need to read data in chunks
-        
+
         self.recorded_data = self.process_data(csv_paths)
         self.start_time = pd.Timestamp(self.recorded_data["time"].iloc[0])
         self.end_time = pd.Timestamp(self.recorded_data["time"].iloc[-1])
