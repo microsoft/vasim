@@ -95,10 +95,16 @@ class ClusterStateConfig(dict):
         self.prediction_config = config_dict.get("prediction_config", {})
 
     def _load_from_json(self, filename):
-        # Load the configuration from a JSON file
-        with open(filename, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            self._load_from_dict(data)
+        try:
+            with open(filename, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                self._load_from_dict(data)
+        except FileNotFoundError as e:
+            logging.error("Configuration file not found: %s", filename)
+            raise e  # Re-raise or handle the error as needed
+        except json.JSONDecodeError as e:
+            logging.error("Invalid JSON format in the configuration file: %s", filename)
+            raise e  # Handle invalid JSON format
 
     def to_json(self, filepath):
         try:
@@ -109,8 +115,11 @@ class ClusterStateConfig(dict):
                     "prediction_config": self.prediction_config,
                 }
                 json.dump(full_dict, f, indent=4)
-        except Exception as e:  # pylint: disable=broad-exception-caught  # FIXME
-            logging.error("Error writing JSON file: %s", filepath, exc_info=e)
+        except (OSError, IOError) as file_error:  # Handle file-specific errors
+            logging.error("File error while writing JSON file: %s", filepath, exc_info=file_error)
+            raise
+        except (TypeError, ValueError, json.JSONDecodeError) as json_error:  # Handle JSON-specific errors
+            logging.error("JSON serialization error for file: %s", filepath, exc_info=json_error)
             raise
 
     def validate_config(self):
