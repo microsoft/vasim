@@ -22,12 +22,14 @@ classifiers = [
     "Topic :: System",
 ]
 license = { "file" = "LICENSE" }
-readme = { file = "README.md", content-type = "text/markdown" }
+dynamic = [
+    "readme",   # urls get dynamically mutated by the build process
+    "version",
+]
 maintainers = [
     { name = "VASim Maintainers", email = "vasim-maintainers@service.microsoft.com" },
 ]
 
-version = "0.1.2"
 requires-python = ">=3.9"
 dependencies = [
     # TODO: Remove version pinning or make it version dependent.

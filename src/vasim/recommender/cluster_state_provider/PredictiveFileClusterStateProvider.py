@@ -10,6 +10,7 @@ import math
 
 import pandas as pd
 
+from vasim.commons.utils import list_perf_event_log_files
 from vasim.recommender.cluster_state_provider.FileClusterStateProvider import (
     FileClusterStateProvider,
 )
@@ -75,10 +76,9 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
         return self._prediction_activated
 
     def _get_all_performance_data(self):  # Verify that csvs exist in the data_dir
-        csv_paths = list(self.data_dir.glob("**/*.csv"))
+        csv_paths = list_perf_event_log_files(self.data_dir)
         if not csv_paths:
             self.logger.error("Error reading csvs in %s", self.data_dir)
-            print("Error reading csvs")
             return None, None
 
         # Process data
