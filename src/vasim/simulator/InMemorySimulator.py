@@ -5,6 +5,32 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+This module contains the InMemoryRunnerSimulator class, which is designed to simulate.
+
+the execution of autoscaling algorithms in a virtualized environment. The simulator
+utilizes recorded cluster state data and runs autoscaling algorithms to determine the
+optimal scaling decisions (e.g., adjusting CPU limits) based on the current workload.
+
+Main Features:
+- Simulated Cluster State: Load and simulate autoscaling decisions using predefined cluster data.
+- Autoscaling Algorithms: Supports multiple autoscaling algorithms (e.g., additive, multiplicative).
+- Metrics Calculation: Calculates performance metrics and outputs them to files.
+- Visualization: Plots CPU usage and scaling decisions for analysis.
+- Simulation Progress: Provides progress tracking and the ability to yield updates during long-running simulations.
+
+Classes:
+    InMemoryRunnerSimulator: The main class that manages the simulation, loads configuration,
+    and runs the specified autoscaling algorithms.
+
+Functions:
+    main: A command-line interface for running the InMemoryRunnerSimulator.
+
+Dependencies:
+    argparse, json, logging, numpy, pandas, and other modules for cluster state simulation and analysis.
+"""
+
 import argparse
 import json
 import logging
@@ -34,7 +60,16 @@ class InMemoryRunnerSimulator:
     """
     This class is a simulator that runs the recommender algorithm on a simulated cluster state.
 
-    It contains the run method that simulates the cluster state and runs the recommender algorithm.
+    It simulates the cluster state using recorded data and runs the selected recommender algorithm
+    (e.g., additive or multiplicative) to determine CPU scaling decisions based on current workload.
+
+    Attributes:
+        data_dir (str): Directory where the input data (e.g., workload metrics) is stored.
+        config (ClusterStateConfig): Configuration object for the cluster state.
+        initial_cpu_limit (int): Initial CPU limit for the simulation.
+        recommender_algorithm (object): The selected autoscaling algorithm.
+        infra_scaler (SimulatedInfraScaler): The infrastructure scaler responsible for applying CPU limit changes.
+        target_simulation_dir (str): Directory to save the simulation output and logs.
     """
 
     # pylint: disable=too-many-instance-attributes
@@ -49,6 +84,7 @@ class InMemoryRunnerSimulator:
         target_simulation_dir=None,
         if_resample=True,
     ):
+        # pylint: disable=too-many-positional-arguments
         # pylint: disable=too-many-arguments
         worker_id = create_uuid()
         target_simulation_dir = target_simulation_dir or os.path.join(
@@ -130,14 +166,11 @@ class InMemoryRunnerSimulator:
         out_filename = f"{data_dir}/decisions.txt"
         out_file = Path(out_filename)
 
+        # Use 'with' statement to open the file
         if not out_file.exists():
-            f = open(out_file, "a", encoding="utf-8")
-            f.write("LATEST_TIME,CURR_LIMIT,NEW_LIMIT\n")
-            f.flush()
-        else:
-            f = open(out_file, "a", encoding="utf-8")
-
-        return f
+            with open(out_file, "a", encoding="utf-8") as f:
+                f.write("LATEST_TIME,CURR_LIMIT,NEW_LIMIT\n")
+        return open(out_file, "a", encoding="utf-8")
 
     def output_decision(self, latest_time, current_limit, new_limit):
         if latest_time is not None:
@@ -155,16 +188,21 @@ class InMemoryRunnerSimulator:
             if isinstance(value, np.int64):
                 metrics[key] = int(value)
 
-        #        save metrics to file
+        # Save metrics to file if required
         if save_to_file and metrics:
             with open(f"{self.target_simulation_dir}/calc_metrics.json", "w", encoding="utf-8") as f:
                 json.dump(metrics, f)
-            self.cluster_state_provider.config.to_json(f"{self.target_simulation_dir}/metadata.json")
+
+            with open(f"{self.target_simulation_dir}/metadata.json", "w", encoding="utf-8") as metadata_file:
+                self.cluster_state_provider.config.to_json(metadata_file)
+
+            # If plot_cpu_usage_and_new_limit_plotnine involves file operations, ensure it is properly handled
             plot_cpu_usage_and_new_limit_plotnine(
                 self.cluster_state_provider.data_dir,
                 decision_file_path=f"{self.target_simulation_dir}/decisions.txt",
                 if_resample=self.if_resample,
             )
+
         return metrics
 
     def run_simulation(self):
