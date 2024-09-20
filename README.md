@@ -2,6 +2,7 @@
 
 [![Build](https://github.com/microsoft/vasim/actions/workflows/pythonapp.yml/badge.svg)](https://github.com/microsoft/vasim/actions/workflows/pythonapp.yml)
 [![coverage](https://codecov.io/gh/microsoft/vasim/branch/main/graph/badge.svg)](https://codecov.io/github/microsoft/vasim?branch=main)
+[![PyPI version](https://badge.fury.io/py/vasim.svg)](https://badge.fury.io/py/vasim)
 
 VASIM (**V**ertical **A**utoscaling **SIM**ulator) is a tool designed to address the complexities involved in assessing autoscaling algorithms.
 
@@ -38,6 +39,8 @@ Our documentation and working example is in our [notebook](examples/using_vasim.
 * For additional usage examples, see any test in the [tests](tests) folder that starts with `test_e2e`.
 
 * Please see our [blog post](https://www.microsoft.com/en-us/research/blog/enhanced-autoscaling-with-vasim-vertical-autoscaling-simulator-toolkit/?msockid=0d2280e91b2c6ea41f32935e1a9f6f36) or [research paper](https://www.microsoft.com/en-us/research/publication/vasim-vertical-autoscaling-simulator-toolkit/) for more details!
+
+* You can also [`pip install vasim`](https://pypi.org/project/vasim)!
 
 ## Authors
 
