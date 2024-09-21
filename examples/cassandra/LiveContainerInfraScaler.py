@@ -7,6 +7,8 @@
 #
 
 from vasim.simulator.SimulatedInfraScaler import SimulatedInfraScaler
+import logging
+from pathlib import Path
 
 
 class LiveContainerInfraScaler(SimulatedInfraScaler):
@@ -23,6 +25,22 @@ class LiveContainerInfraScaler(SimulatedInfraScaler):
 
         self.container = container
 
+        # TODO is this necessary?
+        #
+        # # # reinitialize the logger
+        # # log_file = Path(self.cluster_state_provider.decision_file_path).parent.joinpath('updatelog.txt')
+        # # # delete the old logger entirely
+        # # for handler in self.logger.handlers[:]:
+        # #     self.logger.removeHandler(handler)
+        # # # reinitialize the logger
+
+        # # self.logger = logging.getLogger(__name__)
+        # # self.logger.setLevel(logging.DEBUG)
+        # # self.logger.addHandler(logging.FileHandler(log_file))
+
+        # Write a test message
+        self.logger.info(">>>LiveContainerInfraScaler initialized")
+
     def set_cpu_limit_live(self, new_cpu_limit):
         """
         Set the CPU limit of the container
@@ -33,6 +51,7 @@ class LiveContainerInfraScaler(SimulatedInfraScaler):
 
         # update the live container
         self.container.update(cpu_quota=int(new_cpu_limit * 100000))
+
         self.logger.info(f"Updated CPU limit to {new_cpu_limit}")
 
     def scale(self, new_limit, time_now):

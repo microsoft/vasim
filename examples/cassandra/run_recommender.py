@@ -11,12 +11,14 @@
 
 import time
 import os
+import pandas as pd
 from pathlib import Path
 import docker
 from poll_metrics import CONTAINER_NAME  # TODO: this should be in a shared file, or cmd line arg
 from LiveContainerInfraScaler import LiveContainerInfraScaler
 
 from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
+from InMemoryLive import InMemoryRunner
 
 RECOMMENDATION_FREQ = 10  # how often to make a recommendation in seconds
 INITIAL_CPU_LIMIT_DEFAULT = 6  # the initial CPU limit to use if we can't read it from the container
@@ -32,6 +34,7 @@ if __name__ == '__main__':
 
     # Read the current CPU limit from the container. This is the initial CPU limit that we will use for the simulation.
     # If it is not set, use the default value.
+    # You can reset this manually on the command line with `docker update some-cassandra --cpu-quota 600000`` for example
 
     client = docker.from_env()
     container = client.containers.get(CONTAINER_NAME)
@@ -44,30 +47,7 @@ if __name__ == '__main__':
     print(f"Initial CPU limit: {INITIAL_CPU_LIMIT}")
 
     # we will use the additive algorithm for now. You can change this to any of the other algorithms.
-    runner = InMemoryRunnerSimulator(data_dir, initial_cpu_limit=INITIAL_CPU_LIMIT, algorithm="additive")
+    # runner = InMemoryRunnerSimulator(data_dir, initial_cpu_limit=INITIAL_CPU_LIMIT, algorithm="additive")
+    runner = InMemoryRunner(data_dir, initial_cpu_limit=INITIAL_CPU_LIMIT, algorithm="additive", container=container)
 
-    # Now we will override the infra_scaler with our own implementation that will update the CPU limit of the container
-    runner.infra_scaler = LiveContainerInfraScaler(runner.cluster_state_provider, runner.experiment_start_time,
-                                                   runner.config.general_config['recovery_time'], container)
-
-    print("starting recommender loop. Writing to data_simulation dir. Ctrl-C to exit.")
-
-    # We will call this in a loop every 5 minutes
-    while True:
-
-        # This will run the recommender algorithm for the last window of data and write the results to
-        #      the data_simulation folder. (run_simulation -> _execute_simulation_step).
-        # TODO: As part of this, it calls self.infra_scaler.scale(). We could override this method to call our own
-        runner.run_simulation(save_to_file=False)
-
-        print(f"Now sleeping for {RECOMMENDATION_FREQ} seconds")
-        time.sleep(RECOMMENDATION_FREQ)
-
-        # Now read in the new data that accumlated from the poll_metrics.py while we were sleeping
-        runner.cluster_state_provider.process_data(list(data_dir.glob("**/*.csv")))
-
-        # TODO: we need to modify SimulatedArcScaler to use the new CPU limit
-        # We'll need to write code that calls docker update some-cassandra --cpus $CPUS
-        # where $CPUS is the new CPU limit
-        # runner.infra_scaler.scale(new_cpu_limit)
-        # TODO: where is the output of infra scaler going?
+    runner.run_live()
