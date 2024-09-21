@@ -45,7 +45,7 @@ Our documentation and working example is in our [notebook](examples/using_vasim.
 ## Authors
 
 * Anna Pavlenko ([@apavlen](https://github.com/apavlen), primary implementation)
-* Karla Saur ([@ksaur](https://github.com/ksaur), editing, maintaining)
+* Karla Saur ([@ksaur](https://github.com/ksaur))
 * Yiwen Zhu ([@zyw400](https://github.com/zyw400))
 * Brian Kroth ([@bpkroth](https://github.com/bpkroth))
 * Joyce Cahoon ([@jyuu](https://github.com/jyuu))
