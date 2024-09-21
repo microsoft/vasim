@@ -59,15 +59,16 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         folder = os.listdir(self.target_dir_sim)[0]
         sim_dir = os.path.join(self.target_dir_sim, folder)  # todo add _simulations
 
-        # There should be a decisions.txt file in the simulation directory
-        assert os.path.exists(os.path.join(sim_dir, "decisions.txt"))
+        # There should be a decisions.csv file in the simulation directory
+        assert os.path.exists(os.path.join(sim_dir, "decisions.csv"))
 
         # the lag parameter defines the number of minutes to wait before making a prediction
         # So we expect the first decision to be made at 10 minutes
-        # and subsequent decisions to be made every 10 minutes. Let's open the decisions.txt file
+        # and subsequent decisions to be made every 10 minutes. Let's open the decisions.csv file
         # and compare the times to the expected times from the csv.
-        with open(os.path.join(sim_dir, "decisions.txt"), "r", encoding="utf-8") as f:
-            # TODO rename decisions.txt to be csv. It's not a txt file.
+        with open(os.path.join(sim_dir, "decisions.csv"), "r", encoding="utf-8") as f:
+            # TODO rename decisions.csv to be csv. It's not a txt file.
+            #renamed all decisions.txt to decisions.csv
             # We'll read it as a csv file.
             reader = csv.reader(f)
             next(reader)  # skip the header
@@ -117,15 +118,15 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         folder = os.listdir(self.target_dir_sim)[0]
         sim_dir = os.path.join(self.target_dir_sim, folder)  # todo add _simulations
 
-        # There should be a decisions.txt file in the simulation directory
-        assert os.path.exists(os.path.join(sim_dir, "decisions.txt"))
+        # There should be a decisions.csv file in the simulation directory
+        assert os.path.exists(os.path.join(sim_dir, "decisions.csv"))
 
         # the lag parameter defines the number of minutes to wait before making a prediction
         # So we expect the first decision to be made at 5 minutes
-        # and subsequent decisions to be made every 5 minutes. Let's open the decisions.txt file
+        # and subsequent decisions to be made every 5 minutes. Let's open the decisions.csv file
         # and compare the times to the expected times from the csv.
-        with open(os.path.join(sim_dir, "decisions.txt"), "r", encoding="utf-8") as f:
-            # TODO rename decisions.txt to be csv. It's not a txt file.
+        with open(os.path.join(sim_dir, "decisions.csv"), "r", encoding="utf-8") as f:
+            # TODO rename decisions.csv to be csv. It's not a txt file.
             # We'll read it as a csv file.
             reader = csv.reader(f)
             next(reader)  # skip the header

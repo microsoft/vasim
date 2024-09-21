@@ -73,7 +73,7 @@ class FileClusterStateProvider(ClusterStateProvider):
         # TODO: rename this, it's a bit confusing. It's not the features of the model, it's the features of the data.
         self.features = features or []
         # TODO: a lot of the code below needs testing
-        self.decision_file_path = decision_file_path or "data/decisions.txt"
+        self.decision_file_path = decision_file_path or "data/decisions.csv"
         self.save_metadata = save_metadata
 
     def get_current_cpu_limit(self):
