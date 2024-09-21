@@ -38,16 +38,18 @@ if __name__ == '__main__':
 
     client = docker.from_env()
     container = client.containers.get(CONTAINER_NAME)
-    INITIAL_CPU_LIMIT = container.attrs['HostConfig']['CpuQuota'] / 100000
+    initial_cpu_limit = container.attrs['HostConfig']['CpuQuota'] / 100000
 
-    if INITIAL_CPU_LIMIT == 0:
+    if initial_cpu_limit == 0:
         print(f"No CPU limit on container {CONTAINER_NAME}. Using default value.")
-        INITIAL_CPU_LIMIT = INITIAL_CPU_LIMIT_DEFAULT
+        # set the default value without breaking pylint
+        initial_cpu_limit = INITIAL_CPU_LIMIT_DEFAULT  # pylint: disable=invalid-name
+        container.update(cpu_quota=int(initial_cpu_limit * 100000))
 
-    print(f"Initial CPU limit: {INITIAL_CPU_LIMIT}")
+    print(f"Initial CPU limit: {initial_cpu_limit}")
 
     # we will use the additive algorithm for now. You can change this to any of the other algorithms.
     # runner = InMemoryRunnerSimulator(data_dir, initial_cpu_limit=INITIAL_CPU_LIMIT, algorithm="additive")
-    runner = InMemoryRunner(data_dir, initial_cpu_limit=INITIAL_CPU_LIMIT, algorithm="additive", container=container)
+    runner = InMemoryRunner(data_dir, initial_cpu_limit=initial_cpu_limit, algorithm="additive", container=container)
 
     runner.run_live()

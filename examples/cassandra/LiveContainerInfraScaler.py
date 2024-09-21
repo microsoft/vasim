@@ -20,35 +20,21 @@ class LiveContainerInfraScaler(SimulatedInfraScaler):
     CPU limit of a container.
     """
 
-    def __init__(self, cluster_state_provider, start_timestamp, recovery_time, container):
+    def __init__(self, cluster_state_provider, start_timestamp, recovery_time, container, initial_cpu_limit=None):
         super().__init__(cluster_state_provider, start_timestamp, recovery_time)
 
         self.container = container
 
-        # TODO is this necessary?
-        #
-        # # # reinitialize the logger
-        # # log_file = Path(self.cluster_state_provider.decision_file_path).parent.joinpath('updatelog.txt')
-        # # # delete the old logger entirely
-        # # for handler in self.logger.handlers[:]:
-        # #     self.logger.removeHandler(handler)
-        # # # reinitialize the logger
-
-        # # self.logger = logging.getLogger(__name__)
-        # # self.logger.setLevel(logging.DEBUG)
-        # # self.logger.addHandler(logging.FileHandler(log_file))
-
         # Write a test message
         self.logger.info(">>>LiveContainerInfraScaler initialized")
+        self.logger.info(">>>Container: %s", self.container)
+        self.logger.info(">>>Initial CPU limit: %s", initial_cpu_limit)
 
     def set_cpu_limit_live(self, new_cpu_limit):
         """
         Set the CPU limit of the container
         :param new_cpu_limit: The new CPU limit
         """
-        # update the simulated cluster state provider
-        self.cluster_state_provider.set_cpu_limit(new_cpu_limit)
-
         # update the live container
         self.container.update(cpu_quota=int(new_cpu_limit * 100000))
 
