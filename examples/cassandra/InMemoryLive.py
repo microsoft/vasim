@@ -77,7 +77,7 @@ class InMemoryRunner(InMemoryRunnerSimulator):
                 # Core simulation logic (without yielding progress)
                 self._execute_simulation_step()
                 lag = self.cluster_state_provider.config.general_config["lag"]
-                print(f"Now sleeping for {lag} minutes")
+                print(f"Now sleeping for {lag} minute(s)")
                 sleep(lag * 60)
 
                 # We will loop until user hits Ctrl-C
@@ -105,4 +105,5 @@ class InMemoryRunner(InMemoryRunnerSimulator):
 
         # Get the current timestamp live but in the same format as the recorded data, then scale the cluster
         time_now = pd.Timestamp(time.time())
+        print("Recommended new limit: ", new_limit)
         self.infra_scaler.scale(new_limit, time_now)
