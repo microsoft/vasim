@@ -9,15 +9,13 @@
 # In this file, we will run a recommender algorithm to recommend the best algorithm to use for the Cassandra container.
 # we will use the data collected from the poll_metrics.py script to make the recommendation.
 
-import time
 import os
-import pandas as pd
 from pathlib import Path
+
+
 import docker
 from poll_metrics import CONTAINER_NAME  # TODO: this should be in a shared file, or cmd line arg
-from LiveContainerInfraScaler import LiveContainerInfraScaler
 
-from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
 from InMemoryLive import InMemoryRunner
 
 RECOMMENDATION_FREQ = 10  # how often to make a recommendation in seconds
