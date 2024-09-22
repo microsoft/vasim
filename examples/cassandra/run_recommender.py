@@ -12,14 +12,8 @@
 import os
 from pathlib import Path
 
-
-import docker
-from poll_metrics import CONTAINER_NAME  # TODO: this should be in a shared file, or cmd line arg
-
+from demo_commons import set_current_cpu_limit, get_containers_list, INITIAL_CPU_LIMIT_DEFAULT
 from InMemoryLive import InMemoryRunner
-
-RECOMMENDATION_FREQ = 10  # how often to make a recommendation in seconds
-INITIAL_CPU_LIMIT_DEFAULT = 6  # the initial CPU limit to use if we can't read it from the container
 
 
 if __name__ == '__main__':
@@ -33,21 +27,16 @@ if __name__ == '__main__':
     # Read the current CPU limit from the container. This is the initial CPU limit that we will use for the simulation.
     # If it is not set, use the default value.
     # You can reset this manually on the command line with `docker update some-cassandra --cpu-quota 600000`` for example
+    containers_list = get_containers_list()
 
-    client = docker.from_env()
-    container = client.containers.get(CONTAINER_NAME)
-    initial_cpu_limit = container.attrs['HostConfig']['CpuQuota'] / 100000
-
-    if initial_cpu_limit == 0:
-        print(f"No CPU limit on container {CONTAINER_NAME}. Using default value.")
-        # set the default value without breaking pylint
-        initial_cpu_limit = INITIAL_CPU_LIMIT_DEFAULT  # pylint: disable=invalid-name
-        container.update(cpu_quota=int(initial_cpu_limit * 100000))
-
-    print(f"Initial CPU limit: {initial_cpu_limit}")
+    # Reset all of the containers to the initial CPU limit
+    print("Setting all containers to the initial CPU limit of", INITIAL_CPU_LIMIT_DEFAULT)
+    for container in containers_list:
+        set_current_cpu_limit([container], INITIAL_CPU_LIMIT_DEFAULT)
 
     # we will use the additive algorithm for now. You can change this to any of the other algorithms.
-    # runner = InMemoryRunnerSimulator(data_dir, initial_cpu_limit=INITIAL_CPU_LIMIT, algorithm="additive")
-    runner = InMemoryRunner(data_dir, initial_cpu_limit=initial_cpu_limit, algorithm="additive", container=container)
+    # We will just pass it a single container for now. You can pass it a list of containers.
+    runner = InMemoryRunner(data_dir, initial_cpu_limit=INITIAL_CPU_LIMIT_DEFAULT,
+                            algorithm="additive", containers=containers_list)
 
     runner.run_live()

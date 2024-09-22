@@ -5,11 +5,6 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
-from datetime import datetime
-from pathlib import Path
-from time import sleep
-import docker
-
 """
 This script is used to read live CPU usage data from the container and write it to a file.
 
@@ -19,36 +14,14 @@ TIMESTAMP,CPU_USAGE_ACTUAL
 
 """
 
-WAIT_INTERVAL = 60  # how often to poll the CPU usage
-CONTAINER_NAME = "some-cassandra"  # the container to monitor
-ERROR_BACKOFF = 5
+from datetime import datetime
+from pathlib import Path
+from time import sleep
+import docker
 
 
-def get_curr_cpu_usage(container):
-    """
-    This demo shows only a standalone container, but it could be modified to read CPU usage from a
-    Kubernetes cluster/metrics-server, or from multiple containers.
-
-    To modify this to work with Kubernetes, you would need to use the Kubernetes API. Contributions welcome!
-    """
-
-    stats = container.stats(stream=False)
-
-    cpu_delta = stats['cpu_stats']['cpu_usage']['total_usage'] - stats['precpu_stats']['cpu_usage']['total_usage']
-    system_cpu_delta = stats['cpu_stats']['system_cpu_usage'] - stats['precpu_stats']['system_cpu_usage']
-    number_cpus = stats['cpu_stats']['online_cpus']
-    cpu_percentage = (cpu_delta / system_cpu_delta) * number_cpus
-    return cpu_percentage
-
-
-def get_timestamp():
-    """
-    This is based on the current format that VASim read the timestamps.
-
-    Ideally, this would be replaced with a more robust timestamping mechanism and standard format.
-    See: https://github.com/microsoft/vasim/issues/34
-    """
-    return datetime.now().strftime("%Y.%m.%d-%H:%M:%S:%f")
+from demo_commons import WAIT_INTERVAL, ERROR_BACKOFF, CONTAINER_PREFIX
+from demo_commons import get_curr_cpu_usage, get_timestamp
 
 
 if __name__ == "__main__":
@@ -68,12 +41,17 @@ if __name__ == "__main__":
         f = open(monitor_file, 'a')
 
     client = docker.from_env()
-    container = client.containers.get(CONTAINER_NAME)
+    # Get a list of all running container with the name prefix CONTAINER_PREFIX
+    # We'll get a list of all containers to start with, then do a regex
+    # First, get all containers:
+    containers = client.containers.list()
+    # Now, filter to list ALL containers with the prefix
+    container_list = [c for c in containers if c.name.startswith(CONTAINER_PREFIX)]
 
     print("starting monitor loop. Writing to " + filename + ". Ctrl-C to exit.")
     while True:
         try:
-            usage = get_curr_cpu_usage(container)
+            usage = get_curr_cpu_usage(container_list[0])  # TODO: loop through all containers
             readings = "{},{}\n".format(get_timestamp(), usage)
         except KeyError:
             print("error getting data, is container running? Trying again")

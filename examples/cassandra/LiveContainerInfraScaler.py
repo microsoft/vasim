@@ -8,6 +8,8 @@
 
 from vasim.simulator.SimulatedInfraScaler import SimulatedInfraScaler
 
+from demo_commons import set_current_cpu_limit
+
 
 class LiveContainerInfraScaler(SimulatedInfraScaler):
     """
@@ -18,14 +20,16 @@ class LiveContainerInfraScaler(SimulatedInfraScaler):
     CPU limit of a container.
     """
 
-    def __init__(self, cluster_state_provider, start_timestamp, recovery_time, container, initial_cpu_limit=None):
+    def __init__(self, cluster_state_provider, start_timestamp, recovery_time, containers, initial_cpu_limit=None):
         super().__init__(cluster_state_provider, start_timestamp, recovery_time)
 
-        self.container = container
+        self.containers = containers
 
         # Write a test message
         self.logger.info(">>>LiveContainerInfraScaler initialized")
-        self.logger.info(">>>Container: %s", self.container)
+        # print the list of containers
+        for container in containers:
+            self.logger.info(">>>Container: %s", container)
         self.logger.info(">>>Initial CPU limit: %s", initial_cpu_limit)
 
     def set_cpu_limit_live(self, new_cpu_limit):
@@ -34,9 +38,7 @@ class LiveContainerInfraScaler(SimulatedInfraScaler):
         :param new_cpu_limit: The new CPU limit
         """
         # update the live container
-        self.container.update(cpu_quota=int(new_cpu_limit * 100000))
-
-        self.logger.info(f"Updated CPU limit to {new_cpu_limit}")
+        set_current_cpu_limit(self.containers, new_cpu_limit)
 
     def scale(self, new_limit, time_now):
         """

@@ -12,6 +12,7 @@ from LiveContainerInfraScaler import LiveContainerInfraScaler
 
 from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
 from vasim.recommender.cluster_state_provider.FileClusterStateProvider import FileClusterStateProvider
+from demo_commons import get_current_cpu_limit
 
 
 class InMemoryRunner(InMemoryRunnerSimulator):
@@ -32,10 +33,10 @@ class InMemoryRunner(InMemoryRunnerSimulator):
         config=None,
         target_simulation_dir=None,
         if_resample=True,
-        container=None
+        containers=None
     ):
 
-        self.container = container  # This must come first. It is used in the parent class's __init__ method
+        self.containers = containers  # This must come first. It is used in the parent class's __init__ method
         self.initial_cpu_limit = initial_cpu_limit  # This is for logging
         super().__init__(data_dir, config_path=config_path, initial_cpu_limit=initial_cpu_limit, algorithm=algorithm,
                          config=config, target_simulation_dir=target_simulation_dir, if_resample=if_resample)
@@ -53,7 +54,8 @@ class InMemoryRunner(InMemoryRunnerSimulator):
 
     def get_current_cpu_limit(self):
         """Get the current CPU limit from the container."""
-        return self.container.attrs['HostConfig']['CpuQuota'] / 100000
+        # Call into the commons file
+        return get_current_cpu_limit(self.containers)
 
     def _get_experiment_time_range(self):
         return self.cluster_state_provider.start_time, self.cluster_state_provider.end_time
@@ -63,7 +65,7 @@ class InMemoryRunner(InMemoryRunnerSimulator):
             self.cluster_state_provider,
             self.experiment_start_time,
             self.config.general_config['recovery_time'],
-            self.container,
+            self.containers,
             self.initial_cpu_limit
         )
 
