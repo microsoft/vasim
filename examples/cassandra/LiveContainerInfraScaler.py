@@ -7,8 +7,6 @@
 #
 
 from vasim.simulator.SimulatedInfraScaler import SimulatedInfraScaler
-import logging
-from pathlib import Path
 
 
 class LiveContainerInfraScaler(SimulatedInfraScaler):
@@ -52,7 +50,7 @@ class LiveContainerInfraScaler(SimulatedInfraScaler):
             # We only want to scale if the recovery time has passed since the last scaling event
             # or if there was no previous scaling event
             if self.last_scaling_time is None or (time_now - self.last_scaling_time).seconds > self.recovery_time * 60:
-                self.logger.info(">>>attempting to scale to %d cores from %d",
+                self.logger.info(">>>attempting to scale to %f cores from %f",
                                  new_limit, current_cpu_limit)
                 if new_limit < self.cluster_state_provider.config.general_config["min_cpu_limit"]:
                     self.logger.info(">>>not scaling, would go below min cores")
@@ -64,14 +62,14 @@ class LiveContainerInfraScaler(SimulatedInfraScaler):
                 else:
                     self.set_cpu_limit_live(new_limit)
                 self.last_scaling_time = time_now
-                self.logger.info(">>>updated to %d cores", new_limit)
+                self.logger.info(">>>updated to %f cores", new_limit)
                 self.logger.info("Having a post-scaling %d minute nap.", self.recovery_time)
                 return True
             elif self.last_scaling_time is not None:
-                self.logger.info("Waiting to scale %d minutes, current minutes %d, new_limit: %d",
+                self.logger.info("Waiting to scale %d minutes, current minutes %d, new_limit: %f",
                                  self.recovery_time * 60 - (time_now - self.last_scaling_time).seconds // 60, minutes,
                                  new_limit)
         else:
-            self.logger.info("Waiting to scale %d minutes, current minutes %d, decision of cores to add or subtract: %d",
+            self.logger.info("Waiting to scale %d minutes, current minutes %d, decision of cores to add or subtract: %f",
                              0, minutes, new_limit)
         return False
