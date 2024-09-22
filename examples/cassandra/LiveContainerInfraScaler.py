@@ -36,7 +36,7 @@ class LiveContainerInfraScaler(SimulatedInfraScaler):
         :param new_cpu_limit: The new CPU limit
         """
         # update the live container
-        self.container.update(cpu_quota=(new_cpu_limit * 100000))
+        self.container.update(cpu_quota=int(new_cpu_limit * 100000))
 
         self.logger.info(f"Updated CPU limit to {new_cpu_limit}")
 
