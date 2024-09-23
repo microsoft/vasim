@@ -9,10 +9,10 @@ import time
 from time import sleep
 import pandas as pd
 from LiveContainerInfraScaler import LiveContainerInfraScaler
+from DemoCommons import get_current_cpu_limit
 
 from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
 from vasim.recommender.cluster_state_provider.FileClusterStateProvider import FileClusterStateProvider
-from DemoCommons import get_current_cpu_limit
 
 
 class InMemoryRunner(InMemoryRunnerSimulator):

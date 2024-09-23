@@ -12,7 +12,7 @@
 import os
 from pathlib import Path
 
-from DemoCommons import set_current_cpu_limit, get_containers_list, INITIAL_CPU_LIMIT_DEFAULT
+from DemoCommons import set_current_cpu_limit, get_containers_list, get_max_cpu_limit
 from InMemoryLive import InMemoryRunner
 
 
@@ -23,6 +23,8 @@ if __name__ == '__main__':
 
     # data dir is inside the root_dir
     data_dir = root_dir / "data"
+    # config file is inside the data_dir
+    config_path = data_dir / "metadata.json"
 
     # Read the current CPU limit from the container. This is the initial CPU limit that we will use for the simulation.
     # If it is not set, use the default value.
@@ -30,13 +32,14 @@ if __name__ == '__main__':
     containers_list = get_containers_list()
 
     # Reset all of the containers to the initial CPU limit
-    print("Setting all containers to the initial CPU limit of", INITIAL_CPU_LIMIT_DEFAULT)
+    initial_cpu_limit = get_max_cpu_limit(config_path)
+    print("Setting all containers to the initial CPU limit of", initial_cpu_limit)
     for container in containers_list:
-        set_current_cpu_limit([container], INITIAL_CPU_LIMIT_DEFAULT)
+        set_current_cpu_limit([container], initial_cpu_limit)
 
     # we will use the additive algorithm for now. You can change this to any of the other algorithms.
     # We will just pass it a single container for now. You can pass it a list of containers.
-    runner = InMemoryRunner(data_dir, initial_cpu_limit=INITIAL_CPU_LIMIT_DEFAULT,
+    runner = InMemoryRunner(data_dir, initial_cpu_limit=initial_cpu_limit,
                             algorithm="additive", containers=containers_list)
 
     runner.run_live()

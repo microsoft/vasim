@@ -44,7 +44,7 @@ There are many tools you can use for this, this is just one option.
 
 ## Information
 
-This demo contains several files:
+This demo contains several code files:
 
 - DemoCommons.py: Utility functions related to getting information about the running container(s)
 - InMemoryLive.py: This is similar to `InMemorySimulator.py` except that it works on live data as it comes in, not a full trace.
@@ -52,15 +52,61 @@ This demo contains several files:
 - poll_metrics.py: This generates csvs of CPU usage of the running container(s)
 - run_recommender.py: This is the main function to run the recommender live.
 
-Also data folders:
+Folders:
 
 - data: This will be where the generated CPU metrics data goes
   - metadata.json: This is the configuration file, as described in the [notebook](https://github.com/microsoft/vasim/blob/main/examples/using_vasim.ipynb).
 - data_simulations: This will be generated, the output will go here.
+- cassfiles: These will be used with the `nb5` tool to drive the traffic.
 
 ## Start the demo
 
+### Setup the benchmark
+
+```bash
+# change directory
+cd cassfiles
+
+# get the IP address of the docker container:
+IP_ADDR=docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' some-cassandra1
+DC=datacenter1
+
+# Setup schema
+./nb5 nova-keyvalue default.schema thread-count=1 hosts=$IP_ADDR  driverconfig=driverconfig.json  localdc=$DC
+
+# Rampup
+./nb5 nova-keyvalue default.rampup rampup-cycles=10000000 main-cycles=10000000 cyclerate=60000 thread-count=160 hosts=$IP_ADDR localdc=$DC driverconfig=driverconfig.json  --progress console:1s --report-csv-to casscsv-ramp
+```
+
 ### Start collecting the metrics
 
-....#TODO START HERE
+```bash
+python3 poll_metrics.py
+```
 
+This will start a file that looks like this:
+
+```bash
+cat data/*_perf_event_log.csv
+```
+
+```csv
+TIMESTAMP,CPU_USAGE_ACTUAL
+2024.09.23-00:28:23:847311,0.0062846441947565545
+2024.09.23-00:29:26:869317,0.006324667154204469
+2024.09.23-00:30:29:919104,0.006529308732144707
+```
+
+### Start the recommender
+
+Depending on how large your machine is, you might want to set some different defaults for the number of cores. In `data/metadata.json` there is a parameter `"max_cpu_limit": 5,` that you can change.  Remember that you have two containers running, along with the recommender script and benchmark (if you did this all on one machine), so you might need to adjust this number down.
+
+```bash
+python3 run_recommender.py
+```
+
+This will start the recommender with a default algorithm, `additive`, from [DummyAdditiveRecommender.py](https://github.com/microsoft/vasim/blob/main/src/vasim/recommender/DummyAdditiveRecommender.py), which will add 2 cores on top of a moving average.  This 2 cores is set by the `"addend": 2` in the `metadata.json` file in the data directory.
+
+### Start the traffic
+
+Now we are ready to start the traffic!

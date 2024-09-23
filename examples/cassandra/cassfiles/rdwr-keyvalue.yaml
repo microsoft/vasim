@@ -1,0 +1,63 @@
+description: |
+  This is a simple workload that runs a 50/50 mixed read/write load
+
+scenarios:
+  default:
+    schema: run driver=cql tags==block:schema threads==1 cycles==UNDEF
+    rampup: run driver=cql tags==block:rampup cycles===TEMPLATE(rampup-cycles,10000000) threads===TEMPLATE(thread-count,'auto')
+    mixed: run driver=cql tags=='block:main-.*' cycles===TEMPLATE(main-cycles,10000000) threads===TEMPLATE(thread-count,'auto')
+    readonly: run driver=cql tags=='block:main-read' cycles===TEMPLATE(main-cycles,10000000) threads===TEMPLATE(thread-count,'auto')
+    writeonly: run driver=cql tags=='block:main-write' cycles===TEMPLATE(main-cycles,10000000) threads===TEMPLATE(thread-count,'auto')
+
+bindings:
+  seq_key: Mod(1000000000); ToString() -> String
+  seq_value: Hash(); Mod(1000000000); ToString() -> String
+  rw_key: Uniform(0,1000000000)->int; ToString() -> String
+  rw_value: Hash(); Uniform(0,1000000000)->int; ToString() -> String
+
+blocks:
+  schema:
+    params:
+      timeout: 10
+    ops:
+      create-keyspace:
+        raw: |
+          create keyspace if not exists TEMPLATE(keyspace,baselines)
+          WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 'TEMPLATE(rf,3)'}
+          AND durable_writes = true;
+      create-table:
+        raw: |
+          create table if not exists TEMPLATE(keyspace,baselines).TEMPLATE(table,keyvalue) (
+          key text,
+           value text,
+           PRIMARY KEY (key)
+          );
+  rampup:
+    params:
+      timeout: 10
+      cl: TEMPLATE(write_cl,LOCAL_QUORUM)
+    ops:
+      rampup-insert:
+        prepared: |
+          insert into TEMPLATE(keyspace,baselines).TEMPLATE(table,keyvalue)
+          (key, value)
+          values ({seq_key},{seq_value});
+  main-read:
+    params:
+      timeout: 10
+      ratio: 5
+      cl: TEMPLATE(read_cl,LOCAL_QUORUM)
+    ops:
+      main-select:
+        prepared: |
+          select * from TEMPLATE(keyspace,baselines).TEMPLATE(table,keyvalue) where key={rw_key};
+  main-write:
+    params:
+      timeout: 10
+      ratio: 5
+      cl: TEMPLATE(write_cl,LOCAL_QUORUM)
+    ops:
+      main-insert:
+        prepared: |
+          insert into TEMPLATE(keyspace,baselines).TEMPLATE(table,keyvalue)
+          (key, value) values ({rw_key}, {rw_value});

@@ -16,6 +16,7 @@ This simple demo shows only standalone containers, but it could be modified to r
 
 from datetime import datetime
 import docker
+import json
 
 
 WAIT_INTERVAL = 60  # how often to poll the CPU usage
@@ -23,7 +24,6 @@ CONTAINER_PREFIX = "some-cassandra"  # the containers to monitor must all start 
 ERROR_BACKOFF = 5  # how long to wait before retrying after an error
 
 RECOMMENDATION_FREQ = 10  # how often to make a recommendation in seconds
-INITIAL_CPU_LIMIT_DEFAULT = 6  # the initial CPU limit to use, containers will be set to this.
 
 
 def get_containers_list():
@@ -89,3 +89,14 @@ def get_timestamp():
     See: https://github.com/microsoft/vasim/issues/34
     """
     return datetime.now().strftime("%Y.%m.%d-%H:%M:%S:%f")
+
+
+def get_max_cpu_limit(config):
+    """
+    Here we will parse metadata.json to get the max_cpu_limit
+    """
+    # Read the config file
+    with open(config, 'r', encoding="utf-8") as f:
+        config = json.load(f)
+
+    return config['general_config']['max_cpu_limit']
