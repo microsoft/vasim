@@ -134,7 +134,7 @@ class InMemoryRunnerSimulator:
 
     @staticmethod
     def _create_cluster_state_provider(data_dir, config, target_simulation_dir=None):
-        out_filename = f"{target_simulation_dir or data_dir}/decisions.txt"  # TODO: remove hardcode. ALSO: todo, this is csv
+        out_filename = f"{target_simulation_dir or data_dir}/decisions.csv"  # TODO: remove hardcode.
         return SimulatedClusterStateProviderFactory(
             data_dir=data_dir,
             out_filename=out_filename,
@@ -163,7 +163,7 @@ class InMemoryRunnerSimulator:
 
     @staticmethod
     def _initialize_output_file(data_dir):
-        out_filename = f"{data_dir}/decisions.txt"
+        out_filename = f"{data_dir}/decisions.csv"
         out_file = Path(out_filename)
 
         # Use 'with' statement to open the file
@@ -198,7 +198,7 @@ class InMemoryRunnerSimulator:
             # If plot_cpu_usage_and_new_limit_plotnine involves file operations, ensure it is properly handled
             plot_cpu_usage_and_new_limit_plotnine(
                 self.cluster_state_provider.data_dir,
-                decision_file_path=f"{self.target_simulation_dir}/decisions.txt",
+                decision_file_path=f"{self.target_simulation_dir}/decisions.csv",
                 if_resample=self.if_resample,
             )
 

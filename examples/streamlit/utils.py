@@ -60,7 +60,7 @@ def calculate_and_return_metrics(experiment_dir, perf_log_file_path=None, decisi
         perf_log_file_path = f"{experiment_dir}/{[f for f in os.listdir(experiment_dir) if f.endswith('.csv')][0]}"
 
     if not decision_file_path:
-        decision_file_path = f"{experiment_dir}/decisions.txt"
+        decision_file_path = f"{experiment_dir}/decisions.csv"
 
     decision_df, perf_df = read_data(decision_file_path, perf_log_file_path)
     merged = process_data(decision_df, perf_df)
@@ -255,7 +255,7 @@ def plot_cpu_usage_and_sku_target_streamlit(experiment_dir, perf_log_file_path=N
         perf_log_file_path = f"{experiment_dir}/{[f for f in os.listdir(experiment_dir) if f.endswith('.csv')][0]}"
 
     if not decision_file_path:
-        decision_file_path = f"{experiment_dir}/decisions.txt"
+        decision_file_path = f"{experiment_dir}/decisions.csv"
 
     decision_df, perf_df = read_data(decision_file_path, perf_log_file_path)
     merged = process_data(decision_df, perf_df)
