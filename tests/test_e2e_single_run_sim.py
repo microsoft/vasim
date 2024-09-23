@@ -56,7 +56,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         folder = os.listdir(self.target_dir_sim)[0]
         sim_dir = os.path.join(self.target_dir_sim, folder)  # todo add _simulations
 
-        assert os.path.exists(os.path.join(sim_dir, "decisions.txt"))
+        assert os.path.exists(os.path.join(sim_dir, "decisions.csv"))
         assert os.path.exists(os.path.join(sim_dir, "metadata.json"))
         assert os.path.exists(os.path.join(sim_dir, "perf_event_log.csv"))
 
@@ -106,7 +106,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         folder = os.listdir(self.target_dir_sim)[0]
         sim_dir = os.path.join(self.target_dir_sim, folder)  # todo add _simulations
 
-        assert os.path.exists(os.path.join(sim_dir, "decisions.txt"))
+        assert os.path.exists(os.path.join(sim_dir, "decisions.csv"))
         assert os.path.exists(os.path.join(sim_dir, "metadata.json"))
         assert os.path.exists(os.path.join(sim_dir, "perf_event_log.csv"))
 
