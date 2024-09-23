@@ -1,0 +1,15 @@
+{
+    "autoDocstring.docstringFormat": "numpy",
+    // See Also .vscode/launch.json for environment variable args to pytest during debug sessions.
+    "python.testing.pytestArgs": [
+        "--log-level=DEBUG",
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true,
+        "editor.formatOnSaveMode": "modifications"
+    }
+}

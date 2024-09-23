@@ -6,11 +6,11 @@
     "general_config": {
         "window": 20,
         "lag": 10,
-        "granularity": 1,
         "max_cpu_limit": 25,
         "min_cpu_limit": 2.0
     },
     "prediction_config": {
+        "enabled": true,
         "waiting_before_predict": 1440,
         "frequency_minutes": 1,
         "forecasting_models": "naive",

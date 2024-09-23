@@ -6,10 +6,10 @@
         "window": 20,
         "lag": 10,
         "max_cpu_limit": 25,
-        "min_cpu_limit": 2.0,
-        "granularity": 1
+        "min_cpu_limit": 2.0
     },
     "prediction_config": {
+        "enabled": false,
         "waiting_before_predict": 1440,
         "frequency_minutes": 1,
         "minutes_to_predict": 10,

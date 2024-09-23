@@ -30,6 +30,10 @@ MANIFEST
 *.pylint*
 *.vscode*
 
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
@@ -160,3 +164,5 @@ cython_debug/
 # MAC
 **.DS_STORE
 
+# git config dir (for ripgrep)
+.git/

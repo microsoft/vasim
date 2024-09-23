@@ -12,13 +12,12 @@ This project welcomes contributions and suggestions.
 
 ## Getting Started
 
-
 ### Pull requests
 
 If you are new to GitHub [here](https://help.github.com/categories/collaborating-with-issues-and-pull-requests/) is a detailed help source on getting involved with development on GitHub.
 
 As a first time contributor, you will be invited to sign the Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com. You will only need to do this once across all repos using our CLA.
+the rights to use your contribution. For details, visit <https://cla.opensource.microsoft.com>. You will only need to do this once across all repos using our CLA.
 
 Your pull request needs to reference a filed issue. Please fill in the template that is populated for the pull request. Only pull requests addressing small typos can have no issues associated with them.
 
@@ -32,13 +31,17 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 
 ## Developing
 
+### Setup
+
 The simplest setup (assuming you already have Python installed) is as follows:
 
 > Note: you are encouraged to use a virtual environment with either [`conda`](https://docs.anaconda.com/miniconda/) or [`venv`](https://docs.python.org/3/library/venv.html) to avoid conflicts with other Python packages.
 
+#### `venv`
+
 ```sh
 # Clone the repo:
-git clone https://github.com/microsoft/vasim.git .
+git clone https://github.com/microsoft/vasim.git
 cd vasim
 # Create a virtual environment (venv example):
 python -m venv .venv
@@ -48,11 +51,25 @@ source .venv/bin/activate
 python -m pip install -e ".[dev]"
 ```
 
+#### `conda`
+
+```sh
+# Clone the repo:
+git clone https://github.com/microsoft/vasim.git
+cd vasim
+# Create a virtual environment (conda example):
+conda create -n vasim python=3.10
+# Activate the virtual environment:
+conda activate vasim
+# Install the package in editable mode with dev dependencies:
+python -m pip install -e ".[dev]"
+```
+
 ### Tools
 
-#### Pre-commit
+#### pre-commit
 
-This project uses [pre-commit](https://pre-commit.com/) hooks.
+This project uses [pre-commit](https://pre-commit.com/) hooks to enforce good coding practices via linters and formatters.
 
 To setup `pre-commit` to your `git` hook do the following:
 
@@ -61,7 +78,13 @@ python -m pip install pre-commit
 pre-commit install
 ```
 
-And before you commit, you can run it like this `pre-commit run --all-files` and should see output such as:
+And before you commit, you can run it like this:
+
+```sh
+pre-commit run --all-files
+```
+
+and should see output such as:
 
 ```txt
 Flake8...........................Passed
@@ -76,28 +99,50 @@ Flake8............................Failed
 - exit code: 1
 ```
 
+See [`pre-commit-config.yaml`](./.pre-commit-config.yaml) for the complete list of checks, most of which use [`pyproject.toml`](./pyproject.toml) for the configuration.
+
+##### Temporarily Skipping a Hook
+
+```sh
+# To temporarily skip the pylint and flake8 checks, for instance, do the following:
+SKIP="flake8,pylint" git commit -a -m "wip: hacking"
+```
+
 #### Naming Convention
 
 Scripts should be named in `snake_case` and classes in `CamelCase`.
 
-#### Formatting
+#### Formatting and Linting
 
-We generally use all pep8 checks, with the exception of line length 127.
+We generally use all [pep8](https://peps.python.org/pep-0008/) checks, with the exception of line length 127.
 
-To do a quick check-up before commit, try:
-
-```sh
-flake8 . --count  --max-complexity=10 --max-line-length=127 --statistics
-```
+Tools like `flake8`, `pylint`, and others are used to enforce this and are invoked as a part of the [`pre-commit`](#pre-commit) hooks mentioned above.
 
 #### Coverage
 
 For coverage, we use [coverage.py](https://coverage.readthedocs.io/en/) in our Github Actions.
-Run  `python -m pip install coverage` if you don't already have this, and any code you commit should generally not significantly impact coverage.
+Run  `python -m pip install coverage pytest-cov` if you don't already have this, and any code you commit should generally not significantly impact coverage.
 
-We strive to not let check-ins decrease coverage.
+We strive to not let check-ins decrease coverage (as configured in [`pyproject.toml`](./pyproject.toml)).
+
 To run all unit tests:
 
 ```sh
-coverage run -m pytest tests
+pytest
 ```
+
+### Maintainers
+
+#### Release Publishing Steps
+
+1. Create a PR to update the `VERSION` in `setup.py` to the new `M.m.p` version.
+2. Once merged to `main`, create a tag with the new version:
+
+    ```sh
+    git checkout main
+    git pull
+    git tag -a vM.m.p -m "Release vM.m.p"
+    git push --tags
+    ```
+
+3. Create a release on GitHub with the tag and the release notes.

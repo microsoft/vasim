@@ -6,16 +6,24 @@
 # --------------------------------------------------------------------------
 #
 
+# pylint: disable=no-member # FIXME
+
 # utils.py
 import multiprocessing
 import os
-import uuid
 from pathlib import Path
+
 import pandas as pd
-from vasim.simulator.analysis.plot_utils import calculate_metrics, process_data, read_data
 import streamlit as st
 
-from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
+from vasim.recommender.cluster_state_provider.ClusterStateConfig import (
+    ClusterStateConfig,
+)
+from vasim.simulator.analysis.plot_utils import (
+    calculate_metrics,
+    process_data,
+    read_data,
+)
 from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
 from vasim.simulator.ParameterTuning import create_uuid
 
@@ -25,7 +33,7 @@ def calculate_and_return_metrics(experiment_dir, perf_log_file_path=None, decisi
         perf_log_file_path = f"{experiment_dir}/{[f for f in os.listdir(experiment_dir) if f.endswith('.csv')][0]}"
 
     if not decision_file_path:
-        decision_file_path = f"{experiment_dir}/decisions.txt"
+        decision_file_path = f"{experiment_dir}/decisions.csv"
 
     decision_df, perf_df = read_data(decision_file_path, perf_log_file_path)
     merged = process_data(decision_df, perf_df)
@@ -37,7 +45,7 @@ def calculate_and_return_metrics(experiment_dir, perf_log_file_path=None, decisi
 def parse_input(value):
     try:
         if isinstance(value, str):
-            return [float(x.strip()) for x in value.split(',')]
+            return [float(x.strip()) for x in value.split(",")]
         elif isinstance(value, (int, float)):
             return [float(value)]
         else:
@@ -60,37 +68,38 @@ def create_df(results):
     rows = []
     for folder, config, metrics in results:
 
-        row = pd.Series({
-            'folder': folder,
-            'sum_slack': metrics["sum_slack"],
-            'sum_insufficient_cpu': metrics["sum_insufficient_cpu"],
-            'num_scalings': metrics["num_scalings"],
-            'average_slack': metrics["average_slack"],
-            'average_insufficient_cpu': metrics["average_insufficient_cpu"],
-            'insufficient_observations_percentage': metrics["insufficient_observations_percentage"],
-            'slack_percentage': metrics["slack_percentage"],
-            'num_insufficient_cpu': metrics["num_insufficient_cpu"],
-            'window': config.window,
-            'scale_down_buffer': config.scale_down_buffer,
-            'uuid': config.uuid,
-            'low_threshold': config.low_threshold,
-            'high_threshold': config.high_threshold,
-            'ecdf_threshold': config.ecdf_threshold,
-            'lower_slack_threshold': config.lower_slack_threshold,
-            'slack': config.slack,
-            'max_autoscale_up': config.max_autoscale_up,
-            'max_autoscale_down': config.max_autoscale_down,
-            'lag': config.lag,
-            'max_slack': metrics['max_slack']
-
-        })
+        row = pd.Series(
+            {
+                "folder": folder,
+                "sum_slack": metrics["sum_slack"],
+                "sum_insufficient_cpu": metrics["sum_insufficient_cpu"],
+                "num_scalings": metrics["num_scalings"],
+                "average_slack": metrics["average_slack"],
+                "average_insufficient_cpu": metrics["average_insufficient_cpu"],
+                "insufficient_observations_percentage": metrics["insufficient_observations_percentage"],
+                "slack_percentage": metrics["slack_percentage"],
+                "num_insufficient_cpu": metrics["num_insufficient_cpu"],
+                "window": config.window,
+                "scale_down_buffer": config.scale_down_buffer,
+                "uuid": config.uuid,
+                "low_threshold": config.low_threshold,
+                "high_threshold": config.high_threshold,
+                "ecdf_threshold": config.ecdf_threshold,
+                "lower_slack_threshold": config.lower_slack_threshold,
+                "slack": config.slack,
+                "max_autoscale_up": config.max_autoscale_up,
+                "max_autoscale_down": config.max_autoscale_down,
+                "lag": config.lag,
+                "max_slack": metrics["max_slack"],
+            }
+        )
         rows.append(row)  # Add the row to the list
 
     df = pd.concat(rows, axis=1).T
     return df
 
 
-def unflatten_dict(d, sep='.'):
+def unflatten_dict(d, sep="."):
     result_dict = {}
     for key, value in d.items():
         parts = key.split(sep)
@@ -103,8 +112,7 @@ def unflatten_dict(d, sep='.'):
 
 def load_results_parallel(target_folder):
     with multiprocessing.Pool() as pool:
-        results = pool.starmap(process_folder, ((target_folder, folder)
-                                                for folder in os.listdir(target_folder)))
+        results = pool.starmap(process_folder, ((target_folder, folder) for folder in os.listdir(target_folder)))
     return results
 
 
@@ -119,7 +127,7 @@ def run_simulation(algorithm, data_dir, initial_cores_count, config):
         algorithm=algorithm,
         initial_cpu_limit=initial_cores_count,
         config=config,
-        target_simulation_dir=str(target_dir_name)
+        target_simulation_dir=str(target_dir_name),
     )
 
     # Call the generator function
@@ -138,7 +146,7 @@ def run_simulation(algorithm, data_dir, initial_cores_count, config):
                 # Handle final metrics
                 progress_bar.progress(1.0)  # Mark progress as complete
                 break
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # FIXME
         st.error(f"An error occurred during the simulation: {str(e)}")
         raise
     finally:
@@ -156,15 +164,15 @@ def plot_cpu_usage_and_sku_target_streamlit(experiment_dir, perf_log_file_path=N
         perf_log_file_path = f"{experiment_dir}/{[f for f in os.listdir(experiment_dir) if f.endswith('.csv')][0]}"
 
     if not decision_file_path:
-        decision_file_path = f"{experiment_dir}/decisions.txt"
+        decision_file_path = f"{experiment_dir}/decisions.csv"
 
     decision_df, perf_df = read_data(decision_file_path, perf_log_file_path)
     merged = process_data(decision_df, perf_df)
 
     # Convert TIMESTAMP to datetime, CURR_LIMIT and CPU_USAGE_ACTUAL to float
-    merged['TIMESTAMP'] = pd.to_datetime(merged['TIMESTAMP'])
-    merged['CURR_LIMIT'] = merged['CURR_LIMIT'].astype(float)
-    merged['CPU_USAGE_ACTUAL'] = merged['CPU_USAGE_ACTUAL'].astype(float)
+    merged["TIMESTAMP"] = pd.to_datetime(merged["TIMESTAMP"])
+    merged["CURR_LIMIT"] = merged["CURR_LIMIT"].astype(float)
+    merged["CPU_USAGE_ACTUAL"] = merged["CPU_USAGE_ACTUAL"].astype(float)
 
     # Plot the DataFrame using Streamlit line_chart
-    st.line_chart(merged.set_index('TIMESTAMP')[['CURR_LIMIT', 'CPU_USAGE_ACTUAL']], color=["#0000FF", "#FF0000"])
+    st.line_chart(merged.set_index("TIMESTAMP")[["CURR_LIMIT", "CPU_USAGE_ACTUAL"]], color=["#0000FF", "#FF0000"])

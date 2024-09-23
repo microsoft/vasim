@@ -2,6 +2,7 @@
 
 [![Build](https://github.com/microsoft/vasim/actions/workflows/pythonapp.yml/badge.svg)](https://github.com/microsoft/vasim/actions/workflows/pythonapp.yml)
 [![coverage](https://codecov.io/gh/microsoft/vasim/branch/main/graph/badge.svg)](https://codecov.io/github/microsoft/vasim?branch=main)
+[![PyPI version](https://badge.fury.io/py/vasim.svg)](https://badge.fury.io/py/vasim)
 
 VASIM (**V**ertical **A**utoscaling **SIM**ulator) is a tool designed to address the complexities involved in assessing autoscaling algorithms.
 
@@ -26,29 +27,29 @@ If you are writing an academic paper, you can cite [this work](https://www.micro
 
 Our documentation and working example is in our [notebook](examples/using_vasim.ipynb) that shows how to get started simulating your data traces and tuning parameters.  Our example provides the 3 things needed to run VASim: (1) a data csv file, (2) an autoscaling algorithm, and (3) a metadata.json file of parameters. Details of all of these can be found in the notebook.
 
-#### Additionally:
+### Additionally:
 
 * Within each folder, there is a README explaining the code.
-  * [simulator](simulator/README.md)
-  * [recommender](recommender/README.md)
-  * [forecasting](recommender/forecasting/README.md)
-  * [cluster state](recommender/cluster_state_provider/README.md)
+  * [simulator](src/vasim/simulator/README.md)
+  * [recommender](src/vasim/recommender/README.md)
+  * [forecasting](src/vasim/recommender/forecasting/README.md)
+  * [cluster state](src/vasim/recommender/cluster_state_provider/README.md)
   * [tests](tests/README.md)
 
 * For additional usage examples, see any test in the [tests](tests) folder that starts with `test_e2e`.
 
 * Please see our [blog post](https://www.microsoft.com/en-us/research/blog/enhanced-autoscaling-with-vasim-vertical-autoscaling-simulator-toolkit/?msockid=0d2280e91b2c6ea41f32935e1a9f6f36) or [research paper](https://www.microsoft.com/en-us/research/publication/vasim-vertical-autoscaling-simulator-toolkit/) for more details!
 
+* You can also [`pip install vasim`](https://pypi.org/project/vasim)!
 
 ## Authors
 
 * Anna Pavlenko ([@apavlen](https://github.com/apavlen), primary implementation)
-* Karla Saur ([@ksaur](https://github.com/ksaur), editing, maintaining)
+* Karla Saur ([@ksaur](https://github.com/ksaur))
 * Yiwen Zhu ([@zyw400](https://github.com/zyw400))
 * Brian Kroth ([@bpkroth](https://github.com/bpkroth))
 * Joyce Cahoon ([@jyuu](https://github.com/jyuu))
 * Jesús Camacho Rodríguez ([@jcamachor](https://github.com/jcamachor))
-
 
 ## Contributing
 
@@ -56,7 +57,7 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for techinical details.
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+the rights to use your contribution. For details, visit <https://cla.opensource.microsoft.com>.
 
 When you submit a pull request, a CLA bot will automatically determine whether you need to provide
 a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
