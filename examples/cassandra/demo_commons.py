@@ -9,11 +9,14 @@
 This file containers common functions used in the Cassandra demo.
 It is used by the poll_metrics.py and run_recommender.py scripts.
 
+This simple demo shows only standalone containers, but it could be modified to read CPU usage from a
+    Kubernetes cluster/metrics-server/K8ssandra/etc. Contributions welcome!
+
 """
 
-
-import docker
 from datetime import datetime
+import docker
+
 
 WAIT_INTERVAL = 60  # how often to poll the CPU usage
 CONTAINER_PREFIX = "some-cassandra"  # the containers to monitor must all start with this prefix
@@ -38,12 +41,11 @@ def get_containers_list():
 
 def get_curr_cpu_usage(container):
     """
-    This demo shows only a standalone container, but it could be modified to read CPU usage from a
-    Kubernetes cluster/metrics-server, or from multiple containers.
-
+    This
     To modify this to work with Kubernetes, you would need to use the Kubernetes API. Contributions welcome!
     """
 
+    container.reload()
     stats = container.stats(stream=False)
 
     cpu_delta = stats['cpu_stats']['cpu_usage']['total_usage'] - stats['precpu_stats']['cpu_usage']['total_usage']
@@ -54,8 +56,14 @@ def get_curr_cpu_usage(container):
 
 
 def get_current_cpu_limit(containers):
-    """Get the current CPU limit from the container."""
-    # This is a naive implementation that assumes all containers are set to the same CPU limit.
+    """
+    Get the current CPU limit from the container
+    This is a naive implementation that assumes all containers are set to the same CPU limit.
+    """
+
+    # We have the containers, but the data may be stale. So we need to read it from the container.
+    containers[0].reload()
+
     return containers[0].attrs['HostConfig']['CpuQuota'] / 100000
 
 
