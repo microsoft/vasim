@@ -77,18 +77,18 @@ class SimulatedInfraScaler:
                     self.cluster_state_provider.set_cpu_limit(new_limit)
                 self.last_scaling_time = time_now
                 self.logger.info(">>>updated to %f cores", new_limit)
-                self.logger.info("Having a post-scaling %f minute nap.", self.recovery_time)
+                self.logger.info("Having a post-scaling %d minute nap.", self.recovery_time)
                 return True
             elif self.last_scaling_time is not None:
                 self.logger.info(
-                    "Waiting to scale %f minutes, current minutes %f, new_limit: %f",
+                    "Waiting to scale %d minutes, current minutes %d, new_limit: %f",
                     self.recovery_time * 60 - (time_now - self.last_scaling_time).seconds // 60,
                     minutes,
                     new_limit,
                 )
         else:
             self.logger.info(
-                "Waiting to scale %f minutes, current minutes %f, decision of cores to add or subtract: %f",
+                "Waiting to scale %d minutes, current minutes %d, decision of cores to add or subtract: %f",
                 0,
                 minutes,
                 new_limit,
