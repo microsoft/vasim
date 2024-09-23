@@ -12,7 +12,7 @@ from LiveContainerInfraScaler import LiveContainerInfraScaler
 
 from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
 from vasim.recommender.cluster_state_provider.FileClusterStateProvider import FileClusterStateProvider
-from demo_commons import get_current_cpu_limit
+from DemoCommons import get_current_cpu_limit
 
 
 class InMemoryRunner(InMemoryRunnerSimulator):

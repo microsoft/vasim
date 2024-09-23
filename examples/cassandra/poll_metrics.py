@@ -20,8 +20,8 @@ from time import sleep
 import docker
 
 
-from demo_commons import WAIT_INTERVAL, ERROR_BACKOFF, CONTAINER_PREFIX
-from demo_commons import get_curr_cpu_usage, get_timestamp
+from DemoCommons import WAIT_INTERVAL, ERROR_BACKOFF, CONTAINER_PREFIX
+from DemoCommons import get_curr_cpu_usage, get_timestamp
 
 
 if __name__ == "__main__":

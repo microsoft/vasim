@@ -12,7 +12,7 @@
 import os
 from pathlib import Path
 
-from demo_commons import set_current_cpu_limit, get_containers_list, INITIAL_CPU_LIMIT_DEFAULT
+from DemoCommons import set_current_cpu_limit, get_containers_list, INITIAL_CPU_LIMIT_DEFAULT
 from InMemoryLive import InMemoryRunner
 
 

@@ -8,7 +8,7 @@
 
 from vasim.simulator.SimulatedInfraScaler import SimulatedInfraScaler
 
-from demo_commons import set_current_cpu_limit
+from DemoCommons import set_current_cpu_limit
 
 
 class LiveContainerInfraScaler(SimulatedInfraScaler):
