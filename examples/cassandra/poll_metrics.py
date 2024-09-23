@@ -5,24 +5,29 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+# pylint: disable=W0511,R1732
+
 """
 This script is used to read live CPU usage data from the container and write it to a file.
 
 It stores the csv file in the 'data' directory, with the format:
 TIMESTAMP,CPU_USAGE_ACTUAL
 2021.06.02-15:45:12:123456,0.5
-
 """
 
 from datetime import datetime
 from pathlib import Path
 from time import sleep
+
 import docker
-
-
-from DemoCommons import WAIT_INTERVAL, ERROR_BACKOFF, CONTAINER_PREFIX
-from DemoCommons import get_curr_cpu_usage, get_timestamp
-
+from DemoCommons import (
+    CONTAINER_PREFIX,
+    ERROR_BACKOFF,
+    WAIT_INTERVAL,
+    get_curr_cpu_usage,
+    get_timestamp,
+)
 
 if __name__ == "__main__":
 
@@ -31,14 +36,13 @@ if __name__ == "__main__":
     # TODO: remove hardcoded path
     if not Path(str(curr_dir) + "/data").exists():
         Path(str(curr_dir) + "/data").mkdir()
-    filename = str(curr_dir) + "/data/" + \
-        datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + "_perf_event_log.csv"
+    filename = str(curr_dir) + "/data/" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + "_perf_event_log.csv"
     monitor_file = Path(filename)
     if not monitor_file.exists():  # write the header
-        f = open(monitor_file, 'a')
+        f = open(monitor_file, "a", encoding="utf-8")
         f.write("TIMESTAMP,CPU_USAGE_ACTUAL\n")
     else:
-        f = open(monitor_file, 'a')
+        f = open(monitor_file, "a", encoding="utf-8")
 
     client = docker.from_env()
     # Get a list of all running container with the name prefix CONTAINER_PREFIX
@@ -52,7 +56,7 @@ if __name__ == "__main__":
     while True:
         try:
             usage = get_curr_cpu_usage(container_list)  # TODO: loop through all containers
-            readings = "{},{}\n".format(get_timestamp(), usage)
+            readings = f"{get_timestamp()},{usage}\n"
         except KeyError:
             print("error getting data, is container running? Trying again")
             sleep(ERROR_BACKOFF)

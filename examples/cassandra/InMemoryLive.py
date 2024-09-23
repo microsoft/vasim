@@ -5,24 +5,28 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+# pylint: disable=C0103
+
+"""This file contains the InMemoryLiveRunner class, which is used to run the algorithm with live data."""
+
 import time
 from time import sleep
+
 import pandas as pd
-from LiveContainerInfraScaler import LiveContainerInfraScaler
 from DemoCommons import get_current_cpu_limit
+from LiveContainerInfraScaler import LiveContainerInfraScaler
 
+from vasim.recommender.cluster_state_provider.FileClusterStateProvider import (
+    FileClusterStateProvider,
+)
 from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
-from vasim.recommender.cluster_state_provider.FileClusterStateProvider import FileClusterStateProvider
 
 
-class InMemoryRunner(InMemoryRunnerSimulator):
-    """
-    This class is a simulator that runs the recommender algorithm on a simulated cluster state.
+class InMemoryLiveRunner(InMemoryRunnerSimulator):
+    """This class is used with a live system to make recommendations based on the live data."""
 
-    It contains the run method that simulates the cluster state and runs the recommender algorithm.
-    """
-
-    # pylint: disable=too-many-instance-attributes
+    # pylint: disable=too-many-instance-attributes, too-many-arguments
 
     def __init__(
         self,
@@ -33,23 +37,37 @@ class InMemoryRunner(InMemoryRunnerSimulator):
         config=None,
         target_simulation_dir=None,
         if_resample=True,
-        containers=None
+        containers=None,
     ):
 
         self.containers = containers  # This must come first. It is used in the parent class's __init__ method
         self.initial_cpu_limit = initial_cpu_limit  # This is for logging
-        super().__init__(data_dir, config_path=config_path, initial_cpu_limit=initial_cpu_limit, algorithm=algorithm,
-                         config=config, target_simulation_dir=target_simulation_dir, if_resample=if_resample)
+        super().__init__(
+            data_dir,
+            config_path=config_path,
+            initial_cpu_limit=initial_cpu_limit,
+            algorithm=algorithm,
+            config=config,
+            target_simulation_dir=target_simulation_dir,
+            if_resample=if_resample,
+        )
 
         # Here we'll use the FileClusterStateProvider to read the data from the live performance log
-        self.cluster_state_provider = FileClusterStateProvider(data_dir=data_dir, config=self.config, features=['cpu'],
-                                                               window=self.config.general_config['window'], lag=self.config.general_config['lag'],
-                                                               min_cpu_limit=self.config.general_config['min_cpu_limit'],
-                                                               max_cpu_limit=self.config.general_config['max_cpu_limit'], save_metadata=False)
+        self.cluster_state_provider = FileClusterStateProvider(
+            data_dir=data_dir,
+            config=self.config,
+            features=["cpu"],
+            window=self.config.general_config["window"],
+            lag=self.config.general_config["lag"],
+            min_cpu_limit=self.config.general_config["min_cpu_limit"],
+            max_cpu_limit=self.config.general_config["max_cpu_limit"],
+            save_metadata=False,
+        )
 
         self.infra_scaler.cluster_state_provider = self.cluster_state_provider
 
-        # since we are using docker for this demo, we need to override the get_current_cpu_limit method to read it off the container
+        # since we are using docker for this demo, we need to override the get_current_cpu_limit
+        # method to read it off the container
         self.cluster_state_provider.get_current_cpu_limit = self.get_current_cpu_limit
 
     def get_current_cpu_limit(self):
@@ -64,9 +82,9 @@ class InMemoryRunner(InMemoryRunnerSimulator):
         return LiveContainerInfraScaler(
             self.cluster_state_provider,
             self.experiment_start_time,
-            self.config.general_config['recovery_time'],
+            self.config.general_config["recovery_time"],
             self.containers,
-            self.initial_cpu_limit
+            self.initial_cpu_limit,
         )
 
     def run_live(self):

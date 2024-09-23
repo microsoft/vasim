@@ -5,19 +5,22 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+# pylint: disable=C0103
+
 """
 This file containers common functions used in the Cassandra demo.
+
 It is used by the poll_metrics.py and run_recommender.py scripts.
 
 This simple demo shows only standalone containers, but it could be modified to read CPU usage from a
     Kubernetes cluster/metrics-server/K8ssandra/etc. Contributions welcome!
-
 """
 
-from datetime import datetime
-import docker
 import json
+from datetime import datetime
 
+import docker
 
 WAIT_INTERVAL = 60  # how often to poll the CPU usage
 CONTAINER_PREFIX = "some-cassandra"  # the containers to monitor must all start with this prefix
@@ -27,9 +30,7 @@ RECOMMENDATION_FREQ = 10  # how often to make a recommendation in seconds
 
 
 def get_containers_list():
-    """
-    get a list of all containers with the name prefix CONTAINER_PREFIX
-    """
+    """Get a list of all containers with the name prefix CONTAINER_PREFIX."""
     client = docker.from_env()
     # Get a list of all running container with the name prefix CONTAINER_PREFIX
     containers = client.containers.list()
@@ -41,7 +42,9 @@ def get_containers_list():
 
 def get_curr_cpu_usage(containers):
     """
-    This currently averages the CPU usage of all containers. You could change this to use the max, min, etc.
+    This currently averages the CPU usage of all containers.
+
+    You could change this to use the max, min, etc.
     Every workload may have different requirements.
 
     To modify this to work with Kubernetes, you would need to use the Kubernetes API. Contributions welcome!
@@ -52,9 +55,9 @@ def get_curr_cpu_usage(containers):
         container.reload()
         stats = container.stats(stream=False)
 
-        cpu_delta = stats['cpu_stats']['cpu_usage']['total_usage'] - stats['precpu_stats']['cpu_usage']['total_usage']
-        system_cpu_delta = stats['cpu_stats']['system_cpu_usage'] - stats['precpu_stats']['system_cpu_usage']
-        number_cpus = stats['cpu_stats']['online_cpus']
+        cpu_delta = stats["cpu_stats"]["cpu_usage"]["total_usage"] - stats["precpu_stats"]["cpu_usage"]["total_usage"]
+        system_cpu_delta = stats["cpu_stats"]["system_cpu_usage"] - stats["precpu_stats"]["system_cpu_usage"]
+        number_cpus = stats["cpu_stats"]["online_cpus"]
         cpu_percentage = (cpu_delta / system_cpu_delta) * number_cpus
         all_cpu_usage.append(cpu_percentage)
 
@@ -65,14 +68,15 @@ def get_curr_cpu_usage(containers):
 
 def get_current_cpu_limit(containers):
     """
-    Get the current CPU limit from the container
+    Get the current CPU limit from the container.
+
     This is a naive implementation that assumes all containers are set to the same CPU limit.
     """
 
     # We have the containers, but the data may be stale. So we need to read it from the container.
     containers[0].reload()
 
-    return containers[0].attrs['HostConfig']['CpuQuota'] / 100000
+    return containers[0].attrs["HostConfig"]["CpuQuota"] / 100000
 
 
 def set_current_cpu_limit(containers, new_cpu_limit):
@@ -92,11 +96,9 @@ def get_timestamp():
 
 
 def get_max_cpu_limit(config):
-    """
-    Here we will parse metadata.json to get the max_cpu_limit
-    """
+    """Here we will parse metadata.json to get the max_cpu_limit."""
     # Read the config file
-    with open(config, 'r', encoding="utf-8") as f:
+    with open(config, "r", encoding="utf-8") as f:
         config = json.load(f)
 
-    return config['general_config']['max_cpu_limit']
+    return config["general_config"]["max_cpu_limit"]
