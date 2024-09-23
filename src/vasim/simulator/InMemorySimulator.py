@@ -140,7 +140,7 @@ class InMemoryRunnerSimulator:
                                                   if_resample=self.if_resample)
         return metrics
 
-    def run_simulation(self, save_to_file=True):
+    def run_simulation(self):
         """
         Run the simulation to completion and return the final metrics.
         """
@@ -159,7 +159,7 @@ class InMemoryRunnerSimulator:
         self.cluster_state_provider.flush_metrics_data(f"{self.target_simulation_dir}/perf_event_log.csv")
 
         # Return the final metrics
-        return self.get_metrics(save_to_file=save_to_file)
+        return self.get_metrics()
 
     def run_simulation_with_progress(self):
         """
