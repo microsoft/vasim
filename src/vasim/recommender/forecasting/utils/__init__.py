@@ -5,4 +5,8 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
-from .helpers import DataProcessor
+from vasim.recommender.forecasting.utils.helpers import DataProcessor
+
+__all__ = [
+    "DataProcessor",
+]
