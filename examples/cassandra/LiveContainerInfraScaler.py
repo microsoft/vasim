@@ -58,7 +58,6 @@ class LiveContainerInfraScaler(SimulatedInfraScaler):
 
         :param time_now: The current time
         """
-        minutes = time_now.minute
         current_cpu_limit = self.cluster_state_provider.get_current_cpu_limit()
         if new_limit != current_cpu_limit:
             # We only want to scale if the recovery time has passed since the last scaling event
@@ -80,16 +79,15 @@ class LiveContainerInfraScaler(SimulatedInfraScaler):
                 return True
             elif self.last_scaling_time is not None:
                 self.logger.info(
-                    "Waiting to scale %d minutes, current minutes %d, new_limit: %f",
-                    self.recovery_time * 60 - (time_now - self.last_scaling_time).seconds // 60,
-                    minutes,
-                    new_limit,
+                    ">>>not scaling, recovery time not passed, last scaling time %s, current time %s",
+                    self.last_scaling_time,
+                    time_now,
                 )
         else:
             self.logger.info(
-                "Waiting to scale %d minutes, current minutes %d, decision of cores to add or subtract: %f",
-                0,
-                minutes,
+                "No scaling needed, current limit %f, new limit %f, last scaling time %s",
+                current_cpu_limit,
                 new_limit,
+                self.last_scaling_time,
             )
         return False

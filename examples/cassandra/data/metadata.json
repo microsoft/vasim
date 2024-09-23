@@ -3,11 +3,18 @@
         "addend": 2
     },
     "general_config": {
-        "recovery_time": 1,
+        "recovery_time": 2,
         "window": 5,
         "lag": 1,
-        "max_cpu_limit": 5,
-        "min_cpu_limit": 1.0,
-        "granularity": 1
+        "max_cpu_limit": 5.0,
+        "min_cpu_limit": 1.0
+    },
+    "prediction_config": {
+        "enabled": false,
+        "waiting_before_predict": 1440,
+        "frequency_minutes": 1,
+        "minutes_to_predict": 10,
+        "forecasting_models": "naive",
+        "total_predictive_window": 30
     }
 }

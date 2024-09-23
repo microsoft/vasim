@@ -10,7 +10,7 @@
 
 """This file contains the InMemoryLiveRunner class, which is used to run the algorithm with live data."""
 
-import time
+from datetime import datetime
 from time import sleep
 
 import pandas as pd
@@ -97,7 +97,7 @@ class InMemoryLiveRunner(InMemoryRunnerSimulator):
                 # Core simulation logic (without yielding progress)
                 self._execute_simulation_step()
                 lag = self.cluster_state_provider.config.general_config["lag"]
-                print(f"Now sleeping for {lag} minute(s)")
+                print(f"Recommender loop will check again in {lag} minute(s)")
                 sleep(lag * 60)
 
                 # We will loop until user hits Ctrl-C
@@ -124,6 +124,6 @@ class InMemoryLiveRunner(InMemoryRunnerSimulator):
             return
 
         # Get the current timestamp live but in the same format as the recorded data, then scale the cluster
-        time_now = pd.Timestamp(time.time())
+        time_now = pd.Timestamp(datetime.now())
         print("Recommended new limit: ", new_limit)
         self.infra_scaler.scale(new_limit, time_now)

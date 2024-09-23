@@ -97,15 +97,40 @@ TIMESTAMP,CPU_USAGE_ACTUAL
 2024.09.23-00:30:29:919104,0.006529308732144707
 ```
 
+### Check the config in metadata.json
+
+For this example, we'll use the `additive` algorithm, from [DummyAdditiveRecommender.py](https://github.com/microsoft/vasim/blob/main/src/vasim/recommender/DummyAdditiveRecommender.py).
+
+```bash
+cat data/metadata.json
+```
+
+```json
+{
+    "algo_specific_config": {
+        "addend": 2 # add 2 cores buffer on top of a moving average.
+    },
+    "general_config": {
+        "recovery_time": 2, # How long to wait after doing an update (after making a change to #cpus)
+        "window": 5, # How many minutes of data to feed to the algorithm
+        "lag": 1, # How many minutes to wait between runs of the recommender algorithm
+        "max_cpu_limit": 5.0, # The max number of cores to recommend
+        "min_cpu_limit": 1.0 # The minimum number of cores to recommend
+    }
+}
+```
+
+Ignore any `prediction_config`, this is not used for now.
+
 ### Start the recommender
 
 Depending on how large your machine is, you might want to set some different defaults for the number of cores. In `data/metadata.json` there is a parameter `"max_cpu_limit": 5,` that you can change.  Remember that you have two containers running, along with the recommender script and benchmark (if you did this all on one machine), so you might need to adjust this number down.
 
+This will start the recommender with the config above and the default algorithm.
+
 ```bash
 python3 run_recommender.py
 ```
-
-This will start the recommender with a default algorithm, `additive`, from [DummyAdditiveRecommender.py](https://github.com/microsoft/vasim/blob/main/src/vasim/recommender/DummyAdditiveRecommender.py), which will add 2 cores on top of a moving average.  This 2 cores is set by the `"addend": 2` in the `metadata.json` file in the data directory.
 
 ### Start the traffic
 
