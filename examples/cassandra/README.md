@@ -1,13 +1,15 @@
 # Cassandra Demo
 
-This is going to be an autoscaling demo of Cassandra.  Currently it is a work-in-progress!!
+This is an autoscaling demo of Cassandra, with a goal of demonstrating how to use VASim, and demonstrating autoscaling the CPU limit as simply as possible.
 
-This is an example of autoscaling a single Cassandra container instance. A real deployment would run in multiple containers or on Kubernetes, but for here we focus on demonstrating the autoscaling capability.
+In this demo we use standalone Cassandra containers. A real deployment would run in more rebust orchestrator (ex: Kubernetes, K8ssandra, your container manager of choice), but for here we focus on demonstrating the autoscaling capability.
 
-Also note that this example uses a single container.  In a real deployment, where you have multiple containers, you have some choices to make depending on your workload.
+As we have multiple containers, they may or may not have similar CPU usage. To do the autoscaling:
 
 1. (Most common) You can take the (average/median/sampling/etc) of the CPU usage across the cluster, and scale them all to the same limit
 2. You could scale the containers independently, and run the algorithm for each CPU trace. This usually does not make sense for a balanced deployment.
+
+Here, we take approach 1.
 
 Contributions are welcome to the instructions and example!
 

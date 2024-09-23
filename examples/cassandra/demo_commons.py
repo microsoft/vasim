@@ -39,19 +39,27 @@ def get_containers_list():
     return container_list
 
 
-def get_curr_cpu_usage(container):
+def get_curr_cpu_usage(containers):
     """
-    This
+    This currently averages the CPU usage of all containers. You could change this to use the max, min, etc.
+    Every workload may have different requirements.
+
     To modify this to work with Kubernetes, you would need to use the Kubernetes API. Contributions welcome!
     """
 
-    container.reload()
-    stats = container.stats(stream=False)
+    all_cpu_usage = []
+    for container in containers:
+        container.reload()
+        stats = container.stats(stream=False)
 
-    cpu_delta = stats['cpu_stats']['cpu_usage']['total_usage'] - stats['precpu_stats']['cpu_usage']['total_usage']
-    system_cpu_delta = stats['cpu_stats']['system_cpu_usage'] - stats['precpu_stats']['system_cpu_usage']
-    number_cpus = stats['cpu_stats']['online_cpus']
-    cpu_percentage = (cpu_delta / system_cpu_delta) * number_cpus
+        cpu_delta = stats['cpu_stats']['cpu_usage']['total_usage'] - stats['precpu_stats']['cpu_usage']['total_usage']
+        system_cpu_delta = stats['cpu_stats']['system_cpu_usage'] - stats['precpu_stats']['system_cpu_usage']
+        number_cpus = stats['cpu_stats']['online_cpus']
+        cpu_percentage = (cpu_delta / system_cpu_delta) * number_cpus
+        all_cpu_usage.append(cpu_percentage)
+
+    # Now return the average of all the containers
+    cpu_percentage = sum(all_cpu_usage) / len(all_cpu_usage)
     return cpu_percentage
 
 

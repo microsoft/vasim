@@ -51,7 +51,7 @@ if __name__ == "__main__":
     print("starting monitor loop. Writing to " + filename + ". Ctrl-C to exit.")
     while True:
         try:
-            usage = get_curr_cpu_usage(container_list[0])  # TODO: loop through all containers
+            usage = get_curr_cpu_usage(container_list)  # TODO: loop through all containers
             readings = "{},{}\n".format(get_timestamp(), usage)
         except KeyError:
             print("error getting data, is container running? Trying again")

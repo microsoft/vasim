@@ -151,6 +151,7 @@ cython_debug/
 *data_tuning*
 *to_delete*
 *data_simulations*
+*examples/cassandra/data/*
 
 # IDEA
 .idea
