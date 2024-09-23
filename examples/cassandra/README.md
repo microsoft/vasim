@@ -30,7 +30,7 @@ You must have a machine with Python and Docker.
    ```bash
    TAG=cassandra:5.0-jammy
    docker network create some-network
-   docker run --name some-cassandra1 --network some-network  -d $TAG
+   docker run --name some-cassandra1 --network some-network -d $TAG
    docker run --name some-cassandra2 --network some-network -d  -e CASSANDRA_SEEDS=some-cassandra $TAG
    ```
 
@@ -38,6 +38,7 @@ You must have a machine with Python and Docker.
 There are many tools you can use for this, this is just one option.
 
    ```bash
+   cd cassfiles
    curl -L -O https://github.com/nosqlbench/nosqlbench/releases/latest/download/nb5
    chmod 700 ./nb5
    ```
@@ -59,7 +60,11 @@ Folders:
 - data_simulations: This will be generated, the output will go here.
 - cassfiles: These will be used with the `nb5` tool to drive the traffic.
 
-## Start the demo
+## Phase 1: Get the initial trace
+
+In the first phase, we will setup the benchmark and record the CPU data WITHOUT running the recommendation algorithm.
+
+**IMPORTANT** Ensure that you have enough free CPUs on your machine to run the benchmark without throttling. If the CPU usage is throttled, it makes it harder (but not impossible) to recreate the simulation. VASim detects throttling when the max CPU usage value is the same as the CPU quota/limit.  But for gathering the initial trace, it is best that it is not throttled.  If necessary, place your container (or the benchmarking tool) on multiple machines.
 
 ### Setup the benchmark
 
@@ -80,11 +85,22 @@ DC=datacenter1
 
 ### Start collecting the metrics
 
+In a *new* terminal window (as this will loop until you stop it), run:
+
 ```bash
 python3 poll_metrics.py
 ```
 
-This will start a file that looks like this:
+### Start the benchmark load
+
+```bash
+cd cassfile
+./start_load.sh
+```
+
+### Stop the poll_metrics
+
+Now it is time to stop the CPU trace.  Hit Ctrl-C whereever you were running `poll_metrics.py`, and make sure that you have a file that looks like this:
 
 ```bash
 cat data/*_perf_event_log.csv
@@ -97,9 +113,19 @@ TIMESTAMP,CPU_USAGE_ACTUAL
 2024.09.23-00:30:29:919104,0.006529308732144707
 ```
 
+You will use this file in the next step.
+
+## Phase 2: Autoscaling Algorithm and Tuning
+
+We need 3 things to run the simulator:
+
+- CSVs: You generated this in the last step
+- Algorithm: For this example, we'll use the `additive` algorithm, from [DummyAdditiveRecommender.py](https://github.com/microsoft/vasim/blob/main/src/vasim/recommender/DummyAdditiveRecommender.py).
+- Metadata: This is included in the `data` folder as `metadata.json`.
+
 ### Check the config in metadata.json
 
-For this example, we'll use the `additive` algorithm, from [DummyAdditiveRecommender.py](https://github.com/microsoft/vasim/blob/main/src/vasim/recommender/DummyAdditiveRecommender.py).
+Here is an example of some default values.
 
 ```bash
 cat data/metadata.json
@@ -122,16 +148,24 @@ cat data/metadata.json
 
 Ignore any `prediction_config`, this is not used for now.
 
+### Run the tuner
+
+See the [notebook](https://github.com/microsoft/vasim/blob/main/examples/using_vasim.ipynb) for the full example, but here is some python code for how to run the tuner:
+
+```python
+tune_with_strategy
+```
+
+## Phase 3: Run with the recommender
+
+TODO
+
 ### Start the recommender
 
-Depending on how large your machine is, you might want to set some different defaults for the number of cores. In `data/metadata.json` there is a parameter `"max_cpu_limit": 5,` that you can change.  Remember that you have two containers running, along with the recommender script and benchmark (if you did this all on one machine), so you might need to adjust this number down.
-
-This will start the recommender with the config above and the default algorithm.
+In a *new* terminal window (as this will loop until you stop it), run:
 
 ```bash
 python3 run_recommender.py
 ```
 
-### Start the traffic
-
-Now we are ready to start the traffic!
+This will start the recommender with the config above and the default algorithm.
