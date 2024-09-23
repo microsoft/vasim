@@ -193,8 +193,7 @@ class InMemoryRunnerSimulator:
             with open(f"{self.target_simulation_dir}/calc_metrics.json", "w", encoding="utf-8") as f:
                 json.dump(metrics, f)
 
-            with open(f"{self.target_simulation_dir}/metadata.json", "w", encoding="utf-8") as metadata_file:
-                self.cluster_state_provider.config.to_json(metadata_file)
+                self.cluster_state_provider.config.to_json(f"{self.target_simulation_dir}/metadata.json")
 
             # If plot_cpu_usage_and_new_limit_plotnine involves file operations, ensure it is properly handled
             plot_cpu_usage_and_new_limit_plotnine(
