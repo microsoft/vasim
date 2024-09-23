@@ -14,6 +14,7 @@ import numpy as np
 import pandas as pd
 
 from vasim.recommender.cluster_state_provider.ClusterStateProvider import ClusterStateProvider
+from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
 
 
 class FileClusterStateProvider(ClusterStateProvider):
@@ -55,20 +56,30 @@ class FileClusterStateProvider(ClusterStateProvider):
             raise SystemExit('Error: no csvs found in data_dir {}'.format(self.data_dir))
         # TODO: rename this, it's a bit confusing. It's not the features of the model, it's the features of the data.
         self.features = features or []
+        # TODO: a lot of the code below needs testing
         self.decision_file_path = decision_file_path or "data/decisions.txt"
         self.save_metadata = save_metadata
 
     def get_current_cpu_limit(self):
         """
-        TODO: Here is where we called into the live system (Kubernetes) to get the current limit of cores being used.
-        This is not needed in the simulator, but we leave this placeholder here in case others want to use this code
-        to run the simulator with a live k8s cluster.
-
         Returns
         -------
         cores : int
             The number of cores currently being used.
         """
+        try:
+
+            def get_current_cpu_limit_pods():
+                # TODO: reimplement this to not be Azure-specific
+                pass
+            cores, _ = get_current_cpu_limit_pods()[0]
+        except Exception as e:
+            self.logger.error(f'Error getting current cores. Retry later. {e}')
+            print("Error getting current cores. Retry later.")
+            print(e)
+            return None
+
+        return int(cores)
 
     def read_metrics_data(self):
         # Verify that csvs exist in the data_dir
@@ -124,6 +135,10 @@ class FileClusterStateProvider(ClusterStateProvider):
         if recorded_data.shape[0] > 2:
             # Filter out any data points that are greater than the machine max
             # This is because sometimes the telemetry can be incorrect
+            cores = self.get_current_cpu_limit()
+            if cores is None:
+                self.logger.error("Error getting current cores. Retry later.")
+                return None, None
             recorded_data = recorded_data[recorded_data["cpu"] <= self.config.general_config['max_cpu_limit']]
 
         return recorded_data, end_time
