@@ -25,7 +25,7 @@ def read_data(decision_file_path, perf_log_file_path, if_resample=True):
     or duplicated, depending on the publisher.
 
     Parameters:
-        decision_file_path (str): The path to the decisions.txt file.
+        decision_file_path (str): The path to the decisions.csv file.
         perf_log_file_path (str): The path to the performance log file.
         if_resample (bool, Optional): If True, the data will be resampled to 1 minute intervals.
 
@@ -116,7 +116,7 @@ def calculate_and_return_metrics_to_target(source_dir, target_dir, perf_log_file
         perf_log_file_path = f"{source_dir}/{[f for f in os.listdir(source_dir) if f.endswith('.csv')][0]}"
 
     if not decision_file_path:
-        decision_file_path = f"{target_dir}/decisions.txt"
+        decision_file_path = f"{target_dir}/decisions.csv"
 
     decision_df, perf_df = read_data(decision_file_path, perf_log_file_path)
     merged = process_data(decision_df, perf_df)
@@ -136,7 +136,7 @@ def plot_cpu_usage_and_new_limit_reformat(
         perf_log_file_path = f"{source_dir}/{[f for f in os.listdir(source_dir) if f.endswith('.csv')][0]}"
 
     if not decision_file_path:
-        decision_file_path = f"{target_dir}/decisions.txt"
+        decision_file_path = f"{target_dir}/decisions.csv"
 
     decision_df, perf_df = read_data(decision_file_path, perf_log_file_path)
     merged = process_data(decision_df, perf_df)
@@ -158,7 +158,7 @@ def plot_cpu_usage_and_new_limit_plotnine(
         perf_log_file_path = f"{experiment_dir}/{[f for f in os.listdir(experiment_dir) if f.endswith('.csv')][0]}"
 
     if not decision_file_path:
-        decision_file_path = f"{experiment_dir}/decisions.txt"
+        decision_file_path = f"{experiment_dir}/decisions.csv"
     target_folder = os.path.dirname(decision_file_path)
     decision_df, perf_df = read_data(decision_file_path, perf_log_file_path, if_resample)
     merged = process_data(decision_df, perf_df, if_resample=if_resample)
