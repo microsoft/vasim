@@ -202,7 +202,6 @@ Modify the `metadata.json` file in the `examples/cassandra/data` folder with the
 
 Now it is time to run everything all together. This will scale the live system!
 
-
 First start poll_metrics in one terminal:
 ```bash
 python3 poll_metrics.py

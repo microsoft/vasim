@@ -14,6 +14,9 @@ echo "Outputing benchmark CSVs to $FOLDER"
 CYCLERATE=15000
 ./nb5 rdwr_keyvalue default.readonly  cyclerate=$CYCLERATE main-cycles=$MAINCYC thread-count=$THREADS  hosts=$IP_ADDR localdc=$DC driverconfig=driverconfig.json  --progress console:1s --report-csv-to $FOLDER --logs-dir $FOLDER/logs
 ./nb5 rdwr_keyvalue default.writeonly  cyclerate=$CYCLERATE main-cycles=$MAINCYC thread-count=$THREADS  hosts=$IP_ADDR localdc=$DC driverconfig=driverconfig.json  --progress console:1s --report-csv-to $FOLDER --logs-dir $FOLDER/logs
+CYCLERATE=50000
+./nb5 rdwr_keyvalue default.readonly  cyclerate=$CYCLERATE main-cycles=$MAINCYC thread-count=$THREADS  hosts=$IP_ADDR localdc=$DC driverconfig=driverconfig.json  --progress console:1s --report-csv-to $FOLDER --logs-dir $FOLDER/logs
+CYCLERATE=15000
 ./nb5 rdwr_keyvalue default.mixed  cyclerate=$CYCLERATE main-cycles=$MAINCYC thread-count=$THREADS  hosts=$IP_ADDR localdc=$DC driverconfig=driverconfig.json  --progress console:1s --report-csv-to $FOLDER --logs-dir $FOLDER/logs
 CYCLERATE=30000
 ./nb5 rdwr_keyvalue default.writeonly  cyclerate=$CYCLERATE main-cycles=$MAINCYC thread-count=$THREADS  hosts=$IP_ADDR localdc=$DC driverconfig=driverconfig.json  --progress console:1s --report-csv-to $FOLDER --logs-dir $FOLDER/logs
