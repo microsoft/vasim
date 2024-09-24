@@ -22,6 +22,7 @@ from datetime import datetime
 from time import sleep
 
 import docker
+import pandas as pd
 
 WAIT_INTERVAL = 60  # how often to poll the CPU usage
 CONTAINER_PREFIX = "some-cassandra"  # the containers to monitor must all start with this prefix
@@ -71,19 +72,32 @@ def get_curr_cpu_usage_over_window(containers, window_seconds=60):
     """
     This currently averages the CPU usage of all containers over a window.
 
-    It will sample every 15 seconds and average the results.
-
     This is because there may be a lot of variability in the CPU usage, and we want to smooth it out.
     """
 
     # We will take the average of the CPU usage over the window
     # We will call get_curr_cpu_usage multiple times and average the results
     all_cpu_usage = []
-    # we will call the loop window_seconds times and sleep for 1 second each time
-    while window_seconds > 0:
-        all_cpu_usage.append(get_curr_cpu_usage(containers))
-        sleep(15)
-        window_seconds -= 15
+    # This is the initial call
+    all_cpu_usage.append(get_curr_cpu_usage(containers))
+
+    # we will use pd.Timestamp to get the current time
+    curr_time = pd.Timestamp.now()
+    # compare this to time delta of window_seconds
+    end_time = curr_time + pd.Timedelta(seconds=window_seconds)
+
+    while curr_time < end_time:
+
+        # We'll poll when the minutes mod 10 is 0
+        if curr_time.minute % 10 == 0:
+            all_cpu_usage.append(get_curr_cpu_usage(containers))
+
+        # we need to make sure not to oversleep!!
+        curr_time = pd.Timestamp.now()
+        # we will sleep for 1 second, and check the time again
+        # This is because docker stats can be slow.
+        if curr_time < end_time:
+            sleep(1)
 
     # Now return the average of all the containers
     cpu_percentage = sum(all_cpu_usage) / len(all_cpu_usage)
