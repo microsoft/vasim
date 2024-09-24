@@ -7,7 +7,7 @@ DC=datacenter1
 
 MAINCYC=5000000
 THREADS=64
-FOLDER=`date "+%m-%d-%y-%X"`
+FOLDER=`date "+%m-%d-%y-%X"`_'additive'
 mkdir $FOLDER
 echo "Outputing benchmark CSVs to $FOLDER"
 
