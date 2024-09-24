@@ -103,6 +103,8 @@ python3 poll_metrics.py
 
 ### Start the benchmark load
 
+For this task, we'll be using a script that calls the `nb5` benchmark with a variety of workloads, with reads, writes, and mixed portions.
+
 The `CYCLERATE` parameter is the main driver of CPU usage.
 
 ```bash
@@ -112,7 +114,24 @@ cd cassfile
 
 **Note:** If you are running across multiple machines, alter line 3 of the `IP_address` of `start_load.sh`.
 
-Wait for this to complete. It will take TODO minutes.
+Wait for this to complete. **It will take 30-40 minutes.**  It will look like this:
+
+```bash
+$ ./start_load.sh
+Outputing benchmark CSVs to 09-24-24-22:51:10
+readonly (pending,current,complete)=(4996473,64,3463) 0.07%
+readonly (pending,current,complete)=(4978376,2,21622) 0.43%
+readonly (pending,current,complete)=(4963392,25,36583) 0.73%
+readonly (pending,current,complete)=(4948314,11,51675) 1.03%
+readonly (pending,current,complete)=(4933365,2,66633) 1.33%
+ ( 30-40 minutes goes by)
+readonly (pending,current,complete)=(54026,60,4945914) 98.92%
+readonly (pending,current,complete)=(40999,0,4959001) 99.18%
+readonly (pending,current,complete)=(28037,0,4971963) 99.44%
+readonly (pending,current,complete)=(15060,20,4984920) 99.70%
+readonly (pending,current,complete)=(1988,47,4997965) 99.96%
+readonly (pending,current,complete)=(0,0,5000000) 100.00% (last report)
+```
 
 ### Stop the poll_metrics
 
@@ -169,6 +188,7 @@ Ignore any `prediction_config`, this is not used for now.
 ### Simulate your scenario
 
 If you are using a VM, you will need to port forward to get the webpage to load locally.
+
 ```bash
 # only if using a remote VM
 ssh -L 8501:localhost:8501 your-host
@@ -180,12 +200,7 @@ Now go to the [../streamlit](https://github.com/microsoft/vasim/tree/main/exampl
 streamlit run examples/streamlit/web_demo.py
 ```
 
-
-
-<p align="center">
-    <img src="https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/vasim_cass.png" width=600 >
-</p>
-
+![VASIM front end]("https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/vasim_cass.png")
 
 In the webpage, change the directory path for CSVs to `examples/cassandra/data`.
 
@@ -203,6 +218,7 @@ Modify the `metadata.json` file in the `examples/cassandra/data` folder with the
 Now it is time to run everything all together. This will scale the live system!
 
 First start poll_metrics in one terminal:
+
 ```bash
 python3 poll_metrics.py
 ```
@@ -213,7 +229,7 @@ In another terminal window (as this will loop until you stop it), run:
 python3 run_recommender.py
 ```
 
-This will start the recommender with the config above and the default algorithm.  It will also drive your algorithm.
+This will start the recommender with the config above and the default algorithm.  It will also autoscale the cluster by setting the CPU quota on the docker containers.
 
 Now you can see the output:
 
