@@ -168,9 +168,10 @@ class InMemoryRunnerSimulator:
 
         # Use 'with' statement to open the file
         if not out_file.exists():
-            with open(out_file, "a", encoding="utf-8") as f:
+            with open(out_file, "w", encoding="utf-8") as f:
                 f.write("LATEST_TIME,CURR_LIMIT,NEW_LIMIT\n")
-        return open(out_file, "a", encoding="utf-8")
+        with open(out_file, "a", encoding="utf-8") as f:
+            yield f
 
     def output_decision(self, latest_time, current_limit, new_limit):
         if latest_time is not None:
