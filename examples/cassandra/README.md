@@ -166,26 +166,48 @@ Here is the file with some annotations:
 
 Ignore any `prediction_config`, this is not used for now.
 
-### Run the tuner
+### Simulate your scenario
 
-See the [notebook](https://github.com/microsoft/vasim/blob/main/examples/using_vasim.ipynb) for the full example, but here is some python code for how to run the tuner:
+Now go to the [../streamlit](https://github.com/microsoft/vasim/tree/main/examples/streamlit) folder in the `examples folder`.
 
-TODO
+`streamlit run examples/streamlit/web_demo.py`
 
-```python
-tune_with_strategy
+Follow the instructions (install the packages and load the webpage).  If you are doing this on a remote VM, you will need to port forward, ex:
+
+```bash
+ssh -L 8501:localhost:8501 your-host
 ```
+
+In the webpage, change the directory path for CSVs to `examples/cassandra/data`.
+
+Now you can experiment with changing the values in the table. Remember for this dummy algorithm, it smooths the CPU values in the window, and adds a buffer.
+
+- Try changing the `algo_specific_config.addend` to 1. This will decrease the "added" buffer size for our dummy recommender algorithm.
+- Try changing the `general_config.winow` to larger values. This will provide more data for the smoothing window. But too much data will muddle things.
+
+Currently, tuning the algorithm in the web interface is a work-in-progress.  For now, if you want to try many different parameters, you can refer back to the general [notebook](https://github.com/microsoft/vasim/blob/main/examples/using_vasim.ipynb) and use the `tune_with_strategy` function shown there.
+
+Modify the `metadata.json` file in the `examples/cassandra/data` folder with the parameters you choose.
 
 ## Phase 3: Run with the recommender
 
-TODO
+Now it is time to run everything all together. This will scale the live system!
 
 ### Start the recommender
 
-In a *new* terminal window (as this will loop until you stop it), run:
+First start poll_metrics in one terminal:
+```bash
+python3 poll_metrics.py
+```
+
+In another terminal window (as this will loop until you stop it), run:
 
 ```bash
 python3 run_recommender.py
 ```
 
-This will start the recommender with the config above and the default algorithm.
+This will start the recommender with the config above and the default algorithm.  It will also drive your algorithm.
+
+Now you can see the output:
+
+TODO
