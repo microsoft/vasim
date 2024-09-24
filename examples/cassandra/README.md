@@ -200,7 +200,10 @@ Now go to the [../streamlit](https://github.com/microsoft/vasim/tree/main/exampl
 streamlit run examples/streamlit/web_demo.py
 ```
 
-![VASIM front end]("https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/vasim_cass.png")
+<!-- markdownlint-disable MD033 -->
+<p align="center">
+    <img src="https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/images_for_readme/vasim_cass.png" width=600 alt="VASIM frontend">
+</p>
 
 In the webpage, change the directory path for CSVs to `examples/cassandra/data`.
 
@@ -208,6 +211,29 @@ Now you can experiment with changing the values in the table. Remember for this 
 
 - Try changing the `algo_specific_config.addend` to 1. This will decrease the "added" buffer size for our dummy recommender algorithm.
 - Try changing the `general_config.winow` to larger values. This will provide more data for the smoothing window. But too much data will muddle things.
+
+For example, here is what the actual CPU usage (bottom line, blue) and the prescribed quota/limit (upper line, red) look like for the default settings.  Addend is 2, meaning it will add 2 cores buffer for the window:
+
+<!-- markdownlint-disable MD033 -->
+<p align="center">
+    <img src="https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/images_for_readme/2-buffer.png"
+    width=600 alt="Graph with addend=2">
+</p>
+
+And if we change `addend` to 1,
+
+<!-- markdownlint-disable MD033 -->
+<p align="center">
+    <img src="https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/images_for_readme/2-buffer.png"
+    width=200 alt="Graph with addend=2">
+</p>
+
+we can see that some throttling might occur:
+
+<p align="center">
+    <img src="https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/images_for_readme/table_field.png"
+    width=600 alt="Graph with addend=1">
+</p>
 
 Currently, tuning the algorithm in the web interface is a work-in-progress.  For now, if you want to try many different parameters, you can refer back to the general [notebook](https://github.com/microsoft/vasim/blob/main/examples/using_vasim.ipynb) and use the `tune_with_strategy` function shown there.
 
