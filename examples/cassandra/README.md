@@ -202,7 +202,7 @@ streamlit run examples/streamlit/web_demo.py
 
 <!-- markdownlint-disable MD033 -->
 <p align="center">
-    <img src="https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/images_for_readme/vasim_cass.png" width=600 alt="VASIM frontend">
+    <img src="https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/images_for_readme/vasim_cass.png" width=800 alt="VASIM frontend">
 </p>
 
 In the webpage, change the directory path for CSVs to `examples/cassandra/data`.
@@ -217,7 +217,7 @@ For example, here is what the actual CPU usage (bottom line, blue) and the presc
 <!-- markdownlint-disable MD033 -->
 <p align="center">
     <img src="https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/images_for_readme/2-buffer.png"
-    width=600 alt="Graph with addend=2">
+    width=700 alt="Graph with addend=2">
 </p>
 
 And if we change `addend` to 1,
@@ -232,7 +232,7 @@ we can see that some throttling might occur:
 
 <p align="center">
     <img src="https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/images_for_readme/2-buffer.png"
-    width=600 alt="Graph with addend=1">
+    width=700 alt="Graph with addend=1">
 </p>
 
 Currently, tuning the algorithm in the web interface is a work-in-progress.  For now, if you want to try many different parameters, you can refer back to the general [notebook](https://github.com/microsoft/vasim/blob/main/examples/using_vasim.ipynb) and use the `tune_with_strategy` function shown there.
