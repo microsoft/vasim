@@ -19,6 +19,7 @@ This simple demo shows only standalone containers, but it could be modified to r
 
 import json
 from datetime import datetime
+from time import sleep
 
 import docker
 
@@ -60,6 +61,29 @@ def get_curr_cpu_usage(containers):
         number_cpus = stats["cpu_stats"]["online_cpus"]
         cpu_percentage = (cpu_delta / system_cpu_delta) * number_cpus
         all_cpu_usage.append(cpu_percentage)
+
+    # Now return the average of all the containers
+    cpu_percentage = sum(all_cpu_usage) / len(all_cpu_usage)
+    return cpu_percentage
+
+
+def get_curr_cpu_usage_over_window(containers, window_seconds=60):
+    """
+    This currently averages the CPU usage of all containers over a window.
+
+    It will sample every 15 seconds and average the results.
+
+    This is because there may be a lot of variability in the CPU usage, and we want to smooth it out.
+    """
+
+    # We will take the average of the CPU usage over the window
+    # We will call get_curr_cpu_usage multiple times and average the results
+    all_cpu_usage = []
+    # we will call the loop window_seconds times and sleep for 1 second each time
+    while window_seconds > 0:
+        all_cpu_usage.append(get_curr_cpu_usage(containers))
+        sleep(15)
+        window_seconds -= 15
 
     # Now return the average of all the containers
     cpu_percentage = sum(all_cpu_usage) / len(all_cpu_usage)

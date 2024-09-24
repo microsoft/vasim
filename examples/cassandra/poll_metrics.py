@@ -25,7 +25,7 @@ from DemoCommons import (
     CONTAINER_PREFIX,
     ERROR_BACKOFF,
     WAIT_INTERVAL,
-    get_curr_cpu_usage,
+    get_curr_cpu_usage_over_window,
     get_timestamp,
 )
 
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     print("starting monitor loop. Writing to " + filename + ". Ctrl-C to exit.")
     while True:
         try:
-            usage = get_curr_cpu_usage(container_list)  # TODO: loop through all containers
+            usage = get_curr_cpu_usage_over_window(container_list, WAIT_INTERVAL)
             readings = f"{get_timestamp()},{usage}\n"
         except KeyError:
             print("error getting data, is container running? Trying again")
@@ -65,4 +65,3 @@ if __name__ == "__main__":
         print(readings)
         f.write(readings)
         f.flush()
-        sleep(WAIT_INTERVAL)
