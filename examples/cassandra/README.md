@@ -168,15 +168,24 @@ Ignore any `prediction_config`, this is not used for now.
 
 ### Simulate your scenario
 
-Now go to the [../streamlit](https://github.com/microsoft/vasim/tree/main/examples/streamlit) folder in the `examples folder`.
-
-`streamlit run examples/streamlit/web_demo.py`
-
-Follow the instructions (install the packages and load the webpage).  If you are doing this on a remote VM, you will need to port forward, ex:
-
+If you are using a VM, you will need to port forward to get the webpage to load locally.
 ```bash
+# only if using a remote VM
 ssh -L 8501:localhost:8501 your-host
 ```
+
+Now go to the [../streamlit](https://github.com/microsoft/vasim/tree/main/examples/streamlit) folder in the `examples folder`. Follow the install instructions, then start the webpage:
+
+```bash
+streamlit run examples/streamlit/web_demo.py
+```
+
+
+
+<p align="center">
+    <img src="https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/vasim_cass.png" width=600 >
+</p>
+
 
 In the webpage, change the directory path for CSVs to `examples/cassandra/data`.
 
@@ -193,7 +202,6 @@ Modify the `metadata.json` file in the `examples/cassandra/data` folder with the
 
 Now it is time to run everything all together. This will scale the live system!
 
-### Start the recommender
 
 First start poll_metrics in one terminal:
 ```bash
