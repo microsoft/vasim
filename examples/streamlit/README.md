@@ -34,7 +34,7 @@ This is a Streamlit-based application for visualizing, simulating, and tuning au
 
    ```sh
    pip install .
-   pip install examples/streamlit/requirements.txt
+   pip install -r examples/streamlit/requirements.txt
    ```
 
 3. Run. It will start your web app and output link to access via browser
