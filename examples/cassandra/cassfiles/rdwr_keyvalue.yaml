@@ -23,7 +23,7 @@ blocks:
       create-keyspace:
         raw: |
           create keyspace if not exists TEMPLATE(keyspace,baselines)
-          WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 'TEMPLATE(rf,3)'}
+          WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 'TEMPLATE(rf,2)'}
           AND durable_writes = true;
       create-table:
         raw: |

@@ -31,6 +31,7 @@ You must have a machine with Python and Docker.
    TAG=cassandra:5.0-jammy
    docker network create some-network
    docker run --name some-cassandra1 --network some-network -d $TAG
+   sleep 120  #wait for first one
    docker run --name some-cassandra2 --network some-network -d  -e CASSANDRA_SEEDS=some-cassandra $TAG
    ```
 
@@ -74,15 +75,18 @@ For this toy example with everything on a single machine, we recommend TODO #CPU
 # change directory
 cd cassfiles
 
-# get the IP address of the docker container:
-IP_ADDR=docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' some-cassandra1
+# Get the IP address
+#
+# This depends on your setup: If you have this machine running on a differnet host, you may need to use the IP of the machine instead
+# Here is an example of getting it for docker if you are on the same machine
+IP_ADDR=`docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' some-cassandra1`
 DC=datacenter1
 
 # Setup schema
-./nb5 nova-keyvalue default.schema thread-count=1 hosts=$IP_ADDR  driverconfig=driverconfig.json  localdc=$DC
+./nb5 rdwr_keyvalue default.schema thread-count=1 hosts=$IP_ADDR  driverconfig=driverconfig.json  localdc=$DC
 
 # Rampup
-./nb5 nova-keyvalue default.rampup rampup-cycles=10000000 main-cycles=10000000 cyclerate=60000 thread-count=160 hosts=$IP_ADDR localdc=$DC driverconfig=driverconfig.json  --progress console:1s --report-csv-to casscsv-ramp
+./nb5 rdwr_keyvalue default.rampup rampup-cycles=10000000 main-cycles=10000000 cyclerate=60000 thread-count=160 hosts=$IP_ADDR localdc=$DC driverconfig=driverconfig.json  --progress console:1s --report-csv-to casscsv-ramp
 ```
 
 ### Start collecting the metrics
