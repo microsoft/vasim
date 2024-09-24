@@ -224,14 +224,14 @@ And if we change `addend` to 1,
 
 <!-- markdownlint-disable MD033 -->
 <p align="center">
-    <img src="https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/images_for_readme/2-buffer.png"
+    <img src="https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/images_for_readme/table_field.png"
     width=200 alt="Graph with addend=2">
 </p>
 
 we can see that some throttling might occur:
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/images_for_readme/table_field.png"
+    <img src="https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/images_for_readme/2-buffer.png"
     width=600 alt="Graph with addend=1">
 </p>
 
