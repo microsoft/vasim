@@ -6,6 +6,21 @@
 # --------------------------------------------------------------------------
 #
 
+"""
+This module provides an interactive interface for running autoscaling simulations using.
+
+Streamlit. It supports various operations like visualizing workloads from CSV files,
+configuring simulation parameters, and running autoscaling algorithms.
+Main Features:
+- Workload Visualization: Display CPU usage trends from CSV files.
+- Simulation Options: Run autoscaling simulations or tune simulation parameters.
+- Parameter Input: Dynamically adjust simulation parameters based on user input.
+Modules:
+    create_charts: Displays charts of CPU usage over time.
+    process_params_to_tune: Processes simulation parameters for tuning.
+    get_files_with_extension: Retrieves files with a specific extension from a directory.
+"""
+
 # pylint: disable=no-member # FIXME
 
 import json
@@ -26,6 +41,12 @@ st.title("VASIM Autoscaling Simulator Toolkit Presentation")
 
 @st.cache_data()
 def create_charts(data):
+    """
+    Creates and displays a line chart for CPU usage over time in the sidebar.
+
+    Args:
+        data (pd.DataFrame): A DataFrame containing CPU usage data with a TIMESTAMP column.
+    """
     # Create a new DataFrame for Streamlit line_chart
     chart_data = pd.DataFrame({"TIMESTAMP": data["TIMESTAMP"], "CPU_USAGE_ACTUAL": data["CPU_USAGE_ACTUAL"]})
 
@@ -36,6 +57,15 @@ def create_charts(data):
 
 
 def process_params_to_tune(selected_params):
+    """
+    Processes selected parameters by prompting the user for input and returning.
+
+    the processed values.
+    Args:
+        selected_params (list): A list of parameter names selected by the user.
+    Returns:
+        dict: A dictionary with parameter names as keys and user-supplied values as values.
+    """
     params_to_tune = {}
 
     for param_name in selected_params:
@@ -46,6 +76,15 @@ def process_params_to_tune(selected_params):
 
 
 def process_parameter_input(param_name):
+    """
+    Prompts the user for input values for a specific simulation parameter and.
+
+    returns the values as a list.
+    Args:
+        param_name (str): The name of the parameter to be processed.
+    Returns:
+        list: A list of values input by the user for the parameter.
+    """
     st.subheader(f"Edit values for parameter: {param_name}")
     user_input = st.text_input(f"Enter values for {param_name} (comma-separated):")
 
@@ -72,6 +111,15 @@ parent_data_input_directory = st.sidebar.text_input("Enter the directory path fo
 
 
 def get_files_with_extension(directory, format_suffix=".csv"):
+    """
+    Recursively retrieves all files with a specific extension from a directory.
+
+    Args:
+        directory (str): The directory to search for files.
+        format_suffix (str): The file extension to filter (default is ".csv").
+    Returns:
+        list: A list of file paths matching the specified extension.
+    """
     files = []
     for root, _, filenames in os.walk(directory):
         for filename in filenames:
