@@ -45,7 +45,7 @@ There are many tools you can use for this, this is just one option.
 
 ## Information
 
-This demo contains several code files:
+**This demo contains several code files:**
 
 - DemoCommons.py: Utility functions related to getting information about the running container(s)
 - InMemoryLive.py: This is similar to `InMemorySimulator.py` except that it works on live data as it comes in, not a full trace.
@@ -53,7 +53,7 @@ This demo contains several code files:
 - poll_metrics.py: This generates csvs of CPU usage of the running container(s)
 - run_recommender.py: This is the main function to run the recommender live.
 
-Folders:
+**Folders:**
 
 - data: This will be where the generated CPU metrics data goes
   - metadata.json: This is the configuration file, as described in the [notebook](https://github.com/microsoft/vasim/blob/main/examples/using_vasim.ipynb).
@@ -64,7 +64,9 @@ Folders:
 
 In the first phase, we will setup the benchmark and record the CPU data WITHOUT running the recommendation algorithm.
 
-**IMPORTANT** Ensure that you have enough free CPUs on your machine to run the benchmark without throttling. If the CPU usage is throttled, it makes it harder (but not impossible) to recreate the simulation. VASim detects throttling when the max CPU usage value is the same as the CPU quota/limit.  But for gathering the initial trace, it is best that it is not throttled.  If necessary, place your container (or the benchmarking tool) on multiple machines.
+**IMPORTANT:** _Ensure that you have enough free CPUs on your machine to run the benchmark without CPU throttling._ If the CPU usage is throttled, it makes it harder (but not impossible) to recreate the simulation. VASim detects throttling when the max CPU usage value is the same as the CPU quota/limit.  But for gathering the initial trace, it is best that it is not throttled.  If necessary, place your container (or the benchmarking tool) on multiple machines.
+
+For this toy example with everything on a single machine, we recommend TODO #CPUs on the machine.
 
 ### Setup the benchmark
 
@@ -85,7 +87,7 @@ DC=datacenter1
 
 ### Start collecting the metrics
 
-In a *new* terminal window (as this will loop until you stop it), run:
+In a **new** terminal window (as this will loop until you stop it), run:
 
 ```bash
 python3 poll_metrics.py
@@ -97,6 +99,8 @@ python3 poll_metrics.py
 cd cassfile
 ./start_load.sh
 ```
+
+Wait for this to complete. It will take TODO minutes.
 
 ### Stop the poll_metrics
 
@@ -131,17 +135,19 @@ Here is an example of some default values.
 cat data/metadata.json
 ```
 
-```json
+Here is the file with some annotations:
+
+```go
 {
     "algo_specific_config": {
-        "addend": 2 # add 2 cores buffer on top of a moving average.
+        "addend": 2 // add 2 cores buffer on top of a moving average.
     },
     "general_config": {
-        "recovery_time": 2, # How long to wait after doing an update (after making a change to #cpus)
-        "window": 5, # How many minutes of data to feed to the algorithm
-        "lag": 1, # How many minutes to wait between runs of the recommender algorithm
-        "max_cpu_limit": 5.0, # The max number of cores to recommend
-        "min_cpu_limit": 1.0 # The minimum number of cores to recommend
+        "recovery_time": 2, // How long to wait after doing an update (after making a change to #cpus)
+        "window": 5, // How many minutes of data to feed to the algorithm
+        "lag": 1, // How many minutes to wait between runs of the recommender algorithm
+        "max_cpu_limit": 5.0, // The max number of cores to recommend
+        "min_cpu_limit": 1.0 // The minimum number of cores to recommend
     }
 }
 ```
@@ -151,6 +157,8 @@ Ignore any `prediction_config`, this is not used for now.
 ### Run the tuner
 
 See the [notebook](https://github.com/microsoft/vasim/blob/main/examples/using_vasim.ipynb) for the full example, but here is some python code for how to run the tuner:
+
+TODO
 
 ```python
 tune_with_strategy
