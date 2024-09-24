@@ -14,7 +14,7 @@ from typing import Optional
 
 import pandas as pd
 import streamlit as st
-from examples.streamlit.utils import run_simulation, unflatten_dict
+from utils import run_simulation, unflatten_dict  # pylint: disable=import-error
 
 from vasim.recommender.cluster_state_provider.ClusterStateConfig import (
     ClusterStateConfig,
