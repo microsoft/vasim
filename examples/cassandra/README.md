@@ -17,6 +17,8 @@ Contributions are welcome to the instructions and example!
 
 You must have a machine with Python and Docker.
 
+To run this all on a single VM, we recommend a VM with at least 16 CPU cores (for this simple, contrived scenario). Else, you can run it over multiple machines for a more authentic setup.
+
 ## Setup
 
 1. First, make sure you have [installed](https://github.com/microsoft/vasim/blob/main/CONTRIBUTING.md#developing) VASim.
@@ -32,7 +34,7 @@ You must have a machine with Python and Docker.
    docker network create some-network
    docker run --name some-cassandra1 --network some-network -d $TAG
    sleep 120  #wait for first one
-   docker run --name some-cassandra2 --network some-network -d  -e CASSANDRA_SEEDS=some-cassandra $TAG
+   docker run --name some-cassandra2 --network some-network -d  -e CASSANDRA_SEEDS=some-cassandra1 $TAG
    ```
 
 4. We also need something to generate load, so we'll use the `nb5` [NoSQLBench](https://docs.nosqlbench.io/getting-started/) tool.
@@ -89,6 +91,8 @@ DC=datacenter1
 ./nb5 rdwr_keyvalue default.rampup rampup-cycles=10000000 main-cycles=10000000 cyclerate=60000 thread-count=160 hosts=$IP_ADDR localdc=$DC driverconfig=driverconfig.json  --progress console:1s --report-csv-to casscsv-ramp
 ```
 
+**Note:** If you get an error such as `WARN  [rampup:037] CoreMotor    attempted to stop motor 154: from non Running state:Errored`, then make sure both of your containers are running and healthy.
+
 ### Start collecting the metrics
 
 In a **new** terminal window (as this will loop until you stop it), run:
@@ -99,10 +103,14 @@ python3 poll_metrics.py
 
 ### Start the benchmark load
 
+The `CYCLERATE` parameter is the main driver of CPU usage.
+
 ```bash
 cd cassfile
 ./start_load.sh
 ```
+
+**Note:** If you are running across multiple machines, alter line 3 of the `IP_address` of `start_load.sh`.
 
 Wait for this to complete. It will take TODO minutes.
 

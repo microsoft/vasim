@@ -1,15 +1,26 @@
 #!/bin/bash
 
-IP_ADDR=docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' some-cassandra1
+# The goal of this script is to create an interesting CPU trace.
+
+IP_ADDR=`docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' some-cassandra1`
 DC=datacenter1
 
-CYCLERATE=500000
+CYCLERATE=5000
 MAINCYC=5000000
 THREADS=64
-for i in {1..3};
-do
-	FOLDER=`date "+%m-%d-%y-%X"`
-	echo $FOLDER
-	mkdir $FOLDER
-	./nb5 nova-keyvalue default.readonly  cyclerate=$CYCLERATE main-cycles=$MAINCYC thread-count=$THREADS  hosts=$IP_ADDR localdc=$DC driverconfig=driverconfig.json  --progress console:1s --report-csv-to $FOLDER --logs-dir $FOLDER/logs
-done
+FOLDER=`date "+%m-%d-%y-%X"`
+mkdir $FOLDER
+echo "Outputing benchmark CSVs to $FOLDER"
+./nb5 rdwr_keyvalue default.readonly  cyclerate=$CYCLERATE main-cycles=$MAINCYC thread-count=$THREADS  hosts=$IP_ADDR localdc=$DC driverconfig=driverconfig.json  --progress console:1s --report-csv-to $FOLDER --logs-dir $FOLDER/logs
+./nb5 rdwr_keyvalue default.writeonly  cyclerate=$CYCLERATE main-cycles=$MAINCYC thread-count=$THREADS  hosts=$IP_ADDR localdc=$DC driverconfig=driverconfig.json  --progress console:1s --report-csv-to $FOLDER --logs-dir $FOLDER/logs
+./nb5 rdwr_keyvalue default.mixed  cyclerate=$CYCLERATE main-cycles=$MAINCYC thread-count=$THREADS  hosts=$IP_ADDR localdc=$DC driverconfig=driverconfig.json  --progress console:1s --report-csv-to $FOLDER --logs-dir $FOLDER/logs
+CYCLERATE=10000
+./nb5 rdwr_keyvalue default.writeonly  cyclerate=$CYCLERATE main-cycles=$MAINCYC thread-count=$THREADS  hosts=$IP_ADDR localdc=$DC driverconfig=driverconfig.json  --progress console:1s --report-csv-to $FOLDER --logs-dir $FOLDER/logs
+CYCLERATE=20000
+./nb5 rdwr_keyvalue default.writeonly  cyclerate=$CYCLERATE main-cycles=$MAINCYC thread-count=$THREADS  hosts=$IP_ADDR localdc=$DC driverconfig=driverconfig.json  --progress console:1s --report-csv-to $FOLDER --logs-dir $FOLDER/logs
+CYCLERATE=50000
+./nb5 rdwr_keyvalue default.readonly  cyclerate=$CYCLERATE main-cycles=$MAINCYC thread-count=$THREADS  hosts=$IP_ADDR localdc=$DC driverconfig=driverconfig.json  --progress console:1s --report-csv-to $FOLDER --logs-dir $FOLDER/logs
+./nb5 rdwr_keyvalue default.writeonly  cyclerate=$CYCLERATE main-cycles=$MAINCYC thread-count=$THREADS  hosts=$IP_ADDR localdc=$DC driverconfig=driverconfig.json  --progress console:1s --report-csv-to $FOLDER --logs-dir $FOLDER/logs
+./nb5 rdwr_keyvalue default.readonly  cyclerate=$CYCLERATE main-cycles=$MAINCYC thread-count=$THREADS  hosts=$IP_ADDR localdc=$DC driverconfig=driverconfig.json  --progress console:1s --report-csv-to $FOLDER --logs-dir $FOLDER/logs
+CYCLERATE=30000
+./nb5 rdwr_keyvalue default.readonly  cyclerate=$CYCLERATE main-cycles=$MAINCYC thread-count=$THREADS  hosts=$IP_ADDR localdc=$DC driverconfig=driverconfig.json  --progress console:1s --report-csv-to $FOLDER --logs-dir $FOLDER/logs
