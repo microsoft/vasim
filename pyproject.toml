@@ -41,7 +41,7 @@ dependencies = [
     "plotnine~=0.12.2",
     "python-dateutil~=2.8.2",
     "requests~=2.32.0",
-    "sktime~=0.16.1",
+    "sktime~=0.16.1"
 ]
 [project.optional-dependencies]
 "dev" = [
@@ -56,6 +56,7 @@ dependencies = [
     "pytest-xdist",
     "coverage",
     "pre-commit",
+    "streamlit"
 ]
 
 [project.urls]
