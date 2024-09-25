@@ -35,6 +35,9 @@ from utils import run_simulation, unflatten_dict  # pylint: disable=import-error
 from vasim.recommender.cluster_state_provider.ClusterStateConfig import (
     ClusterStateConfig,
 )
+from vasim.simulator.analysis.pareto_visualization import (
+    create_pareto_curve_from_folder,
+)
 from vasim.simulator.ParameterTuning import tune_with_strategy
 
 st.set_page_config(layout="wide")
@@ -60,13 +63,11 @@ def construct_config_metric_df(config_metrics_list) -> pd.DataFrame:
         rows.append(row_data)
 
     # Create the DataFrame from the list of row data
-    df = pd.DataFrame(rows)
-
-    return df
+    return pd.DataFrame(rows)
 
 
 @st.cache_data()
-def create_charts(data):
+def create_charts(curr_data):
     """
     Creates and displays a line chart for CPU usage over time in the sidebar.
 
@@ -74,12 +75,11 @@ def create_charts(data):
         data (pd.DataFrame): A DataFrame containing CPU usage data with a TIMESTAMP column.
     """
     # Create a new DataFrame for Streamlit line_chart
-    chart_data_df = pd.DataFrame({"TIMESTAMP": data["TIMESTAMP"], "CPU_USAGE_ACTUAL": data["CPU_USAGE_ACTUAL"]})
+    chart_data_df = pd.DataFrame({"TIMESTAMP": curr_data["TIMESTAMP"], "CPU_USAGE_ACTUAL": curr_data["CPU_USAGE_ACTUAL"]})
 
     # Plot the DataFrame using Streamlit line_chart
     st.sidebar.line_chart(chart_data_df.set_index("TIMESTAMP"))
-    # pylint: disable=possibly-used-before-assignment # FIXME
-    st.sidebar.success(f"Workload visualization finished for {selected_csv}")
+    st.sidebar.success("Workload visualization finished.")
 
 
 def process_params_to_tune(input_selected_params_to_tune):
@@ -186,8 +186,8 @@ with open(config_path_run, mode="r", encoding="utf-8") as json_file_run:
     data_run = json.load(json_file_run)
     df_run = pd.json_normalize(data_run)
 
-data_dir = os.path.dirname(selected_csv)
-# Check if there's a selected CSV file
+# selected_csv is definitely already defined
+data_dir = os.path.dirname(selected_csv)  # pylint: disable=possibly-used-before-assignment
 if selected_csv:
     if st.sidebar.button("Visualize workload"):
         workload_df = pd.read_csv(selected_csv)
@@ -291,6 +291,7 @@ elif simulation_option == "Simulation Tuning":
     if st.button("Run Tuning"):
         st.session_state.tuning_has_run = True
 
+        st.write("Running tuning...")
         # Pass the section being tuned and parameters into the tuning function
         results = tune_with_strategy(
             config_path_run,
@@ -305,8 +306,27 @@ elif simulation_option == "Simulation Tuning":
             predictive_params_to_tune=params_to_tune["prediction_config"],
         )
 
-        st.write(f"Tuning results saved at: {data_dir}")
+        st.write(f"Tuning results saved at: {data_dir}_tuning")
         config_metric_df = construct_config_metric_df(results)
         st.dataframe(config_metric_df)
+
+        st.write("Getting best config:")
+        # calculate config closest to zero
+        pareto_2d = create_pareto_curve_from_folder(data_dir, data_dir + "_tuning")
+        folder, _, _, _ = pareto_2d.find_closest_to_zero()
+
+        # display the data_tuning/pareto_frontier.png
+        st.image(data_dir + "_tuning/pareto_frontier.png")
+        st.write(f"Folder with winning config: {data_dir}_tuning/{folder}")
+
+        # open the file at the folder
+        with open(data_dir + "_tuning/" + folder + "/metadata.json", mode="r", encoding="utf-8") as json_file:
+            data = json.load(json_file)
+            df = pd.json_normalize(data)
+            st.write("metadata.json")
+            st.json(data)
+
+        st.write(f"Make sure to delete the {data_dir}_tuning folder before running the tuning again.")
+
 else:
     st.write("WIP")
