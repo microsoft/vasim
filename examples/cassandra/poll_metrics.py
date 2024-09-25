@@ -54,7 +54,9 @@ if __name__ == "__main__":
     container_list = [c for c in containers if c.name.startswith(CONTAINER_PREFIX)]
     # Write a begining timestamp
     initial_val = get_curr_cpu_usage(container_list)
+    print("Initial CPU usage: " + str(initial_val))
     f.write(f"{get_timestamp()},{initial_val}\n")
+    f.flush()
 
     print("starting monitor loop. Writing to " + filename + ". Ctrl-C to exit.")
     while True:
