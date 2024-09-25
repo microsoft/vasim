@@ -23,6 +23,7 @@ Modules:
 
 # pylint: disable=no-member # FIXME
 
+import itertools
 import json
 import os
 from typing import Optional
@@ -34,9 +35,34 @@ from utils import run_simulation, unflatten_dict  # pylint: disable=import-error
 from vasim.recommender.cluster_state_provider.ClusterStateConfig import (
     ClusterStateConfig,
 )
+from vasim.simulator.ParameterTuning import tune_with_strategy
 
 st.set_page_config(layout="wide")
 st.title("VASIM Autoscaling Simulator Toolkit Presentation")
+
+
+def construct_config_metric_df(config_metrics_list) -> pd.DataFrame:
+    """
+    Helper function to output parameter list and metrics.
+
+    Args:
+        config_metrics_list (list): A List of metrics and configs
+    """
+    # Create an empty list to store row data
+    rows = []
+
+    # Iterate through the results and add rows to the list
+    for modified_config, metrics in config_metrics_list:
+        if metrics is None:
+            print(f"Skipping {modified_config.uuid} because of an error")
+            continue
+        row_data = {**metrics, **modified_config}  # TODO: there is a known issue https://github.com/microsoft/vasim/issues/119
+        rows.append(row_data)
+
+    # Create the DataFrame from the list of row data
+    df = pd.DataFrame(rows)
+
+    return df
 
 
 @st.cache_data()
@@ -48,31 +74,31 @@ def create_charts(data):
         data (pd.DataFrame): A DataFrame containing CPU usage data with a TIMESTAMP column.
     """
     # Create a new DataFrame for Streamlit line_chart
-    chart_data = pd.DataFrame({"TIMESTAMP": data["TIMESTAMP"], "CPU_USAGE_ACTUAL": data["CPU_USAGE_ACTUAL"]})
+    chart_data_df = pd.DataFrame({"TIMESTAMP": data["TIMESTAMP"], "CPU_USAGE_ACTUAL": data["CPU_USAGE_ACTUAL"]})
 
     # Plot the DataFrame using Streamlit line_chart
-    st.sidebar.line_chart(chart_data.set_index("TIMESTAMP"))
+    st.sidebar.line_chart(chart_data_df.set_index("TIMESTAMP"))
     # pylint: disable=possibly-used-before-assignment # FIXME
     st.sidebar.success(f"Workload visualization finished for {selected_csv}")
 
 
-def process_params_to_tune(selected_params):
+def process_params_to_tune(input_selected_params_to_tune):
     """
     Processes selected parameters by prompting the user for input and returning.
 
     the processed values.
     Args:
-        selected_params (list): A list of parameter names selected by the user.
+        input_selected_params_to_tune (list): A list of parameter names selected by the user.
     Returns:
         dict: A dictionary with parameter names as keys and user-supplied values as values.
     """
-    params_to_tune = {}
+    resulted_params_to_tune = {}
 
-    for param_name in selected_params:
+    for param_name in input_selected_params_to_tune:
         param_values = process_parameter_input(param_name)
-        params_to_tune[param_name] = param_values
+        resulted_params_to_tune[param_name] = param_values
 
-    return params_to_tune
+    return resulted_params_to_tune
 
 
 def process_parameter_input(param_name):
@@ -164,14 +190,14 @@ data_dir = os.path.dirname(selected_csv)
 # Check if there's a selected CSV file
 if selected_csv:
     if st.sidebar.button("Visualize workload"):
-        df = pd.read_csv(selected_csv)
-        df["TIMESTAMP"] = pd.to_datetime(df["TIMESTAMP"], format="%Y.%m.%d-%H:%M:%S:%f")
-        df["TIMESTAMP"] = pd.DatetimeIndex(df["TIMESTAMP"]).floor("min")
-        df = df.drop_duplicates(subset=["TIMESTAMP"], keep="last")
-        perf_log_resampled = df.set_index("TIMESTAMP").resample("1T").ffill().reset_index()
+        workload_df = pd.read_csv(selected_csv)
+        workload_df["TIMESTAMP"] = pd.to_datetime(workload_df["TIMESTAMP"], format="%Y.%m.%d-%H:%M:%S:%f")
+        workload_df["TIMESTAMP"] = pd.DatetimeIndex(workload_df["TIMESTAMP"]).floor("min")
+        workload_df = workload_df.drop_duplicates(subset=["TIMESTAMP"], keep="last")
+        perf_log_resampled = workload_df.set_index("TIMESTAMP").resample("1T").ffill().reset_index()
 
         # Display the chart in the left sidebar
-        chart_data = pd.DataFrame({"TIMESTAMP": df["TIMESTAMP"], "CPU_USAGE_ACTUAL": df["CPU_USAGE_ACTUAL"]})
+        chart_data = pd.DataFrame({"TIMESTAMP": workload_df["TIMESTAMP"], "CPU_USAGE_ACTUAL": workload_df["CPU_USAGE_ACTUAL"]})
         create_charts(chart_data)
 # Page 1: Simulation Run
 if simulation_option == "Simulation Run":
@@ -192,5 +218,95 @@ if simulation_option == "Simulation Run":
     if st.button("Run Simulation"):
         config_run = ClusterStateConfig(config_dict=edited_json_run)
         run_simulation(selected_algorithm_names, data_dir, initial_cores_count_run, config_run)
+# Page 2: Simulation Tuning
+elif simulation_option == "Simulation Tuning":
+    st.title("Simulation Tuning")
+    initial_cores_count_run = st.slider("Select the initial core count:", 1, 20, 7)
+
+    # Display the full data
+    st.json(data_run)
+
+    # Define the sections available in metadata.json
+    config_sections = ["algo_specific_config", "general_config", "prediction_config"]
+
+    # Create a dictionary to hold selected parameters for each section
+    params_to_tune = {}
+
+    # Allow users to tune parameters from all sections
+    for section in config_sections:
+        st.subheader(f"Tuning {section}")
+        selected_params = list(data_run[section].keys())
+
+        # Multiselect to allow selecting parameters within each section
+        selected_params_to_tune = st.multiselect(f"Select parameters to tune from {section}:", selected_params)
+
+        # Process the selected parameters for tuning
+        params_to_tune[section] = process_params_to_tune(selected_params_to_tune)
+
+    st.divider()
+
+    # Predictive parameters (example)
+    predictive_params_to_tune = {"waiting_before_predict": [24 * 60]}
+
+    # Create the ClusterStateConfig with all sections' data
+    config_tun = ClusterStateConfig(config_dict=data_run)
+
+    # Strategy selection
+    strategy = st.radio("Select tuning strategy:", ["grid", "random"])
+
+    # Number of combinations
+    NUM_COMBINATIONS = None
+    if strategy == "random":
+        NUM_COMBINATIONS = st.number_input("Enter num_combinations:", min_value=1, value=500)
+    else:
+        # Calculate combinations for grid strategy
+        all_combinations = [list(itertools.product(*params.values())) for params in params_to_tune.values()]
+        config_param_combinations = list(itertools.product(*[item for sublist in all_combinations for item in sublist]))
+        NUM_COMBINATIONS = len(config_param_combinations)
+        st.text(f"Number of combinations (calculated): {NUM_COMBINATIONS}")
+        st.text("The 'num_combinations' field is disabled because the strategy is 'grid'.")
+
+    # Number of workers and initial cores count
+    num_workers = st.number_input("Enter num_workers:", min_value=1, value=10)
+    initial_cores_count = st.number_input("Enter initial_cores_count:", min_value=1, value=10)
+
+    # Update session state with selected parameters
+    st.session_state.tuning_has_run = False
+
+    # Available dimensions for analysis
+    available_dimensions = [
+        "average_slack",
+        "average_insufficient_cpu",
+        "sum_slack",
+        "sum_insufficient_cpu",
+        "num_scalings",
+        "num_insufficient_cpu",
+        "insufficient_observations_percentage",
+        "slack_percentage",
+        "median_insufficient_cpu",
+        "median_slack",
+        "max_slack",
+    ]
+    # Run tuning when button clicked
+    if st.button("Run Tuning"):
+        st.session_state.tuning_has_run = True
+
+        # Pass the section being tuned and parameters into the tuning function
+        results = tune_with_strategy(
+            config_path_run,
+            strategy,
+            num_combinations=NUM_COMBINATIONS,
+            num_workers=num_workers,
+            data_dir=data_dir,
+            algorithm=selected_algorithm_names,
+            initial_cpu_limit=initial_cores_count_run,
+            algo_specific_params_to_tune=params_to_tune["algo_specific_config"],
+            general_params_to_tune=params_to_tune["general_config"],
+            predictive_params_to_tune=params_to_tune["prediction_config"],
+        )
+
+        st.write(f"Tuning results saved at: {data_dir}")
+        config_metric_df = construct_config_metric_df(results)
+        st.dataframe(config_metric_df)
 else:
     st.write("WIP")
