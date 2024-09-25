@@ -226,10 +226,9 @@ For example, here is what the actual CPU usage (bottom line, blue) and the presc
 
 And if we change `addend` to 1,
 
-<!-- markdownlint-disable MD033 -->
 <p align="center">
     <img src="https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/images_for_readme/table_field.png"
-    width=200 alt="Graph with addend=2">
+    width=200 alt="Example of how to edit the table">
 </p>
 
 we can see that some throttling might occur:
@@ -239,17 +238,30 @@ we can see that some throttling might occur:
     width=700 alt="Graph with addend=1">
 </p>
 
-Currently, tuning the algorithm in the web interface is a work-in-progress.  For now, if you want to try many different parameters, you can refer back to the general [notebook](https://github.com/microsoft/vasim/blob/main/examples/using_vasim.ipynb) and use the `tune_with_strategy` function shown there.
+### Parameter tuning
 
-### Parameter tuning.
+Next, we can try many different parameters. In the upper left corner of the screen, select "Simulation Tuning".  Put in multiple values that you want to try.
 
-Now, in the upper left corner of the screen, select "Simulation Tuning".
+<!-- markdownlint-disable MD033 -->
+<p align="center">
+    <img src="https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/images_for_readme/tuning.png"
+    width=700 alt="Tuning pane">
+</p>
+
+Then click "Run Simulation" and wait for a few seconds.  You can see that `window=3` minutes was the best window size, and that `addend=1` CPU was the best buffer size.
+
+Here we define "best" config as the lowest slack (too many CPUs) and lowest throttling (too few CPUs).
+
+<p align="center">
+    <img src="https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/images_for_readme/graphandconfig.png"
+    width=700 alt="Pareto Curve and Optimal Config">
+</p>
 
 ## Phase 3: Run with the recommender
 
 Now it is time to run everything all together. This will scale the live system!
 
-Modify the `metadata.json` file in the `examples/cassandra/data` folder with the parameters you choose.
+Modify the `metadata.json` file in the `examples/cassandra/data` folder with the best parameters from above.
 
 **Metrics:** First start poll_metrics in one terminal:
 
