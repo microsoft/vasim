@@ -243,13 +243,13 @@ Modify the `metadata.json` file in the `examples/cassandra/data` folder with the
 
 Now it is time to run everything all together. This will scale the live system!
 
-First start poll_metrics in one terminal:
+**Metrics:** First start poll_metrics in one terminal:
 
 ```bash
 python3 poll_metrics.py
 ```
 
-In another terminal window (as this will loop until you stop it), run:
+**Algorithm and Autoscaler:** In another terminal window (as this will loop until you stop it), run:
 
 ```bash
 python3 run_recommender.py
@@ -259,4 +259,12 @@ This will start the recommender with the config above and the default algorithm.
 
 Now you can see the output:
 
+**Load:** Now generate the same traffic as before.
+
+```bash
+cd cassfile
+./start_load.sh
+```
+
+You can see the output showing it scaling the containers:
 TODO
