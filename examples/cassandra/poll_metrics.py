@@ -25,6 +25,7 @@ from DemoCommons import (
     CONTAINER_PREFIX,
     ERROR_BACKOFF,
     WAIT_INTERVAL,
+    get_curr_cpu_usage,
     get_curr_cpu_usage_over_window,
     get_timestamp,
 )
@@ -51,6 +52,9 @@ if __name__ == "__main__":
     containers = client.containers.list()
     # Now, filter to list ALL containers with the prefix
     container_list = [c for c in containers if c.name.startswith(CONTAINER_PREFIX)]
+    # Write a begining timestamp
+    initial_val = get_curr_cpu_usage(container_list)
+    f.write(f"{get_timestamp()},{initial_val}\n")
 
     print("starting monitor loop. Writing to " + filename + ". Ctrl-C to exit.")
     while True:
