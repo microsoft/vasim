@@ -205,7 +205,11 @@ streamlit run examples/streamlit/web_demo.py
     <img src="https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/images_for_readme/vasim_cass.png" width=800 alt="VASIM frontend">
 </p>
 
-In the webpage, change the directory path for CSVs to `examples/cassandra/data`.
+- In the webpage, change the directory path for CSVs to `examples/cassandra/data`.
+
+- In the dropdown, select your CSV.  This should start with a date, such as `data/2024-09-24_21-41-52_perf_event_log.csv`.
+
+- **Note:** We also included `data/reference_trace.csv`, but make sure to select your own if you want to see the CPU trace you generated.
 
 Now you can experiment with changing the values in the table. Remember for this dummy algorithm, it smooths the CPU values in the window, and adds a buffer.
 
@@ -231,17 +235,21 @@ And if we change `addend` to 1,
 we can see that some throttling might occur:
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/images_for_readme/2-buffer.png"
+    <img src="https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/images_for_readme/1-buffer.png"
     width=700 alt="Graph with addend=1">
 </p>
 
 Currently, tuning the algorithm in the web interface is a work-in-progress.  For now, if you want to try many different parameters, you can refer back to the general [notebook](https://github.com/microsoft/vasim/blob/main/examples/using_vasim.ipynb) and use the `tune_with_strategy` function shown there.
 
-Modify the `metadata.json` file in the `examples/cassandra/data` folder with the parameters you choose.
+### Parameter tuning.
+
+Now, in the upper left corner of the screen, select "Simulation Tuning".
 
 ## Phase 3: Run with the recommender
 
 Now it is time to run everything all together. This will scale the live system!
+
+Modify the `metadata.json` file in the `examples/cassandra/data` folder with the parameters you choose.
 
 **Metrics:** First start poll_metrics in one terminal:
 

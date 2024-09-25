@@ -1,6 +1,6 @@
 {
     "algo_specific_config": {
-        "addend": 2
+        "addend": 2.0
     },
     "general_config": {
         "recovery_time": 2,
