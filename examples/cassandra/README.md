@@ -148,7 +148,7 @@ TIMESTAMP,CPU_USAGE_ACTUAL
 2024.09.23-00:30:29:919104,0.006529308732144707
 ```
 
-You will use this file in the next step.
+You will use this file in the next step.  **Note:** The file name must end in `_perf_event_log.csv` to be processed.
 
 ## Phase 2: Autoscaling Algorithm and Tuning
 
