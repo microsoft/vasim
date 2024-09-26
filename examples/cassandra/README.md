@@ -69,7 +69,7 @@ In the first phase, we will setup the benchmark and record the CPU data WITHOUT 
 
 **IMPORTANT:** _Ensure that you have enough free CPUs on your machine to run the benchmark without CPU throttling._ If the CPU usage is throttled, it makes it harder (but not impossible) to recreate the simulation. VASim detects throttling when the max CPU usage value is the same as the CPU quota/limit.  But for gathering the initial trace, it is best that it is not throttled.  If necessary, place your container (or the benchmarking tool) on multiple machines.
 
-For this toy example with everything on a single machine, we recommend 12 ore more #CPUs on the machine.
+For this toy example with everything on a single machine, we recommend 12 or more #CPUs on the machine.
 
 ### Setup the benchmark
 
