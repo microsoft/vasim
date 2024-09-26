@@ -20,7 +20,7 @@ from datetime import datetime
 from pathlib import Path
 from time import sleep
 
-import docker
+import docker  # pylint: disable=import-error
 from DemoCommons import (
     CONTAINER_PREFIX,
     ERROR_BACKOFF,

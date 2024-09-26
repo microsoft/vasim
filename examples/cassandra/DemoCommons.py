@@ -21,7 +21,7 @@ import json
 from datetime import datetime
 from time import sleep
 
-import docker
+import docker  # pylint: disable=import-error
 import pandas as pd
 
 WAIT_INTERVAL = 60  # how often to poll the CPU usage
