@@ -286,5 +286,29 @@ cd cassfile
 ./start_load.sh
 ```
 
-You can see the output showing it scaling the containers:
-TODO
+You can see the output showing it scaling the containers based on your algorithm and the tuned parameters:
+<!-- markdownlint-disable MD033 -->
+<p align="center">
+    <img src="https://raw.githubusercontent.com/microsoft/vasim/refs/heads/kasaur/e2e-livedemo/examples/cassandra/cassfiles/images_for_readme/scaling-live.png"
+    width=700 alt="Live scaling output">
+</p>
+
+In the `data_simulations` folder, there will be a folder named as `target_....`. Inside this folder, there is `decisions.csv` that looks like this:
+
+```csv
+LATEST_TIME,CURR_LIMIT,NEW_LIMIT
+2024-09-25 22:51:56.613043,5.0,2.0
+2024-09-25 22:52:59.756796,2.0,4.0
+2024-09-25 22:52:59.756796,2.0,4.0
+2024-09-25 22:54:03.005546,2.0,4.0
+2024-09-25 22:55:06.226522,4.0,4.0
+2024-09-25 22:56:09.443835,4.0,4.0
+2024-09-25 22:57:12.681385,4.0,4.0
+2024-09-25 22:58:15.908231,4.0,4.5
+2024-09-25 22:59:19.152884,4.5,4.5
+2024-09-25 23:00:26.572933,4.5,4.5
+```
+
+This shows the current limit for the timestamp, and what it the system will scale to next, based on what your algorithm recommended!
+
+Remember that no two live runs are the same, and that there will be variation between runs.
