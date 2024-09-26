@@ -155,7 +155,7 @@ You will use this file in the next step.
 We need 3 things to run the simulator:
 
 - CSVs: You generated this in the last step
-- Algorithm: For this example, we'll use the `additive` algorithm, from [DummyAdditiveRecommender.py](https://github.com/microsoft/vasim/blob/main/src/vasim/recommender/DummyAdditiveRecommender.py).
+- Algorithm: For this example, we'll use the `additive` algorithm, from [DummyAdditiveRecommender.py](https://github.com/microsoft/vasim/blob/main/src/vasim/recommender/DummyAdditiveRecommender.py).  **Note** If you want to define your own autoscaling algorithm, you can follow the instructions in the [notebook](https://github.com/microsoft/vasim/blob/main/examples/using_vasim.ipynb) for where to put your code!
 - Metadata: This is included in the `data` folder as `metadata.json`.
 
 ### Check the config in metadata.json
