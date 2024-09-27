@@ -103,7 +103,7 @@ fail-on = [
     # TODO:
     #"missing-class-docstring",
     #"missing-function-docstring",
-    #"missing-module-docstring",
+    "missing-module-docstring",
     "unused-import",
 ]
 

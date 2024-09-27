@@ -6,6 +6,51 @@
 # --------------------------------------------------------------------------
 #
 
+"""
+Module Name: TestRunnerSimulatorIntegrationTest.
+
+Description:
+    This module contains integration tests for the `tune_with_strategy` function,
+    which performs parameter tuning of the simulator across different configurations.
+    The tests simulate end-to-end runs of the simulator and validate its behavior using
+    various tuning strategies (grid and random).
+
+Classes:
+    TestRunnerSimulatorIntegrationTest:
+        Integration test class that extends `unittest.TestCase` and runs tests on
+        the `tune_with_strategy` function. It checks the results of tuning the simulator
+        with various combinations of parameters and validates the metrics generated from the simulation.
+
+Test Methods:
+    setUp():
+        Sets up the test environment by copying a smaller "mini" dataset to a temporary directory.
+        This dataset is used for running simulations and parameter tuning.
+
+    setUpClass():
+        Mocks the `print` function globally to reduce console output noise during the test execution.
+
+    test_run_tuning_grid():
+        Tests the grid strategy of parameter tuning, checking the simulator's behavior
+        by running the simulator with different configurations. Validates the tuning results
+        against expected metrics.
+
+    test_run_tuning_grid_withpred():
+        Tests the grid strategy with additional predictive parameters, ensuring the
+        simulator handles both general and predictive parameter tuning.
+
+    test_run_tuning_random():
+        Tests the random strategy of parameter tuning, ensuring the simulator
+        runs correctly without validating specific results, as the combinations are random.
+
+    tearDown():
+        Cleans up the temporary directories and files created during the test.
+
+Usage:
+    These tests can be run using `unittest.main()` to execute the integration tests
+    for the `tune_with_strategy` function, covering different tuning strategies and parameters.
+"""
+
+
 import os
 import shutil
 import unittest

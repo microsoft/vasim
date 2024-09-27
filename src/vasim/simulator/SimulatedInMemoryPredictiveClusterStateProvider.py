@@ -5,6 +5,59 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+Module Name: SimulatedInMemoryPredictiveClusterStateProvider.
+
+Description:
+    The `SimulatedInMemoryPredictiveClusterStateProvider` class extends both `SimulatedBaseClusterStateProvider`
+    and `PredictiveFileClusterStateProvider` to simulate predictive scaling decisions in an in-memory environment.
+    It enables time-series forecasting and performance management based on historical data, simulating a
+    predictive cluster scaling process in a controlled environment.
+
+Classes:
+    SimulatedInMemoryPredictiveClusterStateProvider:
+        Combines the predictive capabilities of `PredictiveFileClusterStateProvider` with the in-memory
+        simulation features of `SimulatedBaseClusterStateProvider` to provide a predictive cluster state
+        management system.
+
+Methods:
+    __init__(data_dir="data/performance_log", window=40, decision_file_path=None, max_cpu_limit=None, lag=None, **kwargs):
+        Initializes the predictive cluster state provider with the given data directory, window size,
+        CPU limits, and lag. It sets up the in-memory simulation of predictive scaling.
+
+    read_metrics_data():
+        Reads and returns the recorded performance data until the current time, filtered by the window size.
+        Returns None if the current time exceeds the data end time.
+
+    _get_all_performance_data():
+        Returns all performance data up to the current time, including a lag adjustment. If the current time
+        exceeds the end time of the data, it returns None.
+
+    get_next_recorded_data():
+        Retrieves the next set of recorded performance data from the predictive file provider and returns
+        it along with the end time.
+
+    flush_metrics_data(filename):
+        Writes the recorded data to a CSV file with a custom header. This allows the metrics to be
+        saved for analysis or reporting.
+
+Parameters:
+    data_dir (str):
+        The directory where performance log CSV files are stored.
+    window (int):
+        The size of the time window for filtering the data (in minutes).
+    decision_file_path (str):
+        The file path where scaling decisions are recorded.
+    max_cpu_limit (int):
+        The maximum CPU limit allowed for scaling operations.
+    lag (int):
+        The time lag in minutes used for predictive decision-making in the simulation.
+
+Returns:
+    The `read_metrics_data` and `_get_all_performance_data` methods return filtered DataFrames containing
+    the performance data for the current window or up to the current time.
+"""
 from datetime import timedelta
 
 from vasim.recommender.cluster_state_provider.PredictiveFileClusterStateProvider import (

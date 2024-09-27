@@ -5,6 +5,66 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+Module Name: SimulatedBaseClusterStateProvider.
+
+Description:
+    The `SimulatedBaseClusterStateProvider` class is a base class designed for simulating a cluster state provider
+    that reads performance data from CSV files and manages CPU limits in a simulated environment. It handles time
+    advancement, data processing, and scaling decisions in a simulation setting.
+
+Classes:
+    SimulatedBaseClusterStateProvider:
+        Provides methods for managing simulated cluster performance data, setting CPU limits, advancing time,
+        and flushing metrics to CSV files. This class is used in simulations to replicate real-world
+        scenarios for testing recommender system policies.
+
+Attributes:
+    data_dir (Path): Directory where the performance log CSV files are stored.
+    decision_file_path (Path): Path to the file where decisions are logged.
+    curr_cpu_limit (int): Current CPU limit set during scaling operations.
+    max_cpu_limit (int): Maximum allowable CPU limit.
+    lag (int): Time lag used in decision-making.
+    window (int): Window of time used to evaluate cluster performance data.
+    recorded_data (pd.DataFrame): DataFrame containing the recorded performance data.
+    start_time (Timestamp): Start time of the recorded data.
+    end_time (Timestamp): End time of the recorded data.
+    current_time (Timestamp): Current simulated time.
+    last_scaling_time (Timestamp): Last time a scaling operation was performed.
+
+Methods:
+    __init__(data_dir="data/performance_log", window=40, decision_file_path=None, max_cpu_limit=None, lag=None, **kwargs):
+        Initializes the `SimulatedBaseClusterStateProvider` with specified parameters like the data directory,
+        window size, and maximum CPU limit. Loads performance data from CSV files in the `data_dir`.
+
+    get_next_recorded_data():
+        Abstract method to be implemented by subclasses to fetch the next set of recorded data.
+
+    set_cpu_limit(new_cpu_limit):
+        Sets a new CPU limit for the cluster. Updates the scaling time if the CPU limit changes.
+
+    get_index_pod_creation_timestamp():
+        Returns the timestamp of the last scaling operation.
+
+    print_properties():
+        Prints the properties of the instance for debugging and testing purposes.
+
+    get_current_cpu_limit():
+        Returns the current CPU limit.
+
+    get_total_cpu():
+        Returns the total maximum CPU limit for the cluster.
+
+    flush_metrics_data(filename):
+        Writes the recorded data to a CSV file with a custom header.
+
+    get_last_decision_time(recorded_data):
+        Returns the last decision time, calculated using the current time and lag.
+
+    advance_time():
+        Advances the current simulated time by the specified lag value.
+"""
 import logging
 from pathlib import Path
 

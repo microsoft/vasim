@@ -5,6 +5,30 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+This module defines the `ParetoFrontier` class and supporting functions for.
+
+processing and analyzing cluster configuration metrics. The class provides
+methods for finding the Pareto frontier of a given dataset based on CPU
+slack and insufficient CPU metrics. It includes utilities for reading
+performance metrics, normalizing data, and filtering configurations to
+find optimal solutions.
+
+The `ParetoFrontier` class is an abstract base class (ABC), which is designed
+to be extended by other classes that implement specific Pareto frontier logic.
+
+Classes:
+    - ParetoFrontier: Abstract class for processing and analyzing workload metrics.
+
+Functions:
+    - preprocess_df: Preprocesses the DataFrame by normalizing the relevant fields.
+    - read_metrics: Reads the metrics from a JSON file.
+    - process_folder: Processes a folder containing cluster state configuration
+                      and performance data.
+    - create_df: Converts a list of folder results into a DataFrame for further analysis.
+"""
+
 import json
 import os
 from abc import ABC

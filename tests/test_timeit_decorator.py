@@ -5,6 +5,41 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+Module Name: TestTimeitDecorator.
+
+Description:
+    This module contains unit tests for the `timeit` decorator, which measures and prints the
+    execution time of a function. The tests validate that the `timeit` decorator correctly
+    measures the time taken by various functions with different input parameters and ensures
+    the original function's return values and behavior are preserved.
+
+Classes:
+    TestTimeitDecorator:
+        A test class that extends `unittest.TestCase` and verifies the functionality of the
+        `timeit` decorator. It checks whether the decorator correctly measures execution time
+        and handles functions with or without return values, arguments, and keyword arguments.
+
+Test Methods:
+    test_timeit_decorator_measures_execution_time():
+        Ensures the `timeit` decorator measures the execution time of a function and the function
+        returns the expected result.
+
+    test_timeit_decorator_with_no_return_value():
+        Verifies that the `timeit` decorator works with functions that do not return any value.
+
+    test_timeit_decorator_with_arguments():
+        Ensures that the `timeit` decorator can handle functions that take positional arguments.
+
+    test_timeit_decorator_with_keyword_arguments():
+        Verifies that the `timeit` decorator works correctly with functions that take keyword arguments.
+
+Usage:
+    These tests can be run using `unittest.main()` to execute the unit tests for the `timeit`
+    decorator, validating its behavior across different function signatures and scenarios.
+"""
+
 import time
 import unittest
 

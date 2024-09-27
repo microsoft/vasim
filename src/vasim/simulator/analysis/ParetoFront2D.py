@@ -5,6 +5,26 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+This module defines the `ParetoFront2D` class and supporting functions for.
+
+finding and visualizing the Pareto frontier in a two-dimensional space.
+
+The Pareto frontier represents the set of configurations that provide the best
+trade-offs between two competing objectives. In this context, the objectives are
+the "sum_slack" (representing the amount of CPU over-provisioned) and
+"sum_insufficient_cpu" (representing the amount of CPU under-provisioned).
+
+The module also includes utility functions to compute a weighted objective
+function and visualize the results.
+
+Classes:
+    - ParetoFront2D: Finds and visualizes the Pareto frontier in 2D space.
+
+Functions:
+    - calculate_objective: Computes a weighted objective function.
+"""
 import random
 
 import numpy as np
