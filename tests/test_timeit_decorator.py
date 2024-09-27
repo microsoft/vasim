@@ -47,8 +47,20 @@ from vasim.recommender.forecasting.utils.helpers import timeit
 
 
 class TestTimeitDecorator(unittest.TestCase):
+    """
+    A test class for verifying the functionality of the `timeit` decorator.
+
+    This class contains tests to ensure that the `timeit` decorator correctly measures the
+    execution time of functions, while preserving their original behavior and return values.
+    """
 
     def test_timeit_decorator_measures_execution_time(self):
+        """
+        Test that the `timeit` decorator correctly measures the execution time of a function.
+
+        This test ensures that the decorated function is called and the expected result is returned.
+        """
+
         @timeit
         def sample_function():
             time.sleep(0.1)
@@ -58,6 +70,12 @@ class TestTimeitDecorator(unittest.TestCase):
         self.assertEqual(result, "done")
 
     def test_timeit_decorator_with_no_return_value(self):
+        """
+        Test that the `timeit` decorator works with functions that do not return any value.
+
+        This test ensures that the decorated function is executed and does not return any value.
+        """
+
         @timeit
         def sample_function():
             time.sleep(0.1)
@@ -66,6 +84,13 @@ class TestTimeitDecorator(unittest.TestCase):
         self.assertIsNone(result)
 
     def test_timeit_decorator_with_arguments(self):
+        """
+        Test that the `timeit` decorator correctly handles functions with positional arguments.
+
+        This test ensures that the decorated function is called with positional arguments and returns
+        the expected result.
+        """
+
         @timeit
         def sample_function(x, y):
             time.sleep(0.1)
@@ -75,6 +100,13 @@ class TestTimeitDecorator(unittest.TestCase):
         self.assertEqual(result, 5)
 
     def test_timeit_decorator_with_keyword_arguments(self):
+        """
+        Test that the `timeit` decorator correctly handles functions with keyword arguments.
+
+        This test ensures that the decorated function is called with keyword arguments and returns
+        the expected result.
+        """
+
         @timeit
         def sample_function(x, y=0):
             time.sleep(0.1)
