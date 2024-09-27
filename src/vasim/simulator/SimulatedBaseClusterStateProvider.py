@@ -130,6 +130,7 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         self.curr_cpu_limit = None  # set by initial_cores_count during the first scaling
         self.print_properties()
         self.config = kwargs.get("config")
+        # TODO: these did not get updated to the new config format
         self.max_cpu_limit = max_cpu_limit
         self.lag = lag
         self.window = window
@@ -139,6 +140,9 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
             self.logger.error("Error reading csvs from %s. Your csv_paths are empty.", self.data_dir)
             raise FileNotFoundError(f"Error reading csvs from {self.data_dir}. Your csv_paths are empty.")
 
+        # Process data
+        # Read all data from file
+        # TODO: This is a temporary solution. We will need to read data in chunks
         self.recorded_data = self.process_data(csv_paths)
         self.start_time = pd.Timestamp(self.recorded_data["time"].iloc[0])
         self.end_time = pd.Timestamp(self.recorded_data["time"].iloc[-1])
