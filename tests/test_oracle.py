@@ -5,6 +5,39 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+Module Name: TestOracle.
+
+Description:
+    This module contains unit tests for the `Oracle` class, which loads and processes
+    time series performance data from CSV files and makes predictions. The tests validate
+    that data is loaded correctly, predictions are generated, and ensure the core functionality
+    of the `Oracle` class works as expected.
+
+Classes:
+    TestOracle:
+        A test class that extends `unittest.TestCase` and runs tests on the `Oracle` class.
+        It ensures proper initialization, data loading, and the ability to make predictions
+        based on historical data.
+
+Test Methods:
+    setUp():
+        Creates a temporary directory and CSV file with performance data for testing.
+        The test dataset simulates CPU usage over time.
+
+    tearDown():
+        Cleans up the temporary directory and CSV files after the test execution.
+
+    test_oracle():
+        Tests the initialization of the `Oracle` class, ensures the `fit` method runs without errors,
+        and validates that predictions are generated correctly based on historical data.
+
+Usage:
+    These tests can be run using `unittest.main()` to execute the unit tests for the
+    `Oracle` class, verifying its functionality and behavior with time series data.
+"""
+
 import os
 import shutil
 import unittest

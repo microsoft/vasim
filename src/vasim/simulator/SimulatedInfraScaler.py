@@ -5,6 +5,49 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+Module Name: SimulatedInfraScaler.
+
+Description:
+    The `SimulatedInfraScaler` class simulates the process of scaling infrastructure in a cluster environment.
+    It introduces a delay (recovery time) after each scaling event to mimic the time taken by real systems to
+    provision and warm up new resources. This ensures that the simulation reflects real-world scaling behavior,
+    preventing frequent and costly scaling events.
+
+Classes:
+    SimulatedInfraScaler:
+        Provides methods to scale a simulated cluster based on system decisions, while adhering to recovery
+        periods and core limits.
+
+Attributes:
+    cluster_state_provider (ClusterStateProvider):
+        The cluster state provider that manages the current CPU limit and scaling decisions.
+    last_scaling_time (datetime):
+        Timestamp of the last scaling event.
+    start_time (datetime):
+        The starting time of the simulation.
+    recovery_time (int):
+        The time in minutes it takes for the system to recover after a scaling event.
+    logger (Logger):
+        A logger object for logging scaling decisions and events.
+
+Methods:
+    __init__(cluster_state_provider, start_timestamp, recovery_time):
+        Initializes the `SimulatedInfraScaler` with a cluster state provider, the start timestamp, and a recovery time.
+
+    scale(new_limit, time_now):
+        Attempts to scale the cluster to a new CPU limit. This method only performs the scaling if the
+        recovery time has passed since the last scaling event and ensures that the new limit does not exceed
+        minimum or maximum core limits.
+
+        Parameters:
+            new_limit (int): The new number of cores to scale to.
+            time_now (datetime): The current timestamp.
+
+        Returns:
+            bool: Returns True if scaling was successful, otherwise False.
+"""
 import logging
 from pathlib import Path
 

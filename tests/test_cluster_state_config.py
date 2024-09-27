@@ -5,6 +5,86 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+Module Name: TestClusterStateConfig.
+
+Description:
+    This module contains unit tests for the `ClusterStateConfig` class, testing various functionalities
+    such as initialization, loading configurations from JSON, validation of configuration parameters,
+    and methods like `to_json`, `__getitem__`, `__setitem__`, and `get`. These tests are designed
+    to ensure correct behavior of the `ClusterStateConfig` class and proper handling of edge cases.
+
+Classes:
+    TestClusterStateConfig:
+        A test class that extends `unittest.TestCase` and includes multiple test methods for validating
+        the behavior of `ClusterStateConfig`.
+
+Test Methods:
+    setUp():
+        Sets up initial conditions for the tests, creating a configuration dictionary for use in tests.
+
+    test_init_with_config_dict():
+        Tests that the `ClusterStateConfig` object is correctly initialized from a dictionary.
+
+    test_load_from_json():
+        Tests loading configuration data from a JSON file.
+
+    test_load_config_file_not_exist():
+        Tests that `FileNotFoundError` is raised when attempting to load a non-existent configuration file.
+
+    test_to_json_no_prediction():
+        Tests the `to_json` method when no prediction configuration is provided.
+
+    test_to_json():
+        Tests the `to_json` method, ensuring that JSON output is written correctly.
+
+    test_setattr():
+        Tests that attributes can be set and accessed correctly.
+
+    test_load_from_dict():
+        Tests that configuration values are correctly loaded from a dictionary.
+
+    test_empty_initialization():
+        Tests that default values are correctly set when `ClusterStateConfig` is initialized without input.
+
+    test_load_config_from_file():
+        Tests loading configuration from a file and validating specific keys and values.
+
+    test_exception_in_to_json():
+        Tests error handling in the `to_json` method, ensuring proper logging for file write errors.
+
+    test_min_cpu_greater_than_max_cpu():
+        Tests that min and max CPU limits are corrected when min CPU is greater than max CPU.
+
+    test_min_cpu_less_than_or_equal_to_max_cpu():
+        Tests that the min and max CPU limits remain unchanged when they are valid.
+
+    test_getitem_valid_keys():
+        Tests the `__getitem__` method for valid keys.
+
+    test_getitem_invalid_key():
+        Tests the `__getitem__` method for an invalid key, expecting a `KeyError`.
+
+    test_setitem_valid_keys():
+        Tests the `__setitem__` method for valid keys.
+
+    test_setitem_invalid_key():
+        Tests the `__setitem__` method for an invalid key, expecting a `KeyError`.
+
+    test_get_valid_keys():
+        Tests the `get` method for valid keys.
+
+    test_get_invalid_key_with_default():
+        Tests the `get` method with an invalid key and a provided default value.
+
+    test_get_invalid_key_without_default():
+        Tests the `get` method with an invalid key and no default, expecting a `None` return.
+
+Usage:
+    Run the tests using `unittest.main()` to execute all test cases and verify the behavior of the
+    `ClusterStateConfig` class.
+"""
 import json
 import unittest
 from unittest.mock import mock_open, patch

@@ -5,6 +5,49 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+Module Name: PredictiveFileClusterStateProvider.
+
+Description:
+    The `PredictiveFileClusterStateProvider` class extends `FileClusterStateProvider` and adds predictive
+    capabilities to the original cluster state management. This class integrates time-series forecasting to predict
+    future CPU utilization based on historical performance data. It utilizes preprocessed data from CSV files and
+    time-series models to forecast the next `window_length` minutes of data.
+
+    This class is designed for use in both production and simulated environments, where predictive decisions are
+    made to manage cluster resources effectively.
+
+Classes:
+    PredictiveFileClusterStateProvider:
+        Extends the `FileClusterStateProvider` class to add predictive capabilities using time-series
+        forecasting models for CPU utilization.
+
+Methods:
+    __init__(data_dir, prediction_config, **kwargs):
+        Initializes the predictive state provider with directories for data, a prediction configuration,
+        and any additional keyword arguments. This includes setting up parameters for the frequency of data collection,
+        prediction time windows, and the forecaster.
+
+    get_predicted_cores(data):
+        Returns the predicted number of CPU cores required based on the maximum CPU usage in the provided data.
+        Uses a traditional rounding method.
+
+    prediction_activated(data=None):
+        Determines whether enough historical data has been collected to activate the prediction process,
+        based on workload duration.
+
+    _get_all_performance_data():
+        Reads all available CSV performance data and processes it. Drops duplicates and sorts the data by time.
+
+    get_next_recorded_data():
+        Retrieves the current performance data for the defined time window and predicts future data if enough
+        history is available. Joins the actual and predicted data to return a complete dataset.
+
+    get_prediction(data):
+        Processes and resamples the input data and uses the time-series forecaster to predict future CPU utilization
+        for the next set of time points.
+"""
 import logging
 import math
 
@@ -15,7 +58,7 @@ from vasim.recommender.cluster_state_provider.FileClusterStateProvider import (
     FileClusterStateProvider,
 )
 from vasim.recommender.forecasting.TimeSeriesForecaster import TimeSeriesForecaster
-from vasim.recommender.forecasting.utils import DataProcessor
+from vasim.recommender.forecasting.utils.helpers import DataProcessor
 
 # This class adds predictive capabilities to FileClusterStateProvider. The algorithm is as
 # follows:

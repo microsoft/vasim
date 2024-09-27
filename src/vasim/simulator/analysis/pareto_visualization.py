@@ -5,6 +5,45 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+Module Name: Pareto Curve and Analysis.
+
+Description:
+    This module is responsible for creating Pareto curves and analyzing the results of
+    different configurations in a simulation. It loads performance data, processes
+    simulation results in parallel, and plots the Pareto front and corresponding CPU usage
+    graphs.
+
+    The primary purpose of this module is to:
+    1. Process the results from various configurations.
+    2. Generate Pareto frontier plots to evaluate the performance of different parameter sets.
+    3. Create individual graphs comparing CPU usage and scaling decisions for each configuration.
+
+Functions:
+    _load_results_parallel(target_folder):
+        Loads the results in parallel from the specified folder, processing each configuration folder using
+        multiprocessing to improve performance.
+
+    create_pareto_curve_from_folder(original_data, tuned_data, cached_df=None, plot_surface=True):
+        Creates a Pareto curve based on the performance data in the specified folder. It generates a scatter plot
+        with the Pareto front and, for each configuration, plots the CPU usage and scaling decisions. Optionally,
+        a cached DataFrame can be passed to avoid reprocessing the data.
+
+Parameters:
+    original_data (str): The directory containing the original performance log CSV files.
+    tuned_data (str): The directory containing different tuned configurations' results.
+    cached_df (str, optional): Path to a cached DataFrame file to avoid reprocessing results.
+    plot_surface (bool, optional): Whether to plot the Pareto front surface. Defaults to True.
+
+Returns:
+    ParetoFront2D: The `ParetoFront2D` object, representing the Pareto front generated from the data.
+
+Usage:
+    The main function `create_pareto_curve_from_folder` can be used to analyze the results
+    from multiple configurations, create Pareto frontiers, and plot graphs for each configuration.
+"""
+
 import multiprocessing
 import os
 import time

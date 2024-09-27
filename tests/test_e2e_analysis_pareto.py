@@ -5,6 +5,42 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+Module Name: TestRunnerSimulatorIntegrationTest.
+
+Description:
+    This module contains an integration test for running the simulator end-to-end with tuning parameters.
+    The test utilizes the `tune_with_strategy` function to run simulations with different configurations,
+    and generates a Pareto curve visualization using the `create_pareto_curve_from_folder` function.
+
+Classes:
+    TestRunnerSimulatorIntegrationTest:
+        A test class that extends `unittest.TestCase` and runs integration tests on the
+        `InMemoryRunnerSimulator` using a predefined dataset. The test checks simulator performance
+        by adjusting different parameters and validating the results using Pareto frontier analysis.
+
+Test Methods:
+    setUp():
+        Sets up the test environment by copying a "mini" dataset into a temporary directory.
+        This dataset is used for running simulations and parameter tuning.
+
+    setUpClass():
+        Mocks the `print` function globally during the test class execution to reduce console output noise.
+
+    test_pareto2d():
+        Tests tuning the simulator with a grid of parameters and plots the results on a Pareto curve.
+        It verifies that tuning outputs are generated correctly and that the expected results are computed
+        for the closest combination to zero in the Pareto analysis.
+
+    tearDown():
+        Cleans up the temporary directories and files created during the test.
+
+Usage:
+    These tests can be run using `unittest.main()` to execute the integration tests for the
+    `InMemoryRunnerSimulator` with parameter tuning and Pareto visualization.
+"""
+
 import os
 import shutil
 import unittest

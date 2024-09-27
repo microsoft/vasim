@@ -5,6 +5,41 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+Module Name: TestRunnerSimulatorIntegrationTest.
+
+Description:
+    This module contains integration tests for the `InMemoryRunnerSimulator` class, which performs
+    end-to-end simulations of cluster scaling. These tests verify that the simulator uses configuration parameters,
+    such as the lag time between scaling decisions, correctly in a simulated environment.
+
+Classes:
+    TestRunnerSimulatorIntegrationTest:
+        Integration test class that tests the behavior of the `InMemoryRunnerSimulator` class with real
+        simulation data. It focuses on ensuring that the lag parameter is applied correctly during
+        decision-making processes.
+
+Test Methods:
+    setUp():
+        Sets up the test environment by copying test data to a temporary directory. This directory
+        is used during the simulation run.
+
+    test_lag_parameter_10():
+        Tests that the lag parameter is correctly applied when set to 10 minutes. It verifies that the
+        difference between decision times in the simulation is equal to the lag parameter.
+
+    test_lag_parameter_5():
+        Tests that the lag parameter is correctly applied when set to 5 minutes using an alternative
+        configuration file. It ensures that the decisions in the simulation reflect the correct lag timing.
+
+    tearDown():
+        Cleans up by removing the temporary directories and files created during the test setup and execution.
+
+Usage:
+    These tests can be run using `unittest.main()` to verify that the `InMemoryRunnerSimulator`
+    behaves as expected in a simulated environment with different lag configurations.
+"""
 import csv
 import json
 import os

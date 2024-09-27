@@ -5,6 +5,39 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+Module Name: SimulatedClusterStateProviderFactory.
+
+Description:
+    The `SimulatedClusterStateProviderFactory` class is responsible for creating instances of different
+    simulated cluster state providers. Depending on the `predictive` flag, it can create either a
+    predictive or non-predictive in-memory cluster state provider for use in simulations.
+
+Classes:
+    SimulatedClusterStateProviderFactory:
+        A factory class for creating simulated cluster state providers, which can be either predictive
+        or non-predictive depending on the configuration.
+
+Attributes:
+    config (ClusterStateConfig):
+        The cluster state configuration containing general settings and prediction configurations.
+    data_dir (str):
+        Directory where performance data is stored.
+    out_filename (str):
+        Path to the output file where decisions will be logged.
+    prediction_config (dict):
+        Prediction-related configuration details extracted from the main config (if applicable).
+
+Methods:
+    __init__(data_dir: str, out_filename: str, config: ClusterStateConfig):
+        Initializes the factory with the data directory, output filename, and cluster state configuration.
+
+    create_provider(predictive: bool) -> SimulatedBaseClusterStateProvider:
+        Creates and returns an instance of `SimulatedBaseClusterStateProvider`. If `predictive` is set to True,
+        it creates a `SimulatedInMemoryPredictiveClusterStateProvider`, otherwise, it creates a
+        `SimulatedInMemoryClusterStateProvider`.
+"""
 from vasim.recommender.cluster_state_provider.ClusterStateConfig import (
     ClusterStateConfig,
 )
