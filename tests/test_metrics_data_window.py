@@ -5,6 +5,48 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+Module Name: TestSimulatedInMemoryPredictiveClusterStateProvider.
+
+Description:
+    This module contains integration tests for the `SimulatedInMemoryPredictiveClusterStateProvider` class.
+    The tests simulate cluster state management and predictive behavior using small datasets. These
+    integration tests ensure that windowed data processing, predictions, and simulation runs behave
+    correctly in memory.
+
+Classes:
+    TestSimulatedInMemoryPredictiveClusterStateProvider:
+        A test class that extends `unittest.TestCase` and runs integration tests on the
+        `SimulatedInMemoryPredictiveClusterStateProvider` and `FileClusterStateProvider`. It ensures
+        correct handling of performance data reading, decision-making, and scenarios where the data
+        size is too small for predictions.
+
+Test Methods:
+    setUp():
+        Sets up the test environment by copying a small dataset into a temporary directory.
+        This dataset is used for running simulations and checking performance.
+
+    test_read_metrics_data():
+        Tests the `read_metrics_data` method to ensure that the correct window of data
+        is returned for processing.
+
+    test_get_next_recorded_data():
+        Tests the `get_next_recorded_data` method to validate that the returned data is
+        correctly processed within the time window and duplicates are removed.
+
+    test_too_small_data():
+        Tests the simulator's behavior when the data size is too small to make a prediction,
+        ensuring that the simulator handles this case without errors.
+
+    tearDown():
+        Cleans up the temporary directories and files created during the test.
+
+Usage:
+    These tests can be run using `unittest.main()` to execute the integration tests for the
+    `SimulatedInMemoryPredictiveClusterStateProvider` and related functionality.
+"""
+
 import os
 import shutil
 import unittest

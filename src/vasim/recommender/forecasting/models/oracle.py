@@ -5,6 +5,44 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+"""
+Module Name: Oracle.
+
+Description:
+    The `Oracle` class is responsible for loading, processing, and evaluating performance data from CSV files.
+    It simulates an ideal predictor for assessing recommender system policies. By comparing the recommender system's
+    predictions to the theoretically ideal predictions, errors can be attributed either to the prediction method or
+    to the recommender system itself.
+
+Classes:
+    Oracle:
+        Loads CSV files from a specified directory, processes the data, and provides methods for fitting
+        and predicting future performance data.
+
+Attributes:
+    all_performance_data (pd.DataFrame):
+        A DataFrame containing all the loaded performance data sorted by timestamp.
+
+Methods:
+    __init__(data_dir):
+        Initializes the `Oracle` by loading CSV files from the provided directory, processing the data,
+        and storing it in a DataFrame.
+
+    fit(data):
+        Placeholder method for fitting a model on the provided data.
+
+    predict(data, forecast_horizon):
+        Predicts future performance data points based on the provided data and the forecast horizon.
+        Returns a DataFrame containing the predicted values.
+
+Parameters:
+    data_dir (str):
+        The directory containing the CSV files to load.
+
+Returns:
+    pd.DataFrame:
+        The `predict` method returns a DataFrame with the predicted performance data points, indexed by timestamp.
+"""
 import os
 from datetime import datetime
 

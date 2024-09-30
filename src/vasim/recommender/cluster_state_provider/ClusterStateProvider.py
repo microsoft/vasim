@@ -5,6 +5,52 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+Module Name: ClusterStateProvider.
+
+Description:
+    This module defines an abstract base class `ClusterStateProvider` which serves as a
+    blueprint for managing the state and data of a cluster. It provides methods for
+    retrieving cluster data, CPU limits, and performing data processing tasks like
+    dropping duplicates and sorting data by time.
+
+Classes:
+    ClusterStateProvider:
+        An abstract base class that provides a framework for interacting with cluster
+        data and performing various data operations. Subclasses are expected to implement
+        the abstract methods `get_next_recorded_data`, `get_current_cpu_limit`,
+        `get_total_cpu`, and `process_data`.
+
+Methods:
+    __init__(data_dir=None, features=None, window=None, decision_file_path=None, lag=None):
+        Initializes the `ClusterStateProvider` with various parameters, with a note to
+        possibly convert all arguments to keyword arguments for consistency.
+
+    get_next_recorded_data():
+        Abstract method to retrieve the next set of recorded data.
+
+    get_current_cpu_limit():
+        Abstract method to retrieve the current CPU limit of the cluster.
+
+    get_total_cpu():
+        Abstract method to retrieve the total CPU capacity of the cluster.
+
+    prediction_activated(data=None):
+        A method that returns False, indicating no prediction activation. This can be
+        overridden in subclasses.
+
+    process_data(data=None):
+        Abstract method to process cluster data.
+
+    drop_duplicates(recorded_data: pd.DataFrame):
+        Static method that removes duplicate records from the recorded data.
+
+    sort_data(recorded_data: pd.DataFrame):
+        Static method that sorts recorded data by the 'time' column after converting it
+        to a datetime format.
+"""
+
 from abc import abstractmethod
 
 import pandas as pd

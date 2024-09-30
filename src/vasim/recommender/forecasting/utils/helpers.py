@@ -5,6 +5,77 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+Module Name: DataProcessor Utilities.
+
+Description:
+    This module provides utility functions and classes for data preprocessing and performance evaluation.
+    It includes methods for smoothing time series data, splitting data into training and test sets,
+    resampling time series data, and measuring execution time of functions.
+
+Decorators:
+    timeit(func):
+        A decorator to measure the execution time of a function. Outputs the duration in seconds
+        after the function has completed execution.
+
+Classes:
+    DataProcessor:
+        Provides static methods for preparing and processing time series data, including smoothing,
+        train/test splitting, resampling, and calculating workload duration.
+
+Methods:
+    timeit(func):
+        Decorator function that measures the execution time of the wrapped function.
+
+    DataProcessor.smooth_max(series, window, center=False):
+        Applies a rolling maximum to smooth the input time series data.
+
+    DataProcessor.train_test_split(series, test_size):
+        Splits the input series into training and testing sets based on the specified test size.
+
+    DataProcessor.prepare_data(y, smooth_window=1, smooth=True, test_size=0.2):
+        Prepares time series data for forecasting by applying optional smoothing and performing train/test splits.
+
+    DataProcessor.resample_dataframe(df, freq):
+        Resamples the input DataFrame to a specified frequency, applying forward-filling to handle missing data.
+
+    DataProcessor.get_workload_duration(data):
+        Calculates the total duration of a workload based on the time range in the input DataFrame.
+
+Parameters:
+    series (pd.Series):
+        The input time series data.
+
+    df (pd.DataFrame):
+        The input DataFrame, typically containing a 'time' column.
+
+    window (int):
+        The size of the moving window for smoothing.
+
+    center (bool):
+        Whether to set labels at the center of the window during smoothing.
+
+    test_size (float):
+        The proportion of the data to include in the test split.
+
+    smooth_window (int):
+        The window size for smoothing data.
+
+    smooth (bool):
+        Whether to apply smoothing to the data.
+
+    freq (str):
+        The frequency for resampling the data.
+
+    data (pd.DataFrame):
+        Input DataFrame containing a 'time' column for calculating the workload duration.
+
+Returns:
+    The respective methods return either the processed time series or train/test data,
+    resampled DataFrame, or workload duration.
+"""
+
 import time
 
 import pandas as pd
