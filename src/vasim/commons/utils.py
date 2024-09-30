@@ -5,6 +5,27 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+Module Name: Perf Event Log File Utility.
+
+Description:
+    This module contains a utility function for listing performance event log files within a given directory.
+    It scans the directory for CSV files that end with "perf_event_log" in their file name.
+
+Functions:
+    list_perf_event_log_files(data_dir: Path):
+        Scans the provided `data_dir` for CSV files whose names end with "perf_event_log".
+        Returns a list of matching files. If no files are found, prints an error message.
+
+Parameters:
+    data_dir (Path):
+        The directory path where the CSV files are located.
+
+Returns:
+    List[Path]:
+        A list of file paths that match the "perf_event_log" pattern. If no files are found, an empty list is returned.
+"""
 from pathlib import Path
 
 

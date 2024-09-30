@@ -5,6 +5,29 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+This module provides functions for processing and visualizing CPU usage data.
+
+and new limit data from a cluster scaling simulator. The primary functionality
+includes reading decision and performance log files, calculating key metrics
+(such as slack and insufficient CPU), and generating line plots to visualize
+the scaling decisions and their impact on CPU usage.
+
+Functions:
+    - read_data: Reads decision and performance log files, with optional resampling.
+    - process_data: Merges and processes decision and performance data to calculate slack
+                    and insufficient CPU.
+    - calculate_metrics: Calculates important metrics like slack, insufficient CPU,
+                         and scaling events.
+    - create_line_plots: Creates line plots of CPU usage and new limits over time.
+    - calculate_and_return_metrics_to_target: Combines all steps to compute and return
+                                              metrics to a target directory.
+    - plot_cpu_usage_and_new_limit_reformat: Creates and saves a line plot of CPU usage
+                                             and new limits.
+    - plot_cpu_usage_and_new_limit_plotnine: Creates and saves a line plot of CPU usage
+                                             and new limits using the plotnine library.
+"""
 import os
 import warnings
 
@@ -25,7 +48,7 @@ def read_data(decision_file_path, perf_log_file_path, if_resample=True):
     or duplicated, depending on the publisher.
 
     Parameters:
-        decision_file_path (str): The path to the decisions.txt file.
+        decision_file_path (str): The path to the decisions.csv file.
         perf_log_file_path (str): The path to the performance log file.
         if_resample (bool, Optional): If True, the data will be resampled to 1 minute intervals.
 
@@ -116,7 +139,7 @@ def calculate_and_return_metrics_to_target(source_dir, target_dir, perf_log_file
         perf_log_file_path = f"{source_dir}/{[f for f in os.listdir(source_dir) if f.endswith('.csv')][0]}"
 
     if not decision_file_path:
-        decision_file_path = f"{target_dir}/decisions.txt"
+        decision_file_path = f"{target_dir}/decisions.csv"
 
     decision_df, perf_df = read_data(decision_file_path, perf_log_file_path)
     merged = process_data(decision_df, perf_df)
@@ -136,7 +159,7 @@ def plot_cpu_usage_and_new_limit_reformat(
         perf_log_file_path = f"{source_dir}/{[f for f in os.listdir(source_dir) if f.endswith('.csv')][0]}"
 
     if not decision_file_path:
-        decision_file_path = f"{target_dir}/decisions.txt"
+        decision_file_path = f"{target_dir}/decisions.csv"
 
     decision_df, perf_df = read_data(decision_file_path, perf_log_file_path)
     merged = process_data(decision_df, perf_df)
@@ -158,7 +181,7 @@ def plot_cpu_usage_and_new_limit_plotnine(
         perf_log_file_path = f"{experiment_dir}/{[f for f in os.listdir(experiment_dir) if f.endswith('.csv')][0]}"
 
     if not decision_file_path:
-        decision_file_path = f"{experiment_dir}/decisions.txt"
+        decision_file_path = f"{experiment_dir}/decisions.csv"
     target_folder = os.path.dirname(decision_file_path)
     decision_df, perf_df = read_data(decision_file_path, perf_log_file_path, if_resample)
     merged = process_data(decision_df, perf_df, if_resample=if_resample)

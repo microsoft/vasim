@@ -6,12 +6,28 @@
 # --------------------------------------------------------------------------
 #
 
+"""
+This module contains the SimpleMultiplierRecommender class, which implements.
+
+a recommendation algorithm based on a smoothed maximum value and a multiplier.
+
+The recommender system processes recorded CPU usage data, applies a rolling
+mean (smoothing window), and multiplies the smoothed maximum by a configurable
+multiplier to calculate a new recommended CPU usage limit. The result is rounded
+to the nearest 0.5 cores for better control of scaling decisions.
+
+Classes:
+    SimpleMultiplierRecommender: A class that applies a multiplier to smoothed
+    CPU usage data to recommend scaling limits.
+"""
+
 import numpy as np
 
 from vasim.recommender.Recommender import Recommender
 
 
 class SimpleMultiplierRecommender(Recommender):
+    # pylint: disable=too-few-public-methods
     def __init__(self, cluster_state_provider, save_metadata=True):
         """
         Parameters:

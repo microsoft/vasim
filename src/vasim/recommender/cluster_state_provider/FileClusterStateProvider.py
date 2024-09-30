@@ -5,6 +5,57 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+Module Name: FileClusterStateProvider.
+
+Description:
+    The `FileClusterStateProvider` class extends the `ClusterStateProvider` abstract base class and
+    is intended to interact with a Kubernetes cluster for real-time data collection and decision-making.
+    This implementation is designed for use in production environments and can also be adapted to run
+    with a live Kubernetes (k8s) cluster in the simulator.
+
+    The class provides methods to read and process performance data from CSV files,
+    retrieve current CPU limits, and evaluate cluster decisions based on the collected data.
+    It can also be configured for various window sizes, lag periods, and CPU limits.
+
+Classes:
+    FileClusterStateProvider:
+        A class that interacts with a Kubernetes cluster to make resource decisions based
+        on performance data, with methods for retrieving and processing CPU usage data.
+
+Methods:
+    __init__(data_dir=None, features=None, window=40, decision_file_path=None, lag=5.0, min_cpu_limit=1, max_cpu_limit=None, save_metadata=True, **kwargs):
+        Initializes the `FileClusterStateProvider` with parameters such as data directory,
+        features, window, decision file path, and CPU limits. The method checks for the presence
+        of CSV files in the data directory and initializes configuration values.
+
+    get_current_cpu_limit():
+        Retrieves the current CPU core limit being used by the cluster. This method needs to
+        be re-implemented to avoid Azure-specific code.
+
+    read_metrics_data():
+        Reads performance data from CSV files located in the data directory. The method processes
+        the CSV files, creates a `DataFrame` from the data, and returns it.
+
+    get_next_recorded_data():
+        Retrieves the recorded performance data within the defined time window. This includes
+        processing, deduplicating, and sorting the data, along with evaluating guardrails to
+        ensure valid telemetry.
+
+    process_data(data=None):
+        Processes the list of CSV files provided and constructs a `DataFrame` containing CPU usage data.
+
+    truncate_data(recorded_data, last_decision_time):
+        Limits the recorded data to the defined time window, ensuring that decisions are only made
+        based on the valid subset of data.
+
+    get_last_decision_time(recorded_data):
+        Reads the decisions file (if available) and determines the last decision time, adjusted for lag.
+
+    get_total_cpu():
+        Retrieves the total CPU limit for the cluster, based on the maximum allowed CPU configuration.
+"""
 import logging
 import os
 from datetime import datetime, timedelta
@@ -74,7 +125,7 @@ class FileClusterStateProvider(ClusterStateProvider):
         # TODO: rename this, it's a bit confusing. It's not the features of the model, it's the features of the data.
         self.features = features or []
         # TODO: a lot of the code below needs testing
-        self.decision_file_path = decision_file_path or "data/decisions.txt"
+        self.decision_file_path = decision_file_path or "data/decisions.csv"
         self.save_metadata = save_metadata
 
     def get_current_cpu_limit(self) -> Optional[int]:

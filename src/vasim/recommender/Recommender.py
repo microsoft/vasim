@@ -5,6 +5,29 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+"""
+This module defines the base `Recommender` class, which serves as a framework for creating custom.
+
+autoscaling recommender algorithms. The `Recommender` class interacts with a `ClusterStateProvider`
+to access configuration and state, and optionally saves metadata for logging and tuning purposes.
+
+The module provides the following functionalities:
+    - Initialization of the recommender with a cluster state provider and algorithm-specific configurations.
+    - Logger setup for tracking and saving metadata related to autoscaling decisions.
+    - Abstract `run()` method to be implemented by subclasses, defining the core recommendation logic for scaling.
+
+Classes:
+    Recommender: A base class for all autoscaling recommender algorithms.
+
+Example Usage:
+    To create a custom autoscaling recommender, inherit from the `Recommender` class and implement the `run()` method.
+    Example:
+        class CustomRecommender(Recommender):
+            def run(self, recorded_data):
+                # Custom logic to calculate new scaling limits
+                return latest_time, new_limit
+"""
+
 import logging
 import os
 from abc import abstractmethod

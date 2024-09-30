@@ -5,6 +5,47 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+Module Name: TestSimulatedInfraScaler.
+
+Description:
+    This module contains unit tests for the `SimulatedInfraScaler` class, which simulates the scaling
+    of the infrastructure by managing CPU limits and ensuring recovery time is respected between scaling events.
+    The tests focus on verifying that scaling occurs correctly and that constraints such as recovery time
+    are handled appropriately.
+
+Classes:
+    TestSimulatedInfraScaler:
+        A test class that extends `unittest.TestCase` and runs tests on the `SimulatedInfraScaler`
+        within the context of an `InMemoryRunnerSimulator`. It ensures that scaling is performed
+        correctly and that the recovery time and CPU limit constraints are respected.
+
+Test Methods:
+    setUp():
+        Initializes the test environment, including creating a temporary dataset and loading configuration files.
+        Sets up the `InMemoryRunnerSimulator` and ensures the correct recovery time is used from the config.
+
+    test_scale_should_scale_cluster_when_recovery_time_has_passed():
+        Tests that the infrastructure scaling occurs correctly when the recovery time has passed
+        and the new CPU limit differs from the current limit.
+
+    test_scale_should_not_scale_cluster_when_recovery_time_has_not_passed():
+        Verifies that scaling does not occur if the recovery time has not passed, ensuring
+        that the cluster's CPU limit remains unchanged.
+
+    tearDown():
+        Cleans up the temporary directories and files created during the test.
+
+TODO:
+    - Complete the remaining unit tests for additional scenarios such as when the new CPU limit
+      is below the minimum or above the maximum, and when the new limit is the same as the current limit.
+
+Usage:
+    These tests can be run using `unittest.main()` to execute the unit tests for the `SimulatedInfraScaler` class,
+    validating its behavior under various scaling scenarios.
+"""
+
 import json
 import os
 import shutil

@@ -5,6 +5,45 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+Module Name: TestRunnerSimulatorIntegrationTest.
+
+Description:
+    This module contains integration tests for the `InMemoryRunnerSimulator` class, which performs
+    full runs of the simulator with different scaling algorithms (multiplicative and additive).
+    The tests validate the behavior and results of the simulator based on pre-configured expectations.
+
+Classes:
+    TestRunnerSimulatorIntegrationTest:
+        A test class that extends `unittest.TestCase` and runs integration tests on the
+        `InMemoryRunnerSimulator`. The tests check the simulator's behavior when using different
+        scaling algorithms and validate that the expected metrics match the simulation results.
+
+Test Methods:
+    setUp():
+        Sets up the test environment by copying a dataset to a temporary directory.
+        This dataset is used for running the simulator during the tests.
+
+    setUpClass():
+        Mocks the `print` function globally to reduce console output noise during the test execution.
+
+    test_run_multiplicative_algo():
+        Tests the simulator's behavior when using the "multiplicative" scaling algorithm, validating
+        the results against expected metrics such as slack, CPU usage, and number of scalings.
+
+    test_run_additive_algo():
+        Tests the simulator's behavior when using the "additive" scaling algorithm, validating
+        the results against expected metrics such as slack, CPU usage, and number of scalings.
+
+    tearDown():
+        Cleans up the temporary directories and files created during the test.
+
+Usage:
+    These tests can be run using `unittest.main()` to execute the integration tests for the
+    `InMemoryRunnerSimulator`, covering different scaling algorithms and validating simulation metrics.
+"""
+
 import os
 import shutil
 import unittest
@@ -56,7 +95,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         folder = os.listdir(self.target_dir_sim)[0]
         sim_dir = os.path.join(self.target_dir_sim, folder)  # todo add _simulations
 
-        assert os.path.exists(os.path.join(sim_dir, "decisions.txt"))
+        assert os.path.exists(os.path.join(sim_dir, "decisions.csv"))
         assert os.path.exists(os.path.join(sim_dir, "metadata.json"))
         assert os.path.exists(os.path.join(sim_dir, "perf_event_log.csv"))
 
@@ -106,7 +145,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         folder = os.listdir(self.target_dir_sim)[0]
         sim_dir = os.path.join(self.target_dir_sim, folder)  # todo add _simulations
 
-        assert os.path.exists(os.path.join(sim_dir, "decisions.txt"))
+        assert os.path.exists(os.path.join(sim_dir, "decisions.csv"))
         assert os.path.exists(os.path.join(sim_dir, "metadata.json"))
         assert os.path.exists(os.path.join(sim_dir, "perf_event_log.csv"))
 

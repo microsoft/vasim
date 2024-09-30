@@ -16,7 +16,7 @@ from setuptools import setup
 # See maintainers notes in CONTRIBUTING.md for details.
 # Note: the "-dev" suffix is used to indicate a development version for local
 # testing and should remain (it will be stripped off for the release version).
-VERSION = "0.1.3-dev"
+VERSION = "0.1.4-dev"
 
 
 # A simple routine to read and adjust the README.md for this module into a format
@@ -43,7 +43,8 @@ def _get_long_desc_from_readme(base_url: str) -> dict:
         }
 
 
-version_tag = f"v{VERSION.replace('-dev', '')}"  # alternatively: "main"
+# version_tag = "main"
+version_tag = f"v{VERSION.replace('-dev', '')}"  # pylint: disable=invalid-name
 setup(
     version=VERSION,
     **_get_long_desc_from_readme(f"https://github.com/microsoft/vasim/tree/{version_tag}/"),

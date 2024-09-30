@@ -5,6 +5,41 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+
+"""
+Module Name: TestRunnerSimulatorIntegrationTest.
+
+Description:
+    This module contains integration tests for the `InMemoryRunnerSimulator` class, which performs
+    end-to-end simulations of cluster scaling. These tests verify that the simulator uses configuration parameters,
+    such as the lag time between scaling decisions, correctly in a simulated environment.
+
+Classes:
+    TestRunnerSimulatorIntegrationTest:
+        Integration test class that tests the behavior of the `InMemoryRunnerSimulator` class with real
+        simulation data. It focuses on ensuring that the lag parameter is applied correctly during
+        decision-making processes.
+
+Test Methods:
+    setUp():
+        Sets up the test environment by copying test data to a temporary directory. This directory
+        is used during the simulation run.
+
+    test_lag_parameter_10():
+        Tests that the lag parameter is correctly applied when set to 10 minutes. It verifies that the
+        difference between decision times in the simulation is equal to the lag parameter.
+
+    test_lag_parameter_5():
+        Tests that the lag parameter is correctly applied when set to 5 minutes using an alternative
+        configuration file. It ensures that the decisions in the simulation reflect the correct lag timing.
+
+    tearDown():
+        Cleans up by removing the temporary directories and files created during the test setup and execution.
+
+Usage:
+    These tests can be run using `unittest.main()` to verify that the `InMemoryRunnerSimulator`
+    behaves as expected in a simulated environment with different lag configurations.
+"""
 import csv
 import json
 import os
@@ -59,16 +94,14 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         folder = os.listdir(self.target_dir_sim)[0]
         sim_dir = os.path.join(self.target_dir_sim, folder)  # todo add _simulations
 
-        # There should be a decisions.txt file in the simulation directory
-        assert os.path.exists(os.path.join(sim_dir, "decisions.txt"))
+        # There should be a decisions.csv file in the simulation directory
+        assert os.path.exists(os.path.join(sim_dir, "decisions.csv"))
 
         # the lag parameter defines the number of minutes to wait before making a prediction
         # So we expect the first decision to be made at 10 minutes
-        # and subsequent decisions to be made every 10 minutes. Let's open the decisions.txt file
+        # and subsequent decisions to be made every 10 minutes. Let's open the decisions.csv file
         # and compare the times to the expected times from the csv.
-        with open(os.path.join(sim_dir, "decisions.txt"), "r", encoding="utf-8") as f:
-            # TODO rename decisions.txt to be csv. It's not a txt file.
-            # We'll read it as a csv file.
+        with open(os.path.join(sim_dir, "decisions.csv"), "r", encoding="utf-8") as f:
             reader = csv.reader(f)
             next(reader)  # skip the header
             # We'll look at the first column of lines 1 and 2, and use a  time diff
@@ -117,16 +150,14 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         folder = os.listdir(self.target_dir_sim)[0]
         sim_dir = os.path.join(self.target_dir_sim, folder)  # todo add _simulations
 
-        # There should be a decisions.txt file in the simulation directory
-        assert os.path.exists(os.path.join(sim_dir, "decisions.txt"))
+        # There should be a decisions.csv file in the simulation directory
+        assert os.path.exists(os.path.join(sim_dir, "decisions.csv"))
 
         # the lag parameter defines the number of minutes to wait before making a prediction
         # So we expect the first decision to be made at 5 minutes
-        # and subsequent decisions to be made every 5 minutes. Let's open the decisions.txt file
+        # and subsequent decisions to be made every 5 minutes. Let's open the decisions.csv file
         # and compare the times to the expected times from the csv.
-        with open(os.path.join(sim_dir, "decisions.txt"), "r", encoding="utf-8") as f:
-            # TODO rename decisions.txt to be csv. It's not a txt file.
-            # We'll read it as a csv file.
+        with open(os.path.join(sim_dir, "decisions.csv"), "r", encoding="utf-8") as f:
             reader = csv.reader(f)
             next(reader)  # skip the header
             # We'll look at the first column of lines 1 and 2, and use a  time diff
