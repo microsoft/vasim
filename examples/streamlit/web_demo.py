@@ -67,15 +67,18 @@ def construct_config_metric_df(config_metrics_list) -> pd.DataFrame:
 
 
 @st.cache_data()
-def create_charts(curr_data):
+def create_charts(chart_data: pd.DataFrame) -> None:
     """
     Creates and displays a line chart for CPU usage over time in the sidebar.
 
     Args:
-        data (pd.DataFrame): A DataFrame containing CPU usage data with a TIMESTAMP column.
+        chart_data (pd.DataFrame): A DataFrame containing CPU usage data. It must have
+                             a 'TIMESTAMP' column representing the time and
+                             a 'CPU_USAGE_ACTUAL' column representing the actual
+                             CPU usage.
     """
     # Create a new DataFrame for Streamlit line_chart
-    chart_data_df = pd.DataFrame({"TIMESTAMP": curr_data["TIMESTAMP"], "CPU_USAGE_ACTUAL": curr_data["CPU_USAGE_ACTUAL"]})
+    chart_data_df = pd.DataFrame({"TIMESTAMP": chart_data["TIMESTAMP"], "CPU_USAGE_ACTUAL": chart_data["CPU_USAGE_ACTUAL"]})
 
     # Plot the DataFrame using Streamlit line_chart
     st.sidebar.line_chart(chart_data_df.set_index("TIMESTAMP"))
@@ -197,8 +200,8 @@ if selected_csv:
         perf_log_resampled = workload_df.set_index("TIMESTAMP").resample("1T").ffill().reset_index()
 
         # Display the chart in the left sidebar
-        chart_data = pd.DataFrame({"TIMESTAMP": workload_df["TIMESTAMP"], "CPU_USAGE_ACTUAL": workload_df["CPU_USAGE_ACTUAL"]})
-        create_charts(chart_data)
+        data = pd.DataFrame({"TIMESTAMP": workload_df["TIMESTAMP"], "CPU_USAGE_ACTUAL": workload_df["CPU_USAGE_ACTUAL"]})
+        create_charts(data)
 # Page 1: Simulation Run
 if simulation_option == "Simulation Run":
     st.title("Simulation Run")

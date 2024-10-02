@@ -23,7 +23,15 @@ The tuning strategies include:
   grid search but may miss the optimal configuration if the search space is large and too few samples are taken.
 
 Helper functions are also provided to modify configurations, create unique worker IDs, and run the simulator.
+
+TODO:
+    - Remove hardcoded paths in the simulator directory generation.
+    - Implement other tuning strategies, such as MLOS.
+    - Add unit tests for the validation of keys in `algo_specific_params_to_tune`,
+     `general_params_to_tune`, and `predictive_params_to_tune`.
+    - Write unit tests for the `starmap` used for multiprocessing to ensure proper coverage in code tests.
 """
+
 import copy
 import itertools
 import logging
@@ -50,25 +58,25 @@ def _create_modified_configs(
     strategy: str,
     num_combinations: int,
 ) -> List[ClusterStateConfig]:
+    # pylint: disable=too-many-positional-arguments
     # pylint: disable=too-many-arguments
     """
-    Generates modified configurations based on the specified tuning strategy, initial configuration,.
+    Generates modified configurations based on the specified tuning strategy and a set of allowed parameters.
 
-    and a set of allowed parameters and values to tune.
+    and values to tune.
 
     Args:
         baseconfig (ClusterStateConfig): The base configuration to modify.
         algo_specific_params_to_tune (Dict[str, List[Any]]): Algorithm-specific parameters and their possible values to tune.
         general_params_to_tune (Dict[str, List[Any]]): General configuration parameters and their possible values to tune.
-        predictive_params_to_tune (Dict[str, List[Any]]): Predictive configuration
-            parameters and their possible values to tune.
+        predictive_params_to_tune (Dict[str, List[Any]]): Predictive configuration parameters and their possible values
+            to tune.
         strategy (str): The tuning strategy to use ('grid' or 'random').
         num_combinations (int): The number of random combinations to generate for the 'random' strategy.
             This parameter is ignored for the 'grid' strategy.
 
     Returns:
-        List[ClusterStateConfig]: A list of modified configurations based on the
-            specified tuning strategy and parameters for tuning.
+        List[ClusterStateConfig]: A list of modified configurations based on the specified tuning strategy.
     """
 
     def evaluate_config(
@@ -222,6 +230,7 @@ def tune_with_strategy(
     general_params_to_tune: Optional[Dict[str, List[Any]]] = None,
     predictive_params_to_tune: Optional[Dict[str, List[Any]]] = None,
 ):
+    # pylint: disable=too-many-positional-arguments
     # pylint: disable=too-many-arguments
     # pylint: disable=too-many-locals
     """
