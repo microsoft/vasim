@@ -104,15 +104,43 @@ def timeit(func):
 
 
 class DataProcessor:
+    """
+    A class that provides utility functions for time series data processing.
+
+    The `DataProcessor` class contains static methods for performing common data preprocessing tasks
+    such as smoothing time series data, splitting data into training and testing sets, resampling
+    time series data, and calculating workload durations.
+
+    Methods:
+        smooth_max(series, window, center=False):
+            Applies a rolling maximum to smooth the input time series data.
+
+        train_test_split(series, test_size):
+            Splits the input time series data into training and testing sets.
+
+        prepare_data(y, smooth_window=1, smooth=True, test_size=0.2):
+            Prepares the time series data by applying optional smoothing and splitting it into
+            training and testing sets.
+
+        resample_dataframe(df, freq):
+            Resamples the input DataFrame to the specified frequency and forward-fills missing data.
+
+        get_workload_duration(data):
+            Calculates the total duration of a workload based on the time range in the input DataFrame.
+    """
+
     @staticmethod
     def smooth_max(series, window, center=False):
         """
-        Smooths the series by taking the rolling maximum.
+        Smooths the series by applying a rolling maximum.
+
+        This method applies a rolling maximum function to smooth the input time series data
+        using a specified window size. Optionally, it can set the labels at the center of the window.
 
         Args:
             series (pd.Series): The input data series.
             window (int): The size of the moving window.
-            center (bool): Whether to set the labels at the center of the window.
+            center (bool): Whether to set the labels at the center of the window (default is False).
 
         Returns:
             pd.Series: The smoothed series.
@@ -123,11 +151,14 @@ class DataProcessor:
     @staticmethod
     def train_test_split(series, test_size):
         """
-        Splits the series into training and testing sets.
+        Splits the time series into training and testing sets.
+
+        This method splits the input time series data into training and testing sets
+        using a specified test size proportion.
 
         Args:
-            series (pd.Series): The input data series.
-            test_size (float): The proportion of the data to include in the test split.
+            series (pd.Series): The input data series to be split.
+            test_size (float): The proportion of the data to include in the test set.
 
         Returns:
             tuple: A tuple containing the training and testing sets.
@@ -138,19 +169,21 @@ class DataProcessor:
     @staticmethod
     def prepare_data(y, smooth_window=1, smooth=True, test_size=0.2):
         """
-        Prepares data for forecasting by optionally smoothing and splitting into train and test sets.
+        Prepares the time series data for forecasting.
+
+        This method applies optional smoothing to the input time series data and splits it
+        into training and testing sets based on the specified test size.
 
         Args:
-            y (pd.Series): The input data series.
-            smooth_window (int): The size of the smoothing window.
-            smooth (bool): Whether to apply smoothing.
-            test_size (float): The proportion of the data to include in the test split.
+            y (pd.Series): The input time series data.
+            smooth_window (int): The size of the smoothing window (default is 1).
+            smooth (bool): Whether to apply smoothing to the data (default is True).
+            test_size (float): The proportion of the data to include in the test set (default is 0.2).
 
         Returns:
             tuple: A tuple containing the smoothed training and testing sets.
         """
-        # Get target column
-        y_train, y_test = temporal_train_test_split(y, test_size=test_size)
+        y_train, y_test = DataProcessor.train_test_split(y, test_size=test_size)
         if smooth:
             y_train = DataProcessor.smooth_max(y_train, smooth_window, center=False)
             y_test = DataProcessor.smooth_max(y_test, smooth_window, center=False)
@@ -161,12 +194,15 @@ class DataProcessor:
         """
         Resamples the DataFrame to the specified frequency.
 
+        This method resamples the input DataFrame based on a specified frequency, such as "1T" for 1-minute
+        intervals, and forward-fills missing data to maintain continuity.
+
         Args:
-            df (pd.DataFrame): The input DataFrame.
-            freq (str): The new frequency to resample to.
+            df (pd.DataFrame): The input DataFrame to be resampled.
+            freq (str): The new frequency to resample to (e.g., '1T' for 1-minute intervals).
 
         Returns:
-            pd.DataFrame: The resampled DataFrame.
+            pd.DataFrame: The resampled DataFrame with missing data forward-filled.
         """
         df = df.set_index("time")
         df.index = pd.to_datetime(df.index)
@@ -178,11 +214,15 @@ class DataProcessor:
         """
         Calculates the duration of the workload.
 
+        This method calculates the total duration of the workload based on the time range
+        in the input DataFrame. It computes the difference between the earliest and latest
+        timestamps in the data.
+
         Args:
             data (pd.DataFrame): The input DataFrame containing a 'time' column.
 
         Returns:
-            timedelta: The duration of the workload.
+            timedelta: The total duration of the workload.
         """
         min_time = data["time"].min()
         max_time = data["time"].max()
