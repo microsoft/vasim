@@ -84,8 +84,18 @@ class InMemoryRunnerSimulator:
         target_simulation_dir=None,
         if_resample=True,
     ):
-        # pylint: disable=too-many-positional-arguments
-        # pylint: disable=too-many-arguments
+        """
+        Initializes the `InMemoryRunnerSimulator` with necessary parameters to simulate autoscaling decisions.
+
+        Args:
+            data_dir (str): Directory where the input workload data is stored.
+            config_path (str, optional): Path to the configuration file. Defaults to None.
+            initial_cpu_limit (int, optional): Initial CPU limit for the simulation. Defaults to None.
+            algorithm (str, optional): The name of the scaling algorithm to use (additive, multiplicative). Defaults to "multiplicative".
+            config (ClusterStateConfig, optional): A pre-loaded configuration object. Defaults to None.
+            target_simulation_dir (str, optional): Directory to save simulation output. Defaults to None.
+            if_resample (bool, optional): Flag to determine if data resampling is applied. Defaults to True.
+        """
         worker_id = create_uuid()
         target_simulation_dir = target_simulation_dir or os.path.join(
             f"{data_dir}_simulations",
@@ -115,6 +125,15 @@ class InMemoryRunnerSimulator:
 
     @staticmethod
     def _setup_logger(data_dir):
+        """
+        Sets up the logging system for the simulator, saving logs to a specified directory.
+
+        Args:
+            data_dir (str): Directory where logs will be stored.
+
+        Returns:
+            logger (logging.Logger): Configured logger for the simulation.
+        """
         logger = logging.getLogger()
         logger.setLevel(logging.ERROR)
 
@@ -130,10 +149,30 @@ class InMemoryRunnerSimulator:
 
     @staticmethod
     def _load_config(config_path):
+        """
+        Loads the simulation configuration from the provided config file path.
+
+        Args:
+            config_path (str): Path to the configuration file.
+
+        Returns:
+            ClusterStateConfig: The configuration object loaded from the file.
+        """
         return ClusterStateConfig(filename=config_path)
 
     @staticmethod
     def _create_cluster_state_provider(data_dir, config, target_simulation_dir=None):
+        """
+        Creates and returns a cluster state provider responsible for managing cluster state data and decisions.
+
+        Args:
+            data_dir (str): Directory where input data is stored.
+            config (ClusterStateConfig): The loaded configuration object.
+            target_simulation_dir (str, optional): Directory to store output files. Defaults to None.
+
+        Returns:
+            SimulatedClusterStateProvider: A provider object responsible for managing cluster data.
+        """
         out_filename = f"{target_simulation_dir or data_dir}/decisions.csv"  # TODO: remove hardcode.
         return SimulatedClusterStateProviderFactory(
             data_dir=data_dir,
@@ -142,9 +181,21 @@ class InMemoryRunnerSimulator:
         ).create_provider(predictive=config.prediction_config)
 
     def _get_experiment_time_range(self):
+        """
+        Retrieves the start and end times for the simulation based on the cluster state provider's data.
+
+        Returns:
+            Tuple[pd.Timestamp, pd.Timestamp]: Start and end times for the simulation.
+        """
         return self.cluster_state_provider.start_time, self.cluster_state_provider.end_time
 
     def _create_infra_scaler(self):
+        """
+        Initializes and returns the infrastructure scaler responsible for adjusting CPU limits.
+
+        Returns:
+            SimulatedInfraScaler: The scaler object responsible for simulating CPU scaling.
+        """
         return SimulatedInfraScaler(
             self.cluster_state_provider,
             self.experiment_start_time,
@@ -152,6 +203,18 @@ class InMemoryRunnerSimulator:
         )
 
     def _create_recommender_algorithm(self, algorithm):
+        """
+        Initializes the scaling algorithm (additive or multiplicative) based on the user's selection.
+
+        Args:
+            algorithm (str): The name of the scaling algorithm ("additive" or "multiplicative").
+
+        Returns:
+            Recommender: The selected recommender algorithm for the simulation.
+
+        Raises:
+            ValueError: If an unknown algorithm is provided.
+        """
         if algorithm == "multiplicative":
             return SimpleMultiplierRecommender(self.cluster_state_provider)
         elif algorithm == "additive":
@@ -163,6 +226,15 @@ class InMemoryRunnerSimulator:
 
     @staticmethod
     def _initialize_output_file(data_dir):
+        """
+        Initializes the file where scaling decisions will be logged.
+
+        Args:
+            data_dir (str): Directory where the output decision file will be saved.
+
+        Returns:
+            file (File): The opened file object for logging scaling decisions.
+        """
         out_filename = f"{data_dir}/decisions.csv"
         out_file = Path(out_filename)
 
@@ -176,6 +248,14 @@ class InMemoryRunnerSimulator:
         return f
 
     def output_decision(self, latest_time, current_limit, new_limit):
+        """
+        Logs the current and new CPU limits after each autoscaling decision.
+
+        Args:
+            latest_time (pd.Timestamp): The most recent timestamp for the data.
+            current_limit (float): The current CPU limit before the decision.
+            new_limit (float): The new CPU limit after the decision.
+        """
         if latest_time is not None:
             to_write = f"{latest_time},{current_limit},{new_limit}\n"
             self.out_file.write(to_write)
@@ -184,6 +264,15 @@ class InMemoryRunnerSimulator:
             self.logger.info("Nothing written this time due to error or lack of data")
 
     def get_metrics(self, save_to_file=True):
+        """
+        Retrieves performance metrics from the simulation and saves them to a file if specified.
+
+        Args:
+            save_to_file (bool, optional): Flag to save the metrics to a file. Defaults to True.
+
+        Returns:
+            dict: The calculated metrics from the simulation.
+        """
         metrics = calculate_and_return_metrics_to_target(self.cluster_state_provider.data_dir, self.target_simulation_dir)
 
         # Convert int64 to int
@@ -191,14 +280,13 @@ class InMemoryRunnerSimulator:
             if isinstance(value, np.int64):
                 metrics[key] = int(value)
 
-        #        save metrics to file
+        # Save metrics to file if required
         if save_to_file and metrics:
             with open(f"{self.target_simulation_dir}/calc_metrics.json", "w", encoding="utf-8") as f:
                 json.dump(metrics, f)
 
                 self.cluster_state_provider.config.to_json(f"{self.target_simulation_dir}/metadata.json")
 
-            # If plot_cpu_usage_and_new_limit_plotnine involves file operations, ensure it is properly handled
             plot_cpu_usage_and_new_limit_plotnine(
                 self.cluster_state_provider.data_dir,
                 decision_file_path=f"{self.target_simulation_dir}/decisions.csv",
@@ -208,8 +296,12 @@ class InMemoryRunnerSimulator:
         return metrics
 
     def run_simulation(self):
-        """Run the simulation to completion and return the final metrics."""
+        """
+        Runs the simulation to completion and returns the final performance metrics.
 
+        Returns:
+            dict: The final metrics calculated from the simulation.
+        """
         print(f"Starting simulation at {self.experiment_start_time} and continuing till {self.experiment_end_time}")
         print(f"Setting number of cores to {self.initial_cpu_limit}")
         self.cluster_state_provider.set_cpu_limit(self.initial_cpu_limit)
@@ -229,7 +321,12 @@ class InMemoryRunnerSimulator:
         return self.get_metrics()
 
     def run_simulation_with_progress(self):
-        """Run the simulation, yielding progress updates as the simulation progresses, followed by the final result."""
+        """
+        Runs the simulation, yielding progress updates during the simulation, followed by the final result.
+
+        Yields:
+            float: Progress as a percentage of the total simulation time.
+        """
         print(f"Starting simulation at {self.experiment_start_time} and continuing till {self.experiment_end_time}")
         print(f"Setting number of cores to {self.initial_cpu_limit}")
         self.cluster_state_provider.set_cpu_limit(self.initial_cpu_limit)
@@ -254,7 +351,11 @@ class InMemoryRunnerSimulator:
         self.cluster_state_provider.flush_metrics_data(f"{self.target_simulation_dir}/perf_event_log.csv")
 
     def _execute_simulation_step(self):
-        """This function holds the core simulation logic shared by both run_simulation and run_simulation_with_progress."""
+        """
+        Executes a single simulation step, processing the next data window and updating the CPU limit.
+
+        This function is called repeatedly during the simulation to process the data and adjust the CPU limits.
+        """
         # Get the next window of data to simulate
         recorded_data, latest_time = self.cluster_state_provider.get_next_recorded_data()
 
@@ -280,7 +381,11 @@ class InMemoryRunnerSimulator:
 
 
 def main():
-    """TODO: Do we want to remove main here? It might confuse users, but might be useful for testing."""
+    """
+    Main entry point for the command-line interface for running the InMemoryRunnerSimulator.
+
+    It accepts user inputs such as algorithm, data directory, and configuration file through command-line arguments.
+    """
     parser = argparse.ArgumentParser(description="InMemoryRunnerSimulator Command Line Interface")
     parser.add_argument(
         "--algorithm",

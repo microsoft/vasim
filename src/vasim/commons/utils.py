@@ -26,10 +26,25 @@ Returns:
     List[Path]:
         A list of file paths that match the "perf_event_log" pattern. If no files are found, an empty list is returned.
 """
+
 from pathlib import Path
 
 
 def list_perf_event_log_files(data_dir: Path):
+    """
+    Scans the provided directory for CSV files whose names end with "perf_event_log".
+
+    This function searches through the specified directory and its subdirectories for CSV files. It then filters
+    the list to include only those files that have "perf_event_log" at the end of their file names.
+
+    Args:
+        data_dir (Path): The directory path where the CSV files are located.
+
+    Returns:
+        List[Path]: A list of file paths that match the "perf_event_log" pattern. If no files are found,
+                    an empty list is returned. Additionally, an error message is printed if no matching
+                    files are found in the directory.
+    """
     csv_files = list(data_dir.glob("**/*.csv"))
 
     # Filter CSV files that end with "perf_event_log"
