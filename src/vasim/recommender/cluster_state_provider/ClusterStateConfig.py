@@ -214,6 +214,46 @@ class ClusterStateConfig(dict):
             logging.error("JSON serialization error for file: %s", filepath, exc_info=json_error)
             raise
 
+    def __reduce__(self):
+        """Support pickling across multiprocessing boundaries.
+
+        ClusterStateConfig stores its data in instance attributes rather than
+        in the underlying dict, so the default pickle path (which only
+        serializes the dict part) loses algo_specific_config, general_config,
+        and prediction_config. We reconstruct via __setstate__ so the full
+        config survives a round-trip through multiprocessing.Pool.
+        """
+        return (self.__class__.__new__, (self.__class__,), self.__getstate__())
+
+    def __getstate__(self):
+        return {
+            "general_config": self.general_config,
+            "algo_specific_config": self.algo_specific_config,
+            "prediction_config": self.prediction_config,
+        }
+
+    def __setstate__(self, state):
+        self.algo_specific_config = state.get("algo_specific_config", {})
+        self.general_config = state.get("general_config", {})
+        self.prediction_config = state.get("prediction_config", {})
+        self.defaults = {
+            "general_config": {
+                "window": DEFAULT_WINDOW,
+                "lag": DEFAULT_LAG,
+                "max_cpu_limit": DEFAULT_MAX_CPU_LIMIT,
+                "min_cpu_limit": DEFAULT_MIN_CPU_LIMIT,
+                "recovery_time": RECOVERY_TIME,
+            },
+            "prediction_config": {
+                "enabled": False,
+                "waiting_before_predict": DEFAULT_WAITING_BEFORE_PREDICT,
+                "frequency_minutes": DEFAULT_FREQUENCY_MINUTES,
+                "forecasting_models": DEFAULT_FORECASTING_MODEL,
+                "minutes_to_predict": DEFAULT_MINUTES_TO_PREDICT,
+                "total_predictive_window": DEFAULT_TOTAL_PREDICTIVE_WINDOW,
+            },
+        }
+
     def validate_config(self):
         """
         Validate the configuration values to ensure required keys are present and have valid values.

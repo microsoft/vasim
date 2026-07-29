@@ -340,6 +340,31 @@ class TestClusterStateConfig(unittest.TestCase):
     def test_get_invalid_key_without_default(self):
         self.assertIsNone(self.config.get("invalid_key"))
 
+    def test_pickle_roundtrip_preserves_config(self):
+        """ClusterStateConfig must survive pickle round-trip (used by multiprocessing.Pool)."""
+        import pickle
+
+        original = ClusterStateConfig(config_dict=self.config_data)
+        restored = pickle.loads(pickle.dumps(original))
+
+        self.assertEqual(restored.general_config["window"], original.general_config["window"])
+        self.assertEqual(restored.algo_specific_config["addend"], original.algo_specific_config["addend"])
+        self.assertEqual(restored.prediction_config["frequency_minutes"], original.prediction_config["frequency_minutes"])
+
+    def test_pickle_survives_multiprocessing_boundary(self):
+        """Config pickled then unpickled (as happens in Pool.starmap) must not lose fields (regression for #119)."""
+        import pickle
+
+        config = ClusterStateConfig(config_dict=self.config_data)
+        # Simulate what multiprocessing does: ForkingPickler serialises args before sending to worker
+        raw = pickle.dumps(config)
+        restored = pickle.loads(raw)
+        self.assertNotEqual(restored.general_config, {}, "general_config must not be empty after pickling")
+        self.assertNotEqual(restored.algo_specific_config, {}, "algo_specific_config must not be empty after pickling")
+        self.assertEqual(restored.general_config["window"], config.general_config["window"])
+        self.assertEqual(restored.algo_specific_config["addend"], config.algo_specific_config["addend"])
+        self.assertEqual(restored.prediction_config["frequency_minutes"], config.prediction_config["frequency_minutes"])
+
 
 if __name__ == "__main__":
     unittest.main()
