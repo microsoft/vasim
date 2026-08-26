@@ -14,7 +14,7 @@ This project welcomes contributions and suggestions.
 
 ### Pull requests
 
-If you are new to GitHub [here](https://help.github.com/categories/collaborating-with-issues-and-pull-requests/) is a detailed help source on getting involved with development on GitHub.
+If you are new to GitHub [here](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests) is a detailed help source on getting involved with development on GitHub.
 
 As a first time contributor, you will be invited to sign the Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
 the rights to use your contribution. For details, visit <https://cla.opensource.microsoft.com>. You will only need to do this once across all repos using our CLA.
