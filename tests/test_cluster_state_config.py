@@ -371,13 +371,14 @@ class TestClusterStateConfig(unittest.TestCase):
         self.assertEqual(returned.uuid, "cfg-worker-1234")
 
     def test_repr_renders_config_instead_of_empty_dict(self):
-        """tune_with_strategy printed ({}, metrics) because the data is in attributes, not the dict part (#119)."""
+        """Repr must not render {} when the data lives in attributes, not the dict part (#119)."""
         config = ClusterStateConfig(config_dict=self.config_data)
         text = repr(config)
 
         self.assertNotEqual(text, "{}")
         self.assertIn("general_config", text)
         self.assertIn(str(self.config_data["general_config"]["window"]), text)
+
 
 if __name__ == "__main__":
     unittest.main()
