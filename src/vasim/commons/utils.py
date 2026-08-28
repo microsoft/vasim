@@ -37,18 +37,32 @@ def list_perf_event_log_files(data_dir: Path):
     This function searches through the specified directory and its subdirectories for CSV files. It then filters
     the list to include only those files that have "perf_event_log" at the end of their file names.
 
+    Files reached through a symlink that points outside ``data_dir`` are skipped, as is
+    a ``data_dir`` that does not exist or is not a directory.
+
     Args:
         data_dir (Path): The directory path where the CSV files are located.
 
     Returns:
         List[Path]: A list of file paths that match the "perf_event_log" pattern. If no files are found,
                     an empty list is returned. Additionally, an error message is printed if no matching
-                    files are found in the directory.
+                    files are found in the directory, or if `data_dir` is not a usable directory.
     """
-    csv_files = list(data_dir.glob("**/*.csv"))
+    data_dir = Path(data_dir)
+    if not data_dir.is_dir():
+        print(f"Error: data_dir is not an existing directory: {data_dir}")
+        return []
 
-    # Filter CSV files that end with "perf_event_log"
-    perf_event_log_files = [file for file in csv_files if file.stem.endswith("perf_event_log")]
+    root = data_dir.resolve()
+    perf_event_log_files = []
+    for file in data_dir.glob("**/*.csv"):
+        if not file.stem.endswith("perf_event_log"):
+            continue
+        # glob follows symlinks, so a link under data_dir can resolve anywhere
+        # on the filesystem; keep only what really lives under the directory.
+        if not file.is_file() or not file.resolve().is_relative_to(root):
+            continue
+        perf_event_log_files.append(file)
 
     if not perf_event_log_files:
         print(f"Error: no csvs ending in perf_event_log found in data_dir: {data_dir}")
