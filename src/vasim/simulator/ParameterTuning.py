@@ -251,7 +251,11 @@ def tune_with_strategy(
         predictive_params_to_tune (Dict[str, List[Any]]): Predictive parameters to tune.
 
     Returns:
-        List[Tuple[ClusterStateConfig, Any]]: A list of tuples with the configuration and resulting metrics.
+        List[Tuple[ClusterStateConfig, Any]]: A list of tuples where the first element is the
+        modified ``ClusterStateConfig`` used for that run and the second is the metrics dict
+        returned by the simulator (or ``None`` if the run failed). Both elements are populated;
+        earlier versions returned an empty dict for the config due to a pickle serialisation bug
+        (see #119).
     """
     baseconfig = ClusterStateConfig(filename=config_path)
 

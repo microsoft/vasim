@@ -214,6 +214,33 @@ class ClusterStateConfig(dict):
             logging.error("JSON serialization error for file: %s", filepath, exc_info=json_error)
             raise
 
+    def __reduce__(self):
+        """Support pickling across multiprocessing boundaries.
+
+        ClusterStateConfig stores its data in instance attributes rather than
+        in the underlying dict, so the default pickle path (which only
+        serializes the dict part) loses algo_specific_config, general_config,
+        and prediction_config. We reconstruct via __setstate__ so the full
+        config survives a round-trip through multiprocessing.Pool.
+        """
+        return (self.__class__.__new__, (self.__class__,), self.__getstate__())
+
+    def __getstate__(self):
+        return dict(self.__dict__)
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+
+    def __repr__(self):
+        # dict.__repr__ would render "{}" here: the data lives in instance
+        # attributes, not in the inherited dict storage.
+        return (
+            f"{type(self).__name__}("
+            f"general_config={self.general_config!r}, "
+            f"algo_specific_config={self.algo_specific_config!r}, "
+            f"prediction_config={self.prediction_config!r})"
+        )
+
     def validate_config(self):
         """
         Validate the configuration values to ensure required keys are present and have valid values.
