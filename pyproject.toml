@@ -48,6 +48,8 @@ dependencies = [
     "autopep8",
     "flake8",
     "pylint",
+    "mypy",
+        "pandas-stubs",
     "black",
     "isort",
     "pydocstringformatter",
@@ -152,3 +154,15 @@ disable = [
 [tool.pylint.string]
 check-quote-consistency = true
 check-str-concat-over-line-jumps = true
+
+[tool.mypy]
+#ignore_missing_imports = true
+warn_unused_configs = true
+warn_unused_ignores = true
+warn_unreachable = true
+warn_return_any = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+strict = true
+#allow_any_generics = true
+hide_error_codes = false

@@ -84,6 +84,10 @@ jobs:
       run: |
         python -m pip install build
         python -m build
+        if ! unzip -p dist/vasim-*-py3-none-any.whl "vasim*/METADATA" | grep CONTRIBUTING.md | grep github.com/microsoft/vasim/tree/; then
+          echo "ERROR: CONTRIBUTING.md link not found in METADATA file of wheel."
+          exit 1
+        fi
     - name: Test pip install whl
       run: |
         python -m venv test-install-venv

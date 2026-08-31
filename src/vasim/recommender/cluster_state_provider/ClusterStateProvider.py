@@ -52,13 +52,21 @@ Methods:
 """
 
 from abc import abstractmethod
+from typing import Optional
 
 import pandas as pd
 
 
 class ClusterStateProvider:
 
-    def __init__(self, data_dir=None, features=None, window=None, decision_file_path=None, lag=None):
+    def __init__(
+        self,
+        data_dir: Optional[str] = None,
+        features=None,
+        window=None,
+        decision_file_path=None,
+        lag=None,
+    ) -> None:
         # pylint: disable=too-many-arguments
         # TODO: How did we chose to include lag and window, but not the rest? I think make them all kwargs
         pass
@@ -85,12 +93,12 @@ class ClusterStateProvider:
         pass
 
     @staticmethod
-    def drop_duplicates(recorded_data: pd.DataFrame):
+    def drop_duplicates(recorded_data: pd.DataFrame) -> pd.DataFrame:
         recorded_data = recorded_data.drop_duplicates()
         return recorded_data
 
     @staticmethod
-    def sort_data(recorded_data: pd.DataFrame):
+    def sort_data(recorded_data: pd.DataFrame) -> pd.DataFrame:
         recorded_data = recorded_data.assign(time=pd.to_datetime(recorded_data["time"]))
         recorded_data = recorded_data.sort_values(by="time")
         return recorded_data
