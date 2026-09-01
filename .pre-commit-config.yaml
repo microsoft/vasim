@@ -36,6 +36,11 @@ repos:
       - id: flake8
         args: [--config=.flake8]
         additional_dependencies: [flake8]
+  - repo: https://github.com/PyCQA/pydocstyle
+    rev: 6.3.0
+    hooks:
+      - id: pydocstyle
+        additional_dependencies: [tomli]
   - repo: local
     hooks:
       - id: pylint
