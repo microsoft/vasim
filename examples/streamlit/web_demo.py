@@ -59,7 +59,7 @@ def construct_config_metric_df(config_metrics_list) -> pd.DataFrame:
         if metrics is None:
             print(f"Skipping {modified_config.uuid} because of an error")
             continue
-        row_data = {**metrics, **modified_config}  # TODO: there is a known issue https://github.com/microsoft/vasim/issues/119
+        row_data = {**metrics, **modified_config}
         rows.append(row_data)
 
     # Create the DataFrame from the list of row data
