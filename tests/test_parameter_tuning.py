@@ -38,15 +38,15 @@ MINIMAL_CONFIG = {
         "recovery_time": 10,
     },
     "algo_specific_config": {"addend": 1},
-    "prediction_config": {"enabled": False},
+    "prediction_config": {"enabled": False, "waiting_before_predict": 0},
 }
 
 
-def _make_fake_pool(modified_configs, data_dir, algorithm, initial_cpu_limit):
+def _make_fake_pool(*args, **kwargs):
     """Return fake starmap results that mirror what _tune_parameters would return."""
 
-    def fake_starmap(fn, args):
-        return [(cfg, {"average_slack": 1.0, "num_scalings": 5}) for cfg, *_ in args]
+    def fake_starmap(fn, pool_args):
+        return [(cfg, {"average_slack": 1.0, "num_scalings": 5}) for cfg, *_ in pool_args]
 
     pool = MagicMock()
     pool.__enter__ = MagicMock(return_value=pool)
