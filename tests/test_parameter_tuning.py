@@ -5,6 +5,7 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
+# pylint: disable=duplicate-code
 
 """
 Module Name: TestParameterTuning.
