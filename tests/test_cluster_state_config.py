@@ -86,6 +86,7 @@ Usage:
     `ClusterStateConfig` class.
 """
 import json
+import multiprocessing
 import unittest
 from unittest.mock import mock_open, patch
 
@@ -99,6 +100,12 @@ from vasim.recommender.cluster_state_provider.ConfigStateConstants import (
     DEFAULT_WINDOW,
     RECOVERY_TIME,
 )
+
+
+def _tag_config_in_worker(config):
+    """Mimic _tune_parameters: attach a worker-side attribute, then hand the config back."""
+    config.uuid = "cfg-worker-1234"
+    return config
 
 
 class TestClusterStateConfig(unittest.TestCase):
@@ -339,6 +346,38 @@ class TestClusterStateConfig(unittest.TestCase):
     # Test get method with an invalid key without providing a default (should return None)
     def test_get_invalid_key_without_default(self):
         self.assertIsNone(self.config.get("invalid_key"))
+
+    def test_pickle_roundtrip_preserves_config(self):
+        """ClusterStateConfig must survive pickle round-trip (used by multiprocessing.Pool)."""
+        import pickle
+
+        original = ClusterStateConfig(config_dict=self.config_data)
+        restored = pickle.loads(pickle.dumps(original))
+
+        self.assertEqual(restored.general_config["window"], original.general_config["window"])
+        self.assertEqual(restored.algo_specific_config["addend"], original.algo_specific_config["addend"])
+        self.assertEqual(restored.prediction_config["frequency_minutes"], original.prediction_config["frequency_minutes"])
+
+    def test_config_survives_real_process_boundary(self):
+        """A config sent through a real Pool must come back whole, worker-set attributes included (regression for #119)."""
+        config = ClusterStateConfig(config_dict=self.config_data)
+
+        with multiprocessing.Pool(1) as pool:
+            returned = pool.apply(_tag_config_in_worker, (config,))
+
+        self.assertEqual(returned.general_config, config.general_config)
+        self.assertEqual(returned.algo_specific_config, config.algo_specific_config)
+        self.assertEqual(returned.prediction_config, config.prediction_config)
+        self.assertEqual(returned.uuid, "cfg-worker-1234")
+
+    def test_repr_renders_config_instead_of_empty_dict(self):
+        """Repr must not render {} when the data lives in attributes, not the dict part (#119)."""
+        config = ClusterStateConfig(config_dict=self.config_data)
+        text = repr(config)
+
+        self.assertNotEqual(text, "{}")
+        self.assertIn("general_config", text)
+        self.assertIn(str(self.config_data["general_config"]["window"]), text)
 
 
 if __name__ == "__main__":
