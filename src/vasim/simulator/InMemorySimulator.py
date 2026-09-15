@@ -247,12 +247,11 @@ class InMemoryRunnerSimulator:
         out_filename = f"{data_dir}/decisions.csv"
         out_file = Path(out_filename)
 
-        if not out_file.exists():
-            f = open(out_file, "a", encoding="utf-8")  # noqa: SIM115
+        file_exists = out_file.exists()
+        f = open(out_file, "a", encoding="utf-8")  # noqa: SIM115
+        if not file_exists:
             f.write("LATEST_TIME,CURR_LIMIT,NEW_LIMIT\n")
             f.flush()
-        else:
-            f = open(out_file, "a", encoding="utf-8")  # noqa: SIM115
 
         return f
 

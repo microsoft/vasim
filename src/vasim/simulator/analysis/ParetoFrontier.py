@@ -98,6 +98,15 @@ class ParetoFrontier(ABC):
             "slack_percentage",
             "sum_insufficient_cpu",
             "num_scalings",
+            "window",
+            "uuid",
+            "predictive",
+            "waiting_before_predict",
+            "frequency_minutes",
+            "forecasting_models",
+            "minutes_to_predict",
+            "total_predictive_window",
+            "config",
         ]
         rows = []
         for folder, config, metrics in results:

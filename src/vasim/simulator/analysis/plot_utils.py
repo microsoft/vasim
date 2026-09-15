@@ -29,6 +29,7 @@ Functions:
                                              and new limits using the plotnine library.
 """
 
+import logging
 import os
 import warnings
 from typing import Any
@@ -102,6 +103,7 @@ def process_data(decision_df: Any, perf_df: Any, if_resample: Any = True) -> Any
 
 def calculate_metrics(merged: Any) -> Any:
     if len(merged) == 0:
+        logging.getLogger(__name__).warning("No data to calculate metrics.")
         return {}
 
     num_changes = (merged["CURR_LIMIT"] != merged["CURR_LIMIT"].shift(-1)).sum()
