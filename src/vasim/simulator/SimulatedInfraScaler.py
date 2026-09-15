@@ -20,11 +20,6 @@ Classes:
         Provides methods to scale a simulated cluster based on system decisions, while adhering to recovery
         periods and core limits.
 
-Parameters
-----------
-            new_limit (int): The new number of cores to scale to.
-            time_now (datetime): The current timestamp.
-
 Attributes
 ----------
     cluster_state_provider (ClusterStateProvider):
@@ -47,10 +42,6 @@ Methods
         Attempts to scale the cluster to a new CPU limit. This method only performs the scaling if the
         recovery time has passed since the last scaling event and ensures that the new limit does not exceed
         minimum or maximum core limits.
-
-Returns
--------
-            bool: Returns True if scaling was successful, otherwise False.
 """
 
 import logging

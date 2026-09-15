@@ -29,6 +29,7 @@ Returns
         A list of file paths that match the "perf_event_log" pattern. If no files are found, an empty list is returned.
 """
 
+import logging
 from pathlib import Path
 from typing import Any
 
@@ -55,6 +56,6 @@ def list_perf_event_log_files(data_dir: Path) -> Any:
     perf_event_log_files = [file for file in csv_files if file.stem.endswith("perf_event_log")]
 
     if not perf_event_log_files:
-        pass
+        logging.getLogger(__name__).warning("No perf_event_log CSV files found in %s", data_dir)
 
     return perf_event_log_files

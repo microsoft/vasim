@@ -195,9 +195,9 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         return self.last_scaling_time
 
     def print_properties(self) -> None:
-        """Print the properties of the SimulatedBaseClusterStateProvider instance for debugging."""
-        for _key, _value in vars(self).items():
-            pass
+        """Log the properties of the SimulatedBaseClusterStateProvider instance for debugging."""
+        for key, value in vars(self).items():
+            self.logger.debug("%s: %s", key, value)
 
     def get_current_cpu_limit(self) -> Any:
         """

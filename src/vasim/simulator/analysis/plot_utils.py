@@ -170,7 +170,7 @@ def plot_cpu_usage_and_new_limit_reformat(
     merged = process_data(decision_df, perf_df)
     plot = create_line_plots(merged)
     if plot_show:
-        pass
+        plot.draw(show=True)
     # save plot to file
     plot.save(filename=f"{target_dir}/cpu_usage_and_new_limit.pdf", verbose=False)
 
@@ -192,7 +192,7 @@ def plot_cpu_usage_and_new_limit_plotnine(
     merged = process_data(decision_df, perf_df, if_resample=if_resample)
     plot = create_line_plots(merged)
     if plot_show:
-        pass
+        plot.draw(show=True)
     # save plot to file
 
     plot.save(filename=f"{target_folder}/cpu_usage_and_new_limit.pdf", verbose=False)

@@ -79,6 +79,7 @@ Returns
     resampled DataFrame, or workload duration.
 """
 
+import logging
 import time
 from typing import Any
 
@@ -97,11 +98,13 @@ def timeit(func: Any) -> Any:
     -------
         function: The wrapped function with execution time measurement.
     """
+    logger = logging.getLogger(__name__)
 
     def wrapper(*args: Any, **kwargs: Any) -> Any:
-        time.time()
+        start_time = time.time()
         result = func(*args, **kwargs)
-        time.time()
+        end_time = time.time()
+        logger.info("%s executed in %.4f seconds", func.__name__, end_time - start_time)
         return result
 
     return wrapper

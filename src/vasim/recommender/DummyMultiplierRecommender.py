@@ -32,7 +32,8 @@ class SimpleMultiplierRecommender(Recommender):
     # pylint: disable=too-few-public-methods
     def __init__(self, cluster_state_provider: Any, save_metadata: Any = True) -> None:
         """
-        ---
+        Parameters
+        ----------
 
             cluster_state_provider (ClusterStateProvider): The cluster state provider such as FileClusterStateProvider.
             save_metadata (bool): Whether to save metadata to a file.
