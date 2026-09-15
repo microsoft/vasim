@@ -140,6 +140,23 @@ class TestSimulatedInfraScaler(unittest.TestCase):
         self.assertFalse(result)
         self.assertEqual(self.cluster_state_provider.get_current_cpu_limit(), current_limit)
 
+    def test_scale_should_scale_cluster_when_a_whole_day_has_passed(self):
+        # Arrange. timedelta.seconds drops whole days, so a gap of exactly one
+        # day reported 0 seconds elapsed and the recovery window never opened.
+        new_limit = 10
+        current_limit = 5
+        self.scaler.last_scaling_time = self.start_timestamp
+        time_now = self.start_timestamp + timedelta(days=1)
+        self.cluster_state_provider.set_cpu_limit(current_limit)
+
+        # Act. A day is far longer than the recovery time, so this must scale.
+        result = self.scaler.scale(new_limit, time_now)
+
+        # Assert
+        self.assertTrue(result)
+        self.assertEqual(self.scaler.last_scaling_time, time_now)
+        self.assertEqual(self.cluster_state_provider.get_current_cpu_limit(), new_limit)
+
     # TODO: Help wanted, fix these up. They were AI generated so there is some cleanup needed.
     # def test_scale_should_not_scale_cluster_when_new_limit_is_below_min_cpu_limit(self):
     #     # Arrange
