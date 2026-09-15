@@ -40,6 +40,7 @@ Usage:
     These tests can be run using `unittest.main()` to verify that the `InMemoryRunnerSimulator`
     behaves as expected in a simulated environment with different lag configurations.
 """
+
 import csv
 import json
 import os
@@ -81,7 +82,6 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
 
         We often set it to 10, so we'll start with that.
         """
-
         # assert file exists
         assert os.path.exists(self.target_dir)
 
@@ -92,7 +92,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         # now we need to check the files. There will be a random uuid, so we'll just grab the first folder
         # it will be self.target_dir + (some random uuid) + "_simulations"
         folder = os.listdir(self.target_dir_sim)[0]
-        sim_dir = os.path.join(self.target_dir_sim, folder)  # todo add _simulations
+        sim_dir = os.path.join(self.target_dir_sim, folder)  # TODO add _simulations
 
         # There should be a decisions.csv file in the simulation directory
         assert os.path.exists(os.path.join(sim_dir, "decisions.csv"))
@@ -101,7 +101,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         # So we expect the first decision to be made at 10 minutes
         # and subsequent decisions to be made every 10 minutes. Let's open the decisions.csv file
         # and compare the times to the expected times from the csv.
-        with open(os.path.join(sim_dir, "decisions.csv"), "r", encoding="utf-8") as f:
+        with open(os.path.join(sim_dir, "decisions.csv"), encoding="utf-8") as f:
             reader = csv.reader(f)
             next(reader)  # skip the header
             # We'll look at the first column of lines 1 and 2, and use a  time diff
@@ -115,7 +115,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
             # We'll calculate the difference in minutes
             diff = (second_time - first_time).total_seconds() / 60
             # open the metadata file to get the lag parameter
-            with open(os.path.join(sim_dir, "metadata.json"), "r", encoding="utf-8") as f:
+            with open(os.path.join(sim_dir, "metadata.json"), encoding="utf-8") as f:
                 metadata = json.load(f)
                 lag_read_in = metadata["general_config"]["lag"]
                 assert lag_read_in == 10, f"Expected the lag parameter to be 5, but got {lag_read_in}"
@@ -132,7 +132,6 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         In the alt config, it is set to 5 minutes. (Usually it is 10 minutes)
         This test checks that the lag parameter is being used correctly.
         """
-
         # assert file exists
         assert os.path.exists(self.target_dir)
 
@@ -148,7 +147,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         # now we need to check the files. There will be a random uuid, so we'll just grab the first folder
         # it will be self.target_dir + (some random uuid) + "_simulations"
         folder = os.listdir(self.target_dir_sim)[0]
-        sim_dir = os.path.join(self.target_dir_sim, folder)  # todo add _simulations
+        sim_dir = os.path.join(self.target_dir_sim, folder)  # TODO add _simulations
 
         # There should be a decisions.csv file in the simulation directory
         assert os.path.exists(os.path.join(sim_dir, "decisions.csv"))
@@ -157,7 +156,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         # So we expect the first decision to be made at 5 minutes
         # and subsequent decisions to be made every 5 minutes. Let's open the decisions.csv file
         # and compare the times to the expected times from the csv.
-        with open(os.path.join(sim_dir, "decisions.csv"), "r", encoding="utf-8") as f:
+        with open(os.path.join(sim_dir, "decisions.csv"), encoding="utf-8") as f:
             reader = csv.reader(f)
             next(reader)  # skip the header
             # We'll look at the first column of lines 1 and 2, and use a  time diff
@@ -171,7 +170,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
             # We'll calculate the difference in minutes
             diff = (second_time - first_time).total_seconds() / 60
             # open the metadata file to get the lag parameter
-            with open(os.path.join(sim_dir, "metadata.json"), "r", encoding="utf-8") as f:
+            with open(os.path.join(sim_dir, "metadata.json"), encoding="utf-8") as f:
                 metadata = json.load(f)
                 lag_read_in = metadata["general_config"]["lag"]
                 assert lag_read_in == 5, f"Expected the lag parameter to be 5, but got {lag_read_in}"

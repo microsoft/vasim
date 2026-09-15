@@ -41,7 +41,7 @@ import random
 import sys
 import traceback
 import uuid
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from vasim.recommender.cluster_state_provider.ClusterStateConfig import (
     ClusterStateConfig,
@@ -52,12 +52,12 @@ random.seed(1234)
 
 def _create_modified_configs(
     baseconfig: ClusterStateConfig,
-    algo_specific_params_to_tune: Dict[str, List[Any]],
-    general_params_to_tune: Dict[str, List[Any]],
-    predictive_params_to_tune: Dict[str, List[Any]],
+    algo_specific_params_to_tune: dict[str, list[Any]],
+    general_params_to_tune: dict[str, list[Any]],
+    predictive_params_to_tune: dict[str, list[Any]],
     strategy: str,
     num_combinations: int,
-) -> List[ClusterStateConfig]:
+) -> list[ClusterStateConfig]:
     # pylint: disable=too-many-positional-arguments
     # pylint: disable=too-many-arguments
     """
@@ -75,12 +75,13 @@ def _create_modified_configs(
         num_combinations (int): The number of random combinations to generate for the 'random' strategy.
             This parameter is ignored for the 'grid' strategy.
 
-    Returns:
+    Returns
+    -------
         List[ClusterStateConfig]: A list of modified configurations based on the specified tuning strategy.
     """
 
     def evaluate_config(
-        algo_config_params: Dict[str, Any], general_config_params: Dict[str, Any], predictive_params: Dict[str, Any]
+        algo_config_params: dict[str, Any], general_config_params: dict[str, Any], predictive_params: dict[str, Any]
     ) -> ClusterStateConfig:
         """
         Creates a modified configuration with updated parameter values.
@@ -90,7 +91,8 @@ def _create_modified_configs(
             general_config_params (Dict[str, Any]): The general configuration parameters.
             predictive_params (Dict[str, Any]): The predictive configuration parameters.
 
-        Returns:
+        Returns
+        -------
             ClusterStateConfig: A modified configuration.
         """
         modified_config = copy.deepcopy(baseconfig)
@@ -112,7 +114,8 @@ def _create_modified_configs(
             predictive_params_to_tune (Dict[str, List[Any]]): Predictive configuration parameters to tune.
             num_combinations (int): Number of random combinations to generate.
 
-        Returns:
+        Returns
+        -------
             List[ClusterStateConfig]: A list of randomly generated configurations.
         """
         modified_configs = []
@@ -157,7 +160,8 @@ def create_uuid():
     """
     Generates a unique identifier to be used as a worker ID.
 
-    Returns:
+    Returns
+    -------
         str: A unique identifier string in the format 'cfg-xxxxxxxx-xxxx'.
     """
     uid = uuid.uuid4()
@@ -175,11 +179,12 @@ def _tune_parameters(config, data_dir=None, algorithm=None, initial_cpu_limit=No
         algorithm (str): The algorithm to use for the simulation.
         initial_cpu_limit (int): Initial CPU core limit before scaling.
 
-    Returns:
+    Returns
+    -------
         Tuple[ClusterStateConfig, Any]: The configuration and the resulting metrics.
     """
     worker_id = create_uuid()
-    setattr(config, "uuid", worker_id)
+    config.uuid = worker_id
     target_dir = f"{data_dir}_tuning/target_{worker_id}"
     os.makedirs(f"{data_dir}_tuning", exist_ok=True)
     os.makedirs(target_dir, exist_ok=True)
@@ -211,7 +216,6 @@ def _tune_parameters(config, data_dir=None, algorithm=None, initial_cpu_limit=No
     except Exception as e:  # pylint: disable=broad-exception-caught  # FIXME
         traceback.print_exc()
         sys.stdout = original_stdout
-        print(e)
         logger.error("Error in tuning parameters", exc_info=e)
         logger.error(traceback.format_exc())
     sys.stdout = original_stdout
@@ -226,9 +230,9 @@ def tune_with_strategy(
     data_dir=None,
     algorithm=None,
     initial_cpu_limit=None,
-    algo_specific_params_to_tune: Optional[Dict[str, List[Any]]] = None,
-    general_params_to_tune: Optional[Dict[str, List[Any]]] = None,
-    predictive_params_to_tune: Optional[Dict[str, List[Any]]] = None,
+    algo_specific_params_to_tune: Optional[dict[str, list[Any]]] = None,
+    general_params_to_tune: Optional[dict[str, list[Any]]] = None,
+    predictive_params_to_tune: Optional[dict[str, list[Any]]] = None,
 ):
     # pylint: disable=too-many-positional-arguments
     # pylint: disable=too-many-arguments
@@ -250,7 +254,8 @@ def tune_with_strategy(
         general_params_to_tune (Dict[str, List[Any]]): General parameters to tune.
         predictive_params_to_tune (Dict[str, List[Any]]): Predictive parameters to tune.
 
-    Returns:
+    Returns
+    -------
         List[Tuple[ClusterStateConfig, Any]]: A list of tuples with the configuration and resulting metrics.
     """
     baseconfig = ClusterStateConfig(filename=config_path)
@@ -263,11 +268,11 @@ def tune_with_strategy(
     # Next, assert that the keys in the dictionaries are valid. We'll compare them to the keys in the baseconfig
     # to make sure they are valid parameters to tune.
     # TODO: add unit tests for this
-    for key in algo_specific_params_to_tune.keys():
+    for key in algo_specific_params_to_tune:
         assert key in baseconfig["algo_specific_config"], f"Invalid algorithm specific parameter: {key}"
-    for key in general_params_to_tune.keys():
+    for key in general_params_to_tune:
         assert key in baseconfig["general_config"], f"Invalid general parameter: {key}"
-    for key in predictive_params_to_tune.keys():
+    for key in predictive_params_to_tune:
         assert key in baseconfig["prediction_config"], f"Invalid predictive parameter: {key}"
 
     # Generate the modified configs based on the specified strategy
@@ -286,7 +291,6 @@ def tune_with_strategy(
         param_combinations = [
             (modified_config, data_dir, algorithm, initial_cpu_limit) for modified_config in modified_configs
         ]
-        print(f"Running {len(param_combinations)} configurations...")
         results = pool.starmap(_tune_parameters, param_combinations)
 
     # For debugging, you can just call one directly for now, using the first modified config

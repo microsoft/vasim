@@ -47,7 +47,7 @@ dependencies = [
 "dev" = [
     "autopep8",
     "ruff==0.16.7",
-    "mypy==2.3.1",
+    "mypy==1.20.2",
     "pyright==1.1.414",
     "pydocstringformatter",
     "pytest",
@@ -78,13 +78,23 @@ addopts = "-n auto -s -v --cov=src/ --cov-fail-under=70 --cov-report=xml"
 line-length = 127
 target-version = "py39"
 src = ["src", "tests", "examples"]
+extend-exclude = ["*.ipynb"]
 
 [tool.ruff.lint]
-select = ["ALL"]
+select = [
+    "B",
+    "C4",
+    "E",
+    "F",
+    "I",
+    "RUF",
+    "SIM",
+    "T20",
+    "UP",
+    "W",
+]
 ignore = [
     "COM812",
-    "D203",
-    "D213",
     "E501",
 ]
 

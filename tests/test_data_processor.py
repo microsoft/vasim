@@ -50,6 +50,7 @@ Usage:
     These tests can be run using `unittest.main()` to verify that the `DataProcessor` class's
     data processing and time series methods work as expected.
 """
+
 import unittest
 from datetime import timedelta
 
@@ -59,7 +60,6 @@ from vasim.recommender.forecasting.utils.helpers import DataProcessor
 
 
 class TestDataProcessor(unittest.TestCase):
-
     def setUp(self):
         self.data = pd.DataFrame(
             {"time": pd.date_range(start="2023-01-01", periods=5, freq="T"), "value": [10.0, 20.0, 30.0, 25.0, 15.0]}

@@ -22,7 +22,8 @@ Classes:
         the abstract methods `get_next_recorded_data`, `get_current_cpu_limit`,
         `get_total_cpu`, and `process_data`.
 
-Methods:
+Methods
+-------
     __init__(data_dir=None, features=None, window=None, decision_file_path=None, lag=None):
         Initializes the `ClusterStateProvider` with various parameters, with a note to
         possibly convert all arguments to keyword arguments for consistency.
@@ -57,7 +58,6 @@ import pandas as pd
 
 
 class ClusterStateProvider:
-
     def __init__(self, data_dir=None, features=None, window=None, decision_file_path=None, lag=None):
         # pylint: disable=too-many-arguments
         # TODO: How did we chose to include lag and window, but not the rest? I think make them all kwargs

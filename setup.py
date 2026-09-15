@@ -31,7 +31,7 @@ def _get_long_desc_from_readme(base_url: str) -> dict:
         }
     jsonc_re = re.compile(r"```jsonc")
     link_re = re.compile(r"\]\(([^:#)]+)(#[a-zA-Z0-9_-]+)?\)")
-    with open(readme_path, mode="r", encoding="utf-8") as readme_fh:
+    with open(readme_path, encoding="utf-8") as readme_fh:
         lines = readme_fh.readlines()
         # Tweak source source code links.
         lines = [jsonc_re.sub(r"```json", line) for line in lines]

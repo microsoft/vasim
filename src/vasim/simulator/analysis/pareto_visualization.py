@@ -30,13 +30,15 @@ Functions:
         with the Pareto front and, for each configuration, plots the CPU usage and scaling decisions. Optionally,
         a cached DataFrame can be passed to avoid reprocessing the data.
 
-Parameters:
+Parameters
+----------
     original_data (str): The directory containing the original performance log CSV files.
     tuned_data (str): The directory containing different tuned configurations' results.
     cached_df (str, optional): Path to a cached DataFrame file to avoid reprocessing results.
     plot_surface (bool, optional): Whether to plot the Pareto front surface. Defaults to True.
 
-Returns:
+Returns
+-------
     ParetoFront2D: The `ParetoFront2D` object, representing the Pareto front generated from the data.
 
 Usage:
@@ -74,21 +76,22 @@ def create_pareto_curve_from_folder(original_data, tuned_data, cached_df=None, p
 
     Optionally you can pass a cached dataframe to avoid reprocessing the results.
 
-    Parameters:
+    Parameters
+    ----------
         original_data (str): The original data folder with the performance log csv files.
         tuned_data (str): The tuned data folder with different configurations.
         cached_df (str, Optional): The cached dataframe to avoid reprocessing the results.
         plot_surface (bool, Optional): Whether to plot the surface graph. Defaults to True.
 
-    Returns:
+    Returns
+    -------
         ParetoFront2D: The ParetoFront2D object.
     """
-
     if not cached_df:
         results = _load_results_parallel(tuned_data)
         df = ParetoFrontier.create_df(results)
         df = ParetoFrontier.preprocess_df(df)
-        df.to_csv(f"{tuned_data}/cached_{str(time.time())}.csv")
+        df.to_csv(f"{tuned_data}/cached_{time.time()!s}.csv")
     else:
         df = pd.read_csv(cached_df)
 
@@ -103,6 +106,5 @@ def create_pareto_curve_from_folder(original_data, tuned_data, cached_df=None, p
             # This generates a graph for each folder in the tuned_data folder with the dicisions of this parameter
             # combination graphed along with the CPU usage reported in the original data.
             plot_cpu_usage_and_new_limit_reformat(source_dir=original_data, target_dir=folder_name, plot_show=True)
-        print(f"Plotted {tuned_data}/pareto_frontier.png")
 
     return pareto_2d

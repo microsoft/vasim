@@ -24,6 +24,7 @@ Test cases:
 Classes:
     - TestListPerfEventLogFiles: Contains the test cases for `list_perf_event_log_files`.
 """
+
 import unittest
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -32,7 +33,6 @@ from vasim.commons.utils import list_perf_event_log_files
 
 
 class TestListPerfEventLogFiles(unittest.TestCase):
-
     @patch("vasim.commons.utils.Path.glob")
     def test_list_perf_event_log_files_returns_csv_files(self, mock_glob):
         # Mock the return value of Path.glob to simulate CSV files ending with "perf_event_log"

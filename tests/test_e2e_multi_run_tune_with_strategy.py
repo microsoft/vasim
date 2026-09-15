@@ -50,7 +50,6 @@ Usage:
     for the `tune_with_strategy` function, covering different tuning strategies and parameters.
 """
 
-
 import os
 import shutil
 import unittest
@@ -96,7 +95,6 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         We will use the tune_with_strategy function. This function will run the simulator multiple times with
         different configurations and return the best configuration and the metrics for that configuration.
         """
-
         config_path = f"{self.source_dir}/metadata.json"
         general_params_to_tune = {
             "window": [60, 120],  # the window size is the number of minutes to consider for the prediction
@@ -162,11 +160,8 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         )
         self.assertAlmostEqual(results[0][1]["slack_percentage"], expected["slack_percentage"], places=2)
 
-        print(results)
-
     def test_run_tuning_grid_withpred(self):
         """This version provides a predictive parameter to tune as well."""
-
         config_path = f"{self.source_dir}/metadata.json"
         general_params_to_tune = {
             "window": [60, 120],  # the window size is the number of minutes to consider for the prediction
@@ -236,15 +231,12 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         )
         self.assertAlmostEqual(results[0][1]["slack_percentage"], expected["slack_percentage"], places=2)
 
-        print(results)
-
     def test_run_tuning_random(self):
         """
         This version used the random strategy to tune the parameters.
 
         We won't check the results, just that the function runs without error.
         """
-
         config_path = f"{self.source_dir}/metadata.json"
         general_params_to_tune = {
             "window": [60, 120],  # the window size is the number of minutes to consider for the prediction
@@ -276,8 +268,6 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         # This should work for grid.
         assert len(results) == num_combinations
         # not checking the results because random
-
-        print(results)
 
     def tearDown(self):
         shutil.rmtree(self.target_dir_sim, ignore_errors=True)

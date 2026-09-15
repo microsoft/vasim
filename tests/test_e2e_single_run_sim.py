@@ -93,7 +93,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         # now we need to check the files. There will be a random uuid, so we'll just grab the first folder
         # it will be self.target_dir + (some random uuid) + "_simulations"
         folder = os.listdir(self.target_dir_sim)[0]
-        sim_dir = os.path.join(self.target_dir_sim, folder)  # todo add _simulations
+        sim_dir = os.path.join(self.target_dir_sim, folder)  # TODO add _simulations
 
         assert os.path.exists(os.path.join(sim_dir, "decisions.csv"))
         assert os.path.exists(os.path.join(sim_dir, "metadata.json"))
@@ -143,7 +143,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         # now we need to check the files. There will be a random uuid, so we'll just grab the first folder
         # it will be self.target_dir + (some random uuid) + "_simulations"
         folder = os.listdir(self.target_dir_sim)[0]
-        sim_dir = os.path.join(self.target_dir_sim, folder)  # todo add _simulations
+        sim_dir = os.path.join(self.target_dir_sim, folder)  # TODO add _simulations
 
         assert os.path.exists(os.path.join(sim_dir, "decisions.csv"))
         assert os.path.exists(os.path.join(sim_dir, "metadata.json"))

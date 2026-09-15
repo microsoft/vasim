@@ -28,6 +28,7 @@ Functions:
     - plot_cpu_usage_and_new_limit_plotnine: Creates and saves a line plot of CPU usage
                                              and new limits using the plotnine library.
 """
+
 import os
 import warnings
 
@@ -47,12 +48,14 @@ def read_data(decision_file_path, perf_log_file_path, if_resample=True):
     Resampling is done to ensure that the data is at 1 minute intervals. Some data may be missing
     or duplicated, depending on the publisher.
 
-    Parameters:
+    Parameters
+    ----------
         decision_file_path (str): The path to the decisions.csv file.
         perf_log_file_path (str): The path to the performance log file.
         if_resample (bool, Optional): If True, the data will be resampled to 1 minute intervals.
 
-    Returns:
+    Returns
+    -------
         The decision and performance log dataframes.
     """
     if not os.path.exists(decision_file_path):
@@ -90,15 +93,14 @@ def process_data(decision_df, perf_df, if_resample=True):
         perf_log_resampled = perf_df
     merged = pd.merge(decision_resampled, perf_log_resampled, left_on="LATEST_TIME", right_on="TIMESTAMP", how="left")
 
-    merged["SLACK"] = (merged["CURR_LIMIT"] - merged["CPU_USAGE_ACTUAL"]).apply(lambda x: 0 if x <= 0 else x)
-    merged["INSUFFICIENT_CPU"] = (merged["CPU_USAGE_ACTUAL"] - merged["CURR_LIMIT"]).apply(lambda x: 0 if x <= 0 else x)
+    merged["SLACK"] = (merged["CURR_LIMIT"] - merged["CPU_USAGE_ACTUAL"]).apply(lambda x: max(0, x))
+    merged["INSUFFICIENT_CPU"] = (merged["CPU_USAGE_ACTUAL"] - merged["CURR_LIMIT"]).apply(lambda x: max(0, x))
 
     return merged
 
 
 def calculate_metrics(merged):
     if len(merged) == 0:
-        print("No data to calculate metrics.")
         return {}
 
     num_changes = (merged["CURR_LIMIT"] != merged["CURR_LIMIT"].shift(-1)).sum()
@@ -136,7 +138,7 @@ def create_line_plots(merged):
 
 def calculate_and_return_metrics_to_target(source_dir, target_dir, perf_log_file_path=None, decision_file_path=None):
     if not perf_log_file_path:
-        perf_log_file_path = f"{source_dir}/{[f for f in os.listdir(source_dir) if f.endswith('.csv')][0]}"
+        perf_log_file_path = f"{source_dir}/{next(f for f in os.listdir(source_dir) if f.endswith('.csv'))}"
 
     if not decision_file_path:
         decision_file_path = f"{target_dir}/decisions.csv"
@@ -156,7 +158,7 @@ def plot_cpu_usage_and_new_limit_reformat(
     decision_file_path=None,
 ):
     if not perf_log_file_path:
-        perf_log_file_path = f"{source_dir}/{[f for f in os.listdir(source_dir) if f.endswith('.csv')][0]}"
+        perf_log_file_path = f"{source_dir}/{next(f for f in os.listdir(source_dir) if f.endswith('.csv'))}"
 
     if not decision_file_path:
         decision_file_path = f"{target_dir}/decisions.csv"
@@ -165,7 +167,7 @@ def plot_cpu_usage_and_new_limit_reformat(
     merged = process_data(decision_df, perf_df)
     plot = create_line_plots(merged)
     if plot_show:
-        print(plot)
+        pass
     # save plot to file
     plot.save(filename=f"{target_dir}/cpu_usage_and_new_limit.pdf", verbose=False)
 
@@ -178,7 +180,7 @@ def plot_cpu_usage_and_new_limit_plotnine(
     if_resample=True,
 ):
     if not perf_log_file_path:
-        perf_log_file_path = f"{experiment_dir}/{[f for f in os.listdir(experiment_dir) if f.endswith('.csv')][0]}"
+        perf_log_file_path = f"{experiment_dir}/{next(f for f in os.listdir(experiment_dir) if f.endswith('.csv'))}"
 
     if not decision_file_path:
         decision_file_path = f"{experiment_dir}/decisions.csv"
@@ -187,7 +189,7 @@ def plot_cpu_usage_and_new_limit_plotnine(
     merged = process_data(decision_df, perf_df, if_resample=if_resample)
     plot = create_line_plots(merged)
     if plot_show:
-        print(plot)
+        pass
     # save plot to file
 
     plot.save(filename=f"{target_folder}/cpu_usage_and_new_limit.pdf", verbose=False)

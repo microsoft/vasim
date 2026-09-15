@@ -19,7 +19,8 @@ Classes:
         Provides methods for configuring and executing time series forecasts on performance data,
         using models like NaiveForecaster or Oracle.
 
-Attributes:
+Attributes
+----------
     window_splitter (float): Proportion of data to use for training during forecasting (default 0.7).
     sp (int): Seasonal periodicity for time series forecasting (default to 24 * 60 * 2).
     selected_forecaster (list): List of forecasters to be used (default ["naive"]).
@@ -28,7 +29,8 @@ Attributes:
     cv (SlidingWindowSplitter): Cross-validation splitter used for windowed predictions.
     data_dir (str): Directory containing the training data for the forecasting models.
 
-Methods:
+Methods
+-------
     __init__(data_dir=None, sp=24*60*2, selected_forecaster=None):
         Initializes the `TimeSeriesForecaster` with the given data directory, seasonal periodicity,
         and selected forecaster models.
@@ -43,7 +45,8 @@ Methods:
         Performs the forecasting operation using the provided data and forecast horizon,
         returns the predicted data points.
 
-Parameters:
+Parameters
+----------
     data_dir (str):
         The directory path containing the data for training the forecasting models.
 
@@ -59,12 +62,14 @@ Parameters:
     forecast_horizon (int):
         The number of future data points to predict.
 
-Returns:
+Returns
+-------
     The `get_prediction` and `_forecast` methods return a `pd.DataFrame` containing the predicted
     data points with time and CPU columns.
 """
+
 import warnings
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 import numpy as np
 from sktime.forecasting.compose import MultiplexForecaster
@@ -78,7 +83,8 @@ class TimeSeriesForecaster:
     """
     A class for forecasting time series data using various forecasting models.
 
-    Attributes:
+    Attributes
+    ----------
         window_splitter (float): Proportion of data to use for training.
         sp (int): Seasonal periodicity.
         selected_forecaster (list): List of selected forecasters.
@@ -88,7 +94,7 @@ class TimeSeriesForecaster:
         data_dir (str): Directory containing training data.
     """
 
-    def __init__(self, data_dir=None, sp=24 * 60 * 2, selected_forecaster: Optional[Union[str, List[str]]] = None):
+    def __init__(self, data_dir=None, sp=24 * 60 * 2, selected_forecaster: Optional[Union[str, list[str]]] = None):
         """
         Initializes the TimeSeriesForecaster with the specified parameters.
 
@@ -137,7 +143,8 @@ class TimeSeriesForecaster:
             data (pd.DataFrame): The input data for prediction.
             forecast_horizon (int): Number of future data points to predict.
 
-        Returns:
+        Returns
+        -------
             pd.DataFrame: DataFrame containing the predicted data points with time and cpu columns.
         """
         y_pred = self._forecast(data, forecast_horizon)
@@ -155,7 +162,8 @@ class TimeSeriesForecaster:
             data (pd.DataFrame): The input data for forecasting.
             forecast_horizon (int): Number of future data points to predict.
 
-        Returns:
+        Returns
+        -------
             pd.DataFrame: DataFrame containing the forecasted data points.
         """
         fh_abs = np.arange(1, forecast_horizon + 1)

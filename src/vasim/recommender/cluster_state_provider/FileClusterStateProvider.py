@@ -24,7 +24,8 @@ Classes:
         A class that interacts with a Kubernetes cluster to make resource decisions based
         on performance data, with methods for retrieving and processing CPU usage data.
 
-Methods:
+Methods
+-------
     __init__(data_dir=None, features=None, window=40, decision_file_path=None, lag=5.0, min_cpu_limit=1, max_cpu_limit=None, save_metadata=True, **kwargs):
         Initializes the `FileClusterStateProvider` with parameters such as data directory,
         features, window, decision file path, and CPU limits. The method checks for the presence
@@ -56,6 +57,7 @@ Methods:
     get_total_cpu():
         Retrieves the total CPU limit for the cluster, based on the maximum allowed CPU configuration.
 """
+
 import logging
 import os
 from datetime import datetime, timedelta
@@ -96,8 +98,8 @@ class FileClusterStateProvider(ClusterStateProvider):
     ):
         # pylint: disable=too-many-arguments
         """
-        Parameters:
-
+        Parameters
+        ----------
             data_dir (str): The directory where the csvs are stored.
             features (list): The features to use for the model. Currently always ['cpu']. TODO: memory
             window (int): Window in minutes to capture VALID data in order to evaluate PP curve
@@ -143,8 +145,6 @@ class FileClusterStateProvider(ClusterStateProvider):
             cores, _ = get_current_cpu_limit_pods()[0]
         except Exception as e:  # pylint: disable=broad-exception-caught  # FIXME
             self.logger.error("Error getting current cores. Retry later.", exc_info=e)
-            print("Error getting current cores. Retry later.")
-            print(e)
             return None
 
         return int(cores)
@@ -220,7 +220,7 @@ class FileClusterStateProvider(ClusterStateProvider):
                 temp_data = pd.read_csv(path)
                 temp_data["cpu"] = temp_data["CPU_USAGE_ACTUAL"]
                 temp_data["time"] = temp_data["TIMESTAMP"].apply(lambda x: datetime.strptime(x, "%Y.%m.%d-%H:%M:%S:%f"))
-                temp_data = temp_data[["time"] + self.features]
+                temp_data = temp_data[["time", *self.features]]
                 recorded_data = pd.concat([recorded_data, temp_data], axis=0)
             except Exception as e:  # pylint: disable=broad-exception-caught  # FIXME
                 self.logger.error("Error reading %s", path, exc_info=e)
@@ -231,10 +231,9 @@ class FileClusterStateProvider(ClusterStateProvider):
         end_time = recorded_data["time"].iloc[-1]
 
         num_observations = recorded_data.shape[0]
-        if num_observations > 2:
-            if last_decision_time > end_time:
-                self.logger.warning("Last decision time is greater than end time so avoid making a decision")
-                return None, None
+        if num_observations > 2 and last_decision_time > end_time:
+            self.logger.warning("Last decision time is greater than end time so avoid making a decision")
+            return None, None
 
         start_time = end_time - timedelta(minutes=self.config.general_config["window"])
         recorded_data = recorded_data[recorded_data["time"] >= start_time]

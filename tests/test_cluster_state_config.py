@@ -85,6 +85,7 @@ Usage:
     Run the tests using `unittest.main()` to execute all test cases and verify the behavior of the
     `ClusterStateConfig` class.
 """
+
 import json
 import unittest
 from unittest.mock import mock_open, patch
@@ -147,15 +148,14 @@ class TestClusterStateConfig(unittest.TestCase):
         }
 
         # Mock 'open' and 'json.dump'
-        with patch("builtins.open", mock_open()) as mocked_file:
-            with patch("json.dump") as mock_json_dump:
-                config.to_json("output.json")
+        with patch("builtins.open", mock_open()) as mocked_file, patch("json.dump") as mock_json_dump:
+            config.to_json("output.json")
 
-                # Check that 'open' was called with the correct filepath and mode
-                mocked_file.assert_called_once_with("output.json", "w", encoding="utf-8")
+            # Check that 'open' was called with the correct filepath and mode
+            mocked_file.assert_called_once_with("output.json", "w", encoding="utf-8")
 
-                # Ensure that 'json.dump' was called with the correct dictionary and file handle
-                mock_json_dump.assert_called_once_with(expected_dict, mocked_file(), indent=4)
+            # Ensure that 'json.dump' was called with the correct dictionary and file handle
+            mock_json_dump.assert_called_once_with(expected_dict, mocked_file(), indent=4)
 
     def test_to_json(self):
         # Expected dictionary structure with subsections
@@ -174,15 +174,14 @@ class TestClusterStateConfig(unittest.TestCase):
         }
 
         # Mock 'open' and 'json.dump'
-        with patch("builtins.open", mock_open()) as mocked_file:
-            with patch("json.dump") as mock_json_dump:
-                self.config.to_json("output.json")
+        with patch("builtins.open", mock_open()) as mocked_file, patch("json.dump") as mock_json_dump:
+            self.config.to_json("output.json")
 
-                # Check that 'open' was called with the correct filepath and mode
-                mocked_file.assert_called_once_with("output.json", "w", encoding="utf-8")
+            # Check that 'open' was called with the correct filepath and mode
+            mocked_file.assert_called_once_with("output.json", "w", encoding="utf-8")
 
-                # Ensure that 'json.dump' was called with the correct dictionary and file handle
-                mock_json_dump.assert_called_once_with(expected_dict, mocked_file(), indent=4)
+            # Ensure that 'json.dump' was called with the correct dictionary and file handle
+            mock_json_dump.assert_called_once_with(expected_dict, mocked_file(), indent=4)
 
     def test_setattr(self):
         config = ClusterStateConfig()
@@ -245,9 +244,8 @@ class TestClusterStateConfig(unittest.TestCase):
             mocked_file.side_effect = OSError("File write error")
 
             # Capture logs at the ERROR level
-            with self.assertLogs("root", level="ERROR") as log:
-                with self.assertRaises(OSError):  # Expecting OSError to be raised
-                    config.to_json("dummy.json")
+            with self.assertLogs("root", level="ERROR") as log, self.assertRaises(OSError):
+                config.to_json("dummy.json")
 
             # Ensure the error message was logged
             self.assertIn("File error while writing JSON file", log.output[0])

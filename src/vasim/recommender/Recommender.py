@@ -34,17 +34,16 @@ from abc import abstractmethod
 
 
 class Recommender:
-
     # pylint: disable=too-few-public-methods
     def __init__(self, cluster_state_provider, save_metadata=True):
         """
         This is the base class for all recommender algorithms.
 
-        Parameters:
+        Parameters
+        ----------
             cluster_state_provider (ClusterStateProvider): The cluster state provider such as FileClusterStateProvider.
             save_metadata (bool): Whether to save metadata to a file. For tuning this makes tracking easier.
         """
-
         # For now, we are just passing the cluster_state_provider and config for logging purposes.
         #       Ex: we need the path in self.cluster_state_provider.config.uuid to save the logging/metadata during tuning
         self.cluster_state_provider = cluster_state_provider
@@ -66,8 +65,7 @@ class Recommender:
             and hasattr(self.cluster_state_provider.config, "uuid")
         ):
             return logging.getLogger(f"{self.cluster_state_provider.config.uuid}")
-        else:
-            return logging.getLogger()
+        return logging.getLogger()
 
     def _save_metadata(self):
         # Save metadata to a JSON file

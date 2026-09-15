@@ -20,7 +20,8 @@ Classes:
         and flushing metrics to CSV files. This class is used in simulations to replicate real-world
         scenarios for testing recommender system policies.
 
-Attributes:
+Attributes
+----------
     data_dir (Path): Directory where the performance log CSV files are stored.
     decision_file_path (Path): Path to the file where decisions are logged.
     curr_cpu_limit (int): Current CPU limit set during scaling operations.
@@ -33,7 +34,8 @@ Attributes:
     current_time (Timestamp): Current simulated time.
     last_scaling_time (Timestamp): Last time a scaling operation was performed.
 
-Methods:
+Methods
+-------
     __init__(data_dir="data/performance_log", window=40, decision_file_path=None, max_cpu_limit=None, lag=None, **kwargs):
         Initializes the `SimulatedBaseClusterStateProvider` with specified parameters like the data directory,
         window size, and maximum CPU limit. Loads performance data from CSV files in the `data_dir`.
@@ -84,7 +86,8 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
     data from CSV files and managing CPU limits in a simulated environment. It provides methods
     for advancing time, processing data, and making scaling decisions based on the data.
 
-    Attributes:
+    Attributes
+    ----------
         data_dir (Path): Directory where the performance log CSV files are stored.
         decision_file_path (Path): Path to the file where decisions are logged.
         curr_cpu_limit (int): Current CPU limit set during scaling operations.
@@ -160,10 +163,11 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
 
         This method needs to be implemented in subclasses.
 
-        Raises:
+        Raises
+        ------
             NotImplementedError: If the method is not implemented in a subclass.
         """
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def set_cpu_limit(self, new_cpu_limit):
         """
@@ -183,21 +187,23 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         """
         Retrieve the timestamp of the last scaling operation.
 
-        Returns:
+        Returns
+        -------
             Timestamp: The time of the last scaling operation.
         """
         return self.last_scaling_time
 
     def print_properties(self):
         """Print the properties of the SimulatedBaseClusterStateProvider instance for debugging."""
-        for key, value in vars(self).items():
-            print(f"{key}: {value}")
+        for _key, _value in vars(self).items():
+            pass
 
     def get_current_cpu_limit(self):
         """
         Retrieve the current CPU limit for the cluster.
 
-        Returns:
+        Returns
+        -------
             int: The current CPU limit.
         """
         return self.curr_cpu_limit
@@ -206,7 +212,8 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         """
         Retrieve the total maximum CPU limit for the cluster.
 
-        Returns:
+        Returns
+        -------
             int: The maximum CPU limit.
         """
         return self.max_cpu_limit
@@ -231,7 +238,8 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         Args:
             recorded_data (pd.DataFrame): DataFrame containing the recorded performance data (currently unused).
 
-        Returns:
+        Returns
+        -------
             Timestamp: The last decision time.
         """
         return pd.Timestamp(self.current_time) - pd.Timedelta(minutes=self.lag)

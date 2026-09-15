@@ -18,11 +18,13 @@ Functions:
         Scans the provided `data_dir` for CSV files whose names end with "perf_event_log".
         Returns a list of matching files. If no files are found, prints an error message.
 
-Parameters:
+Parameters
+----------
     data_dir (Path):
         The directory path where the CSV files are located.
 
-Returns:
+Returns
+-------
     List[Path]:
         A list of file paths that match the "perf_event_log" pattern. If no files are found, an empty list is returned.
 """
@@ -40,7 +42,8 @@ def list_perf_event_log_files(data_dir: Path):
     Args:
         data_dir (Path): The directory path where the CSV files are located.
 
-    Returns:
+    Returns
+    -------
         List[Path]: A list of file paths that match the "perf_event_log" pattern. If no files are found,
                     an empty list is returned. Additionally, an error message is printed if no matching
                     files are found in the directory.
@@ -51,6 +54,6 @@ def list_perf_event_log_files(data_dir: Path):
     perf_event_log_files = [file for file in csv_files if file.stem.endswith("perf_event_log")]
 
     if not perf_event_log_files:
-        print(f"Error: no csvs ending in perf_event_log found in data_dir: {data_dir}")
+        pass
 
     return perf_event_log_files

@@ -28,8 +28,8 @@ import os
 from pathlib import Path
 
 import pandas as pd
-import streamlit as st
 
+import streamlit as st
 from vasim.recommender.cluster_state_provider.ClusterStateConfig import (
     ClusterStateConfig,
 )
@@ -51,11 +51,13 @@ def calculate_and_return_metrics(experiment_dir, perf_log_file_path=None, decisi
         experiment_dir (str): Directory where the experiment data is stored.
         perf_log_file_path (str): Optional path to the performance log CSV file.
         decision_file_path (str): Optional path to the decisions file.
-    Returns:
+
+    Returns
+    -------
         dict: A dictionary containing the calculated performance metrics.
     """
     if not perf_log_file_path:
-        perf_log_file_path = f"{experiment_dir}/{[f for f in os.listdir(experiment_dir) if f.endswith('.csv')][0]}"
+        perf_log_file_path = f"{experiment_dir}/{next(f for f in os.listdir(experiment_dir) if f.endswith('.csv'))}"
 
     if not decision_file_path:
         decision_file_path = f"{experiment_dir}/decisions.csv"
@@ -74,16 +76,17 @@ def parse_input(value):
     Args:
         value (str, int, or float): The value to be parsed, which could be a string of comma-separated values
         or a single numeric value.
-    Returns:
+
+    Returns
+    -------
         list: A list of floats parsed from the input value.
     """
     try:
         if isinstance(value, str):
             return [float(x.strip()) for x in value.split(",")]
-        elif isinstance(value, (int, float)):
+        if isinstance(value, (int, float)):
             return [float(value)]
-        else:
-            return []
+        return []
     except ValueError:
         return []
 
@@ -97,8 +100,9 @@ def process_folder(target_folder, folder):
     Args:
         target_folder (str): The directory where target folders are located.
         folder (str): The folder to process.
-    Returns:
 
+    Returns
+    -------
         tuple or None: A tuple containing folder name, config, and metrics, or None if the folder is invalid.
     """
     if folder.startswith("target_"):
@@ -116,12 +120,13 @@ def create_df(results):
 
     Args:
         results (list): A list of tuples containing folder names, configurations, and metrics.
-    Returns:
+
+    Returns
+    -------
         pd.DataFrame: A DataFrame with the simulation results.
     """
     rows = []
     for folder, config, metrics in results:
-
         row = pd.Series(
             {
                 "folder": folder,
@@ -160,7 +165,9 @@ def unflatten_dict(d, sep="."):
     Args:
         d (dict): The flat dictionary to be unflattened.
         sep (str): The separator used to determine nesting.
-    Returns:
+
+    Returns
+    -------
         dict: A nested dictionary.
     """
     result_dict = {}
@@ -179,7 +186,9 @@ def load_results_parallel(target_folder):
 
     Args:
         target_folder (str): The folder containing target simulation data.
-    Returns:
+
+    Returns
+    -------
         list: A list of processed results from the simulations.
     """
     with multiprocessing.Pool() as pool:
@@ -227,14 +236,14 @@ def run_simulation(algorithm, data_dir, initial_cores_count, config):
                 progress_bar.progress(1.0)  # Mark progress as complete
                 break
     except Exception as e:  # pylint: disable=broad-exception-caught  # FIXME
-        st.error(f"An error occurred during the simulation: {str(e)}")
+        st.error(f"An error occurred during the simulation: {e!s}")
         raise
     finally:
         st.write("Wait a second. Plot is generated!")
 
         progress_bar.empty()  # Clear the progress bar after completion
 
-        perf_log_file_path = f"{data_dir}/{[f for f in os.listdir(data_dir) if f.endswith('.csv')][0]}"
+        perf_log_file_path = f"{data_dir}/{next(f for f in os.listdir(data_dir) if f.endswith('.csv'))}"
         # Replace this with your plotnine code
         plot_cpu_usage_and_sku_target_streamlit(target_dir_name, perf_log_file_path=perf_log_file_path)
 
@@ -248,11 +257,12 @@ def plot_cpu_usage_and_sku_target_streamlit(experiment_dir, perf_log_file_path=N
         perf_log_file_path (str): Optional path to the performance log CSV file.
         decision_file_path (str): Optional path to the decisions file.
 
-    Returns:
+    Returns
+    -------
         None
     """
     if not perf_log_file_path:
-        perf_log_file_path = f"{experiment_dir}/{[f for f in os.listdir(experiment_dir) if f.endswith('.csv')][0]}"
+        perf_log_file_path = f"{experiment_dir}/{next(f for f in os.listdir(experiment_dir) if f.endswith('.csv'))}"
 
     if not decision_file_path:
         decision_file_path = f"{experiment_dir}/decisions.csv"

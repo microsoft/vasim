@@ -20,7 +20,8 @@ Classes:
         Extends both `SimulatedBaseClusterStateProvider` and `FileClusterStateProvider` to handle
         in-memory simulations of cluster state management.
 
-Methods:
+Methods
+-------
     __init__(data_dir="data/performance_log", window=40, decision_file_path=None, max_cpu_limit=None, lag=None, **kwargs):
         Initializes the class with parameters such as data directory, time window, and CPU limits.
         Calls the constructors of both `FileClusterStateProvider` and `SimulatedBaseClusterStateProvider`.
@@ -36,7 +37,8 @@ Methods:
         Writes the recorded data to a CSV file with a custom header, allowing metrics to be stored
         for further analysis or auditing.
 
-Parameters:
+Parameters
+----------
     data_dir (str):
         The directory where performance data CSV files are stored.
     window (int):
@@ -48,7 +50,8 @@ Parameters:
     lag (int):
         The time lag in minutes used for decision-making in the simulation.
 
-Returns:
+Returns
+-------
     The `read_metrics_data` method returns a filtered DataFrame containing the performance data
     for the current time window.
 """
@@ -70,7 +73,8 @@ class SimulatedInMemoryClusterStateProvider(SimulatedBaseClusterStateProvider, F
     in-memory simulations of cluster state based on performance data read from CSV files. It supports
     scaling decisions and allows filtering of time-based performance data.
 
-    Attributes:
+    Attributes
+    ----------
         data_dir (str): Directory where performance data CSV files are stored.
         window (int): Time window size (in minutes) for filtering performance data.
         decision_file_path (str): Path where scaling decisions are logged.
@@ -130,10 +134,11 @@ class SimulatedInMemoryClusterStateProvider(SimulatedBaseClusterStateProvider, F
         This method should be implemented in subclasses to retrieve the next set of data
         for simulation purposes.
 
-        Raises:
+        Raises
+        ------
             NotImplementedError: If the method is not implemented in a subclass.
         """
-        raise NotImplementedError()
+        raise NotImplementedError
 
     # pylint: disable=duplicate-code
     def read_metrics_data(self):
@@ -143,7 +148,8 @@ class SimulatedInMemoryClusterStateProvider(SimulatedBaseClusterStateProvider, F
         This method filters the recorded performance data based on the current time and window size.
         If the current time exceeds the end of the data, it returns None.
 
-        Returns:
+        Returns
+        -------
             pd.DataFrame: The filtered performance data for the current time window.
             None: If the current time exceeds the end of the data.
         """

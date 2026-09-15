@@ -31,7 +31,7 @@ Functions:
 
 import json
 import os
-from abc import ABC
+from abc import ABC, abstractmethod
 
 import numpy as np
 import pandas as pd
@@ -45,12 +45,14 @@ class ParetoFrontier(ABC):
     def __init__(self, workload_run_metrics):
         self.workload_run_metrics = workload_run_metrics
 
+    @abstractmethod
     def get_pareto_frontier(self):
         pass
 
     def filter_out_less_than_by_dimension(self, dimension, value):
         return [x for x in self.workload_run_metrics if x[2][dimension] <= value]
 
+    @abstractmethod
     def find_closest_to_zero(self):
         pass
 
@@ -71,7 +73,7 @@ class ParetoFrontier(ABC):
 
     @staticmethod
     def read_metrics(file_path):
-        with open(file_path, "r", encoding="utf-8") as file:
+        with open(file_path, encoding="utf-8") as file:
             return json.load(file)
 
     @staticmethod
@@ -110,7 +112,7 @@ class ParetoFrontier(ABC):
                     "insufficient_observations_percentage": metrics["insufficient_observations_percentage"],
                     "slack_percentage": metrics["slack_percentage"],
                     "window": config.general_config["window"],
-                    "uuid": config.get("uuid", folder.lstrip("target_") or "unknown"),
+                    "uuid": config.get("uuid", folder.removeprefix("target_") or "unknown"),
                     "predictive": config.prediction_config["waiting_before_predict"] < 24 * 60 * 2,
                     "waiting_before_predict": config.prediction_config["waiting_before_predict"],
                     "frequency_minutes": config.prediction_config["frequency_minutes"],

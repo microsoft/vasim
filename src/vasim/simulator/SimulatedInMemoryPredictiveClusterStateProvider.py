@@ -21,7 +21,8 @@ Classes:
         simulation features of `SimulatedBaseClusterStateProvider` to provide a predictive cluster state
         management system.
 
-Methods:
+Methods
+-------
     __init__(data_dir="data/performance_log", window=40, decision_file_path=None, max_cpu_limit=None, lag=None, **kwargs):
         Initializes the predictive cluster state provider with the given data directory, window size,
         CPU limits, and lag. It sets up the in-memory simulation of predictive scaling.
@@ -42,7 +43,8 @@ Methods:
         Writes the recorded data to a CSV file with a custom header. This allows the metrics to be
         saved for analysis or reporting.
 
-Parameters:
+Parameters
+----------
     data_dir (str):
         The directory where performance log CSV files are stored.
     window (int):
@@ -54,10 +56,12 @@ Parameters:
     lag (int):
         The time lag in minutes used for predictive decision-making in the simulation.
 
-Returns:
+Returns
+-------
     The `read_metrics_data` and `_get_all_performance_data` methods return filtered DataFrames containing
     the performance data for the current window or up to the current time.
 """
+
 from datetime import timedelta
 
 from vasim.recommender.cluster_state_provider.PredictiveFileClusterStateProvider import (
@@ -76,14 +80,16 @@ class SimulatedInMemoryPredictiveClusterStateProvider(SimulatedBaseClusterStateP
     This class manages time-series forecasting and performance data to simulate predictive cluster
     scaling in a controlled environment.
 
-    Attributes:
+    Attributes
+    ----------
         data_dir (str): Directory where performance log CSV files are stored.
         window (int): The size of the time window for filtering data (in minutes).
         decision_file_path (str): Path where scaling decisions are logged.
         max_cpu_limit (int): The maximum CPU limit allowed for scaling.
         lag (int): The time lag used for predictive decision-making.
 
-    Methods:
+    Methods
+    -------
         read_metrics_data(): Returns performance data filtered by the window.
         _get_all_performance_data(): Returns all performance data up to the current time.
         get_next_recorded_data(): Retrieves the next set of recorded performance data.
@@ -143,7 +149,8 @@ class SimulatedInMemoryPredictiveClusterStateProvider(SimulatedBaseClusterStateP
         based on the `window` size defined in the configuration. If the current time exceeds the
         data end time, it returns None.
 
-        Returns:
+        Returns
+        -------
             pd.DataFrame: The filtered performance data for the current time window.
             None: If the current time exceeds the end time of the data.
         """
@@ -163,7 +170,8 @@ class SimulatedInMemoryPredictiveClusterStateProvider(SimulatedBaseClusterStateP
         This method returns all available performance data until the current time, adjusting for any
         lag. If the current time exceeds the end time of the data, it returns None.
 
-        Returns:
+        Returns
+        -------
             pd.DataFrame: All performance data up to the current time.
             None: If the current time exceeds the end time of the data.
         """
@@ -182,7 +190,8 @@ class SimulatedInMemoryPredictiveClusterStateProvider(SimulatedBaseClusterStateP
         This method fetches the next available performance data from the predictive file provider
         and returns it along with the end time of the data.
 
-        Returns:
+        Returns
+        -------
             pd.DataFrame: The performance data within the window.
             pd.Timestamp: The end time of the performance data.
         """

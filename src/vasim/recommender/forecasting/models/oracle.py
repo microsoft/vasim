@@ -19,11 +19,13 @@ Classes:
         Loads CSV files from a specified directory, processes the data, and provides methods for fitting
         and predicting future performance data.
 
-Attributes:
+Attributes
+----------
     all_performance_data (pd.DataFrame):
         A DataFrame containing all the loaded performance data sorted by timestamp.
 
-Methods:
+Methods
+-------
     __init__(data_dir):
         Initializes the `Oracle` by loading CSV files from the provided directory, processing the data,
         and storing it in a DataFrame.
@@ -35,14 +37,17 @@ Methods:
         Predicts future performance data points based on the provided data and the forecast horizon.
         Returns a DataFrame containing the predicted values.
 
-Parameters:
+Parameters
+----------
     data_dir (str):
         The directory containing the CSV files to load.
 
-Returns:
+Returns
+-------
     pd.DataFrame:
         The `predict` method returns a DataFrame with the predicted performance data points, indexed by timestamp.
 """
+
 import os
 from datetime import datetime
 
@@ -57,7 +62,8 @@ class Oracle:
     an ideal theoretical predictor, allowing for the separation of errors attributable to
     prediction and the recommender itself.
 
-    Attributes:
+    Attributes
+    ----------
         all_performance_data (pd.DataFrame): DataFrame containing all loaded performance data.
     """
 
@@ -101,7 +107,8 @@ class Oracle:
             data (pd.DataFrame): DataFrame containing the input data for prediction.
             forecast_horizon (int): Number of future data points to predict.
 
-        Returns:
+        Returns
+        -------
             pd.DataFrame: DataFrame containing the predicted data points.
         """
         temp_data = self.all_performance_data

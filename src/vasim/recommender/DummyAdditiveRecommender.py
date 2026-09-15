@@ -34,7 +34,8 @@ class SimpleAdditiveRecommender(Recommender):
         """
         Initialize the SimpleAdditiveRecommender class.
 
-        Parameters:
+        Parameters
+        ----------
             cluster_state_provider (ClusterStateProvider): The cluster state provider such as FileClusterStateProvider.
             save_metadata (bool): Whether to save metadata to a file.
         """
@@ -48,13 +49,14 @@ class SimpleAdditiveRecommender(Recommender):
         """
         Run the recommender algorithm and return the new number of cores to scale to (new limit).
 
-        Parameters:
+        Parameters
+        ----------
             recorded_data (pd.DataFrame): The recorded metrics data for the current time window to simulate.
 
-        Returns:
+        Returns
+        -------
             new_limit (float): The new number of cores to scale to.
         """
-
         # Calculate the smoothed maximum value from the CPU data.
         smoothed_max = recorded_data["cpu"].to_numpy().max()
 

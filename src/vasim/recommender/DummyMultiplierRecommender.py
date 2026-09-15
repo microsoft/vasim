@@ -30,8 +30,8 @@ class SimpleMultiplierRecommender(Recommender):
     # pylint: disable=too-few-public-methods
     def __init__(self, cluster_state_provider, save_metadata=True):
         """
-        Parameters:
-
+        Parameters
+        ----------
             cluster_state_provider (ClusterStateProvider): The cluster state provider such as FileClusterStateProvider.
             save_metadata (bool): Whether to save metadata to a file.
         """
@@ -58,7 +58,6 @@ class SimpleMultiplierRecommender(Recommender):
             latest_time (datetime): The latest time of the performance data.
             new_limit (float): The new number of cores to scale to.
         """
-
         # Calculate the smoothed maximum value
         smoothed_max = self.calculate_smoothed_max(recorded_data)
 

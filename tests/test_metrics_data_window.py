@@ -101,7 +101,6 @@ class TestSimulatedInMemoryPredictiveClusterStateProvider(unittest.TestCase):
 
     def test_read_metrics_data(self):
         """Test the read_metrics_data method, which is the window of data to process next."""
-
         sim_inmem_p_prov = SimulatedInMemoryPredictiveClusterStateProvider(
             window=40,
             lag=10,
@@ -155,7 +154,6 @@ class TestSimulatedInMemoryPredictiveClusterStateProvider(unittest.TestCase):
 
     def test_get_next_recorded_data(self):
         """Test the read_metrics_data method, which is the window of data to process next."""
-
         file_cs_prov = FileClusterStateProvider(
             window=40,
             lag=10,
@@ -188,11 +186,12 @@ class TestSimulatedInMemoryPredictiveClusterStateProvider(unittest.TestCase):
 
         # for the file_cs_prov, we need to mock out get_current_cpu_limit
         # we want it to be 14.0. Now we mock it:
-        with patch.object(FileClusterStateProvider, "get_current_cpu_limit", return_value=14.0):
-            # and patch read_metrics_data to return the data we want as shown above
-            with patch.object(FileClusterStateProvider, "read_metrics_data", return_value=recorded_data):
-                # Call the method
-                recorded_data, _end_time = file_cs_prov.get_next_recorded_data()
+        with (
+            patch.object(FileClusterStateProvider, "get_current_cpu_limit", return_value=14.0),
+            patch.object(FileClusterStateProvider, "read_metrics_data", return_value=recorded_data),
+        ):
+            # Call the method
+            recorded_data, _end_time = file_cs_prov.get_next_recorded_data()
 
         # Verify the result
         expected_result = pd.DataFrame(

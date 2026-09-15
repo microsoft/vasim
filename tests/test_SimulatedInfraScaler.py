@@ -89,7 +89,7 @@ class TestSimulatedInfraScaler(unittest.TestCase):
         #     we have the right file with the recovery time of 5.
         # TODO: we need to document that the recovery time is the time it takes for the infrastructure to recover after
         # and clarify how it's different from the lag parameter.
-        with open(f"{self.target_dir}/metadata_alt_config.json", mode="r", encoding="utf-8") as f:
+        with open(f"{self.target_dir}/metadata_alt_config.json", encoding="utf-8") as f:
             config = json.load(f)
             self.assertEqual(config["general_config"]["recovery_time"], 5)
 

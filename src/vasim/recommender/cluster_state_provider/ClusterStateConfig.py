@@ -39,13 +39,15 @@ class ClusterStateConfig(dict):
     """
     A class that manages the cluster state configuration used for autoscaling recommendations.
 
-    Attributes:
+    Attributes
+    ----------
         algo_specific_config (dict): A dictionary for algorithm-specific configuration settings.
         general_config (dict): A dictionary for general configuration settings like CPU limits and recovery time.
         prediction_config (dict): A dictionary for prediction-related configuration settings like forecasting models and prediction windows.
         defaults (dict): Contains default configuration values for general, algorithm-specific, and prediction settings.
 
-    Methods:
+    Methods
+    -------
         __getitem__(key): Allows access to configuration sections using dictionary-like keys.
         __setitem__(key, value): Allows setting values in configuration sections using dictionary-like keys.
         get(key, default=None): Retrieves a value by key, returning a default if not found.
@@ -64,7 +66,8 @@ class ClusterStateConfig(dict):
             config_dict (dict, optional): A dictionary containing the configuration values.
             filename (str, optional): The path to the JSON file containing the configuration values.
 
-        Raises:
+        Raises
+        ------
             KeyError: If invalid keys are provided in the configuration.
         """
         super().__init__()  # Initialize the dictionary part of the object
@@ -104,20 +107,21 @@ class ClusterStateConfig(dict):
         Args:
             key (str): The key representing the configuration section (e.g., 'general_config').
 
-        Returns:
+        Returns
+        -------
             dict: The corresponding configuration section.
 
-        Raises:
+        Raises
+        ------
             KeyError: If an invalid key is provided.
         """
         if key == "general_config":
             return self.general_config
-        elif key == "algo_specific_config":
+        if key == "algo_specific_config":
             return self.algo_specific_config
-        elif key == "prediction_config":
+        if key == "prediction_config":
             return self.prediction_config
-        else:
-            raise KeyError(f"Invalid key: {key}")
+        raise KeyError(f"Invalid key: {key}")
 
     def __setitem__(self, key, value):
         """
@@ -127,7 +131,8 @@ class ClusterStateConfig(dict):
             key (str): The key representing the configuration section (e.g., 'general_config').
             value (dict): The value to assign to the configuration section.
 
-        Raises:
+        Raises
+        ------
             KeyError: If an invalid key is provided.
         """
         if key == "general_config":
@@ -147,7 +152,8 @@ class ClusterStateConfig(dict):
             key (str): The key representing the configuration section or value.
             default: The value to return if the key is not found. Defaults to None.
 
-        Returns:
+        Returns
+        -------
             The value corresponding to the key, or the default value if the key is not found.
         """
         try:
@@ -173,19 +179,20 @@ class ClusterStateConfig(dict):
         Args:
             filename (str): The path to the JSON file.
 
-        Raises:
+        Raises
+        ------
             FileNotFoundError: If the specified JSON file is not found.
             json.JSONDecodeError: If there is an error in parsing the JSON file.
         """
         try:
-            with open(filename, "r", encoding="utf-8") as f:
+            with open(filename, encoding="utf-8") as f:
                 data = json.load(f)
                 self._load_from_dict(data)
         except FileNotFoundError as e:
-            logging.error("Configuration file not found: %s", filename)
+            logging.exception("Configuration file not found: %s", filename)
             raise e
         except json.JSONDecodeError as e:
-            logging.error("Invalid JSON format in the configuration file: %s", filename)
+            logging.exception("Invalid JSON format in the configuration file: %s", filename)
             raise e
 
     def to_json(self, filepath):
@@ -195,7 +202,8 @@ class ClusterStateConfig(dict):
         Args:
             filepath (str): The path to the JSON file.
 
-        Raises:
+        Raises
+        ------
             OSError: If there is an error while writing to the file.
             json.JSONDecodeError: If there is an error in serializing the configuration to JSON.
         """
@@ -207,11 +215,11 @@ class ClusterStateConfig(dict):
                     "prediction_config": self.prediction_config,
                 }
                 json.dump(full_dict, f, indent=4)
-        except (OSError, IOError) as file_error:
-            logging.error("File error while writing JSON file: %s", filepath, exc_info=file_error)
+        except OSError as file_error:
+            logging.exception("File error while writing JSON file: %s", filepath, exc_info=file_error)
             raise
         except (TypeError, ValueError, json.JSONDecodeError) as json_error:
-            logging.error("JSON serialization error for file: %s", filepath, exc_info=json_error)
+            logging.exception("JSON serialization error for file: %s", filepath, exc_info=json_error)
             raise
 
     def validate_config(self):
@@ -232,7 +240,7 @@ class ClusterStateConfig(dict):
                 )
                 self.general_config[key] = self.defaults["general_config"][key]
 
-        if "enabled" in self.prediction_config and self.prediction_config["enabled"]:
+        if self.prediction_config.get("enabled"):
             prediction_required_keys = [
                 "waiting_before_predict",
                 "frequency_minutes",

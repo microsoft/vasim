@@ -50,7 +50,6 @@ from vasim.recommender.forecasting.models.oracle import Oracle
 
 
 class TestOracle(unittest.TestCase):
-
     def setUp(self):
         # Create a temporary directory and CSV files for testing
         root_dir = Path(os.path.dirname(os.path.abspath(__file__)))

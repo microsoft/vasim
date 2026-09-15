@@ -29,9 +29,9 @@ import os
 from typing import Optional
 
 import pandas as pd
-import streamlit as st
 from utils import run_simulation, unflatten_dict  # pylint: disable=import-error
 
+import streamlit as st
 from vasim.recommender.cluster_state_provider.ClusterStateConfig import (
     ClusterStateConfig,
 )
@@ -57,7 +57,6 @@ def construct_config_metric_df(config_metrics_list) -> pd.DataFrame:
     # Iterate through the results and add rows to the list
     for modified_config, metrics in config_metrics_list:
         if metrics is None:
-            print(f"Skipping {modified_config.uuid} because of an error")
             continue
         row_data = {**metrics, **modified_config}  # TODO: there is a known issue https://github.com/microsoft/vasim/issues/119
         rows.append(row_data)
@@ -92,7 +91,9 @@ def process_params_to_tune(input_selected_params_to_tune):
     the processed values.
     Args:
         input_selected_params_to_tune (list): A list of parameter names selected by the user.
-    Returns:
+
+    Returns
+    -------
         dict: A dictionary with parameter names as keys and user-supplied values as values.
     """
     resulted_params_to_tune = {}
@@ -111,7 +112,9 @@ def process_parameter_input(param_name):
     returns the values as a list.
     Args:
         param_name (str): The name of the parameter to be processed.
-    Returns:
+
+    Returns
+    -------
         list: A list of values input by the user for the parameter.
     """
     st.subheader(f"Edit values for parameter: {param_name}")
@@ -146,7 +149,9 @@ def get_files_with_extension(directory, format_suffix=".csv"):
     Args:
         directory (str): The directory to search for files.
         format_suffix (str): The file extension to filter (default is ".csv").
-    Returns:
+
+    Returns
+    -------
         list: A list of file paths matching the specified extension.
     """
     files = []
@@ -185,23 +190,22 @@ if not config_path_run or not os.path.exists(config_path_run):
     st.error(f"Error loading JSON file: {config_path_run} does not exist")
     st.stop()
 
-with open(config_path_run, mode="r", encoding="utf-8") as json_file_run:
+with open(config_path_run, encoding="utf-8") as json_file_run:
     data_run = json.load(json_file_run)
     df_run = pd.json_normalize(data_run)
 
 # selected_csv is definitely already defined
 data_dir = os.path.dirname(selected_csv)  # pylint: disable=possibly-used-before-assignment
-if selected_csv:
-    if st.sidebar.button("Visualize workload"):
-        workload_df = pd.read_csv(selected_csv)
-        workload_df["TIMESTAMP"] = pd.to_datetime(workload_df["TIMESTAMP"], format="%Y.%m.%d-%H:%M:%S:%f")
-        workload_df["TIMESTAMP"] = pd.DatetimeIndex(workload_df["TIMESTAMP"]).floor("min")
-        workload_df = workload_df.drop_duplicates(subset=["TIMESTAMP"], keep="last")
-        perf_log_resampled = workload_df.set_index("TIMESTAMP").resample("1T").ffill().reset_index()
+if selected_csv and st.sidebar.button("Visualize workload"):
+    workload_df = pd.read_csv(selected_csv)
+    workload_df["TIMESTAMP"] = pd.to_datetime(workload_df["TIMESTAMP"], format="%Y.%m.%d-%H:%M:%S:%f")
+    workload_df["TIMESTAMP"] = pd.DatetimeIndex(workload_df["TIMESTAMP"]).floor("min")
+    workload_df = workload_df.drop_duplicates(subset=["TIMESTAMP"], keep="last")
+    perf_log_resampled = workload_df.set_index("TIMESTAMP").resample("1T").ffill().reset_index()
 
-        # Display the chart in the left sidebar
-        data = pd.DataFrame({"TIMESTAMP": workload_df["TIMESTAMP"], "CPU_USAGE_ACTUAL": workload_df["CPU_USAGE_ACTUAL"]})
-        create_charts(data)
+    # Display the chart in the left sidebar
+    data = pd.DataFrame({"TIMESTAMP": workload_df["TIMESTAMP"], "CPU_USAGE_ACTUAL": workload_df["CPU_USAGE_ACTUAL"]})
+    create_charts(data)
 # Page 1: Simulation Run
 if simulation_option == "Simulation Run":
     st.title("Simulation Run")
@@ -323,7 +327,7 @@ elif simulation_option == "Simulation Tuning":
         st.write(f"Folder with winning config: {data_dir}_tuning/{folder}")
 
         # open the file at the folder
-        with open(data_dir + "_tuning/" + folder + "/metadata.json", mode="r", encoding="utf-8") as json_file:
+        with open(data_dir + "_tuning/" + folder + "/metadata.json", encoding="utf-8") as json_file:
             data = json.load(json_file)
             df = pd.json_normalize(data)
             st.write("metadata.json")

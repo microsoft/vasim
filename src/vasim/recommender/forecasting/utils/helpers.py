@@ -24,7 +24,8 @@ Classes:
         Provides static methods for preparing and processing time series data, including smoothing,
         train/test splitting, resampling, and calculating workload duration.
 
-Methods:
+Methods
+-------
     timeit(func):
         Decorator function that measures the execution time of the wrapped function.
 
@@ -43,7 +44,8 @@ Methods:
     DataProcessor.get_workload_duration(data):
         Calculates the total duration of a workload based on the time range in the input DataFrame.
 
-Parameters:
+Parameters
+----------
     series (pd.Series):
         The input time series data.
 
@@ -71,7 +73,8 @@ Parameters:
     data (pd.DataFrame):
         Input DataFrame containing a 'time' column for calculating the workload duration.
 
-Returns:
+Returns
+-------
     The respective methods return either the processed time series or train/test data,
     resampled DataFrame, or workload duration.
 """
@@ -89,15 +92,15 @@ def timeit(func):
     Args:
         func (function): The function to be measured.
 
-    Returns:
+    Returns
+    -------
         function: The wrapped function with execution time measurement.
     """
 
     def wrapper(*args, **kwargs):
-        start = time.time()
+        time.time()
         result = func(*args, **kwargs)
-        end = time.time()
-        print(f"{func.__name__} execution time: {end - start:.5f} seconds")
+        time.time()
         return result
 
     return wrapper
@@ -111,7 +114,8 @@ class DataProcessor:
     such as smoothing time series data, splitting data into training and testing sets, resampling
     time series data, and calculating workload durations.
 
-    Methods:
+    Methods
+    -------
         smooth_max(series, window, center=False):
             Applies a rolling maximum to smooth the input time series data.
 
@@ -142,7 +146,8 @@ class DataProcessor:
             window (int): The size of the moving window.
             center (bool): Whether to set the labels at the center of the window (default is False).
 
-        Returns:
+        Returns
+        -------
             pd.Series: The smoothed series.
         """
         smoothed = series.rolling(window=window, min_periods=1, center=center).max()
@@ -160,7 +165,8 @@ class DataProcessor:
             series (pd.Series): The input data series to be split.
             test_size (float): The proportion of the data to include in the test set.
 
-        Returns:
+        Returns
+        -------
             tuple: A tuple containing the training and testing sets.
         """
         y_train, y_test = temporal_train_test_split(series, test_size=test_size)
@@ -180,7 +186,8 @@ class DataProcessor:
             smooth (bool): Whether to apply smoothing to the data (default is True).
             test_size (float): The proportion of the data to include in the test set (default is 0.2).
 
-        Returns:
+        Returns
+        -------
             tuple: A tuple containing the smoothed training and testing sets.
         """
         y_train, y_test = DataProcessor.train_test_split(y, test_size=test_size)
@@ -201,7 +208,8 @@ class DataProcessor:
             df (pd.DataFrame): The input DataFrame to be resampled.
             freq (str): The new frequency to resample to (e.g., '1T' for 1-minute intervals).
 
-        Returns:
+        Returns
+        -------
             pd.DataFrame: The resampled DataFrame with missing data forward-filled.
         """
         df = df.set_index("time")
@@ -221,7 +229,8 @@ class DataProcessor:
         Args:
             data (pd.DataFrame): The input DataFrame containing a 'time' column.
 
-        Returns:
+        Returns
+        -------
             timedelta: The total duration of the workload.
         """
         min_time = data["time"].min()

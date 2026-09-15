@@ -23,7 +23,8 @@ Classes:
         Extends the `FileClusterStateProvider` class by adding predictive capabilities
         using time-series forecasting models for CPU utilization.
 
-Methods:
+Methods
+-------
     __init__(data_dir, prediction_config, **kwargs):
         Initializes the `PredictiveFileClusterStateProvider` with the directory for CSV data, prediction configuration,
         and additional parameters such as frequency of data collection, waiting time before prediction, and forecaster setup.
@@ -70,7 +71,8 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
     performance data, making it useful for proactively managing cluster resources. It reads and processes CSV files,
     predicts future CPU needs, and combines the actual and predicted data for more informed decision-making.
 
-    Attributes:
+    Attributes
+    ----------
         frequency_minutes (int): The frequency in minutes at which performance data is sampled.
         minutes_to_predict (int): The number of minutes to predict in the future.
         freq (str): The resampling frequency for time-series data.
@@ -132,7 +134,8 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
         Args:
             data (pd.DataFrame): The performance data used for making CPU predictions.
 
-        Returns:
+        Returns
+        -------
             int: The predicted number of CPU cores required.
         """
 
@@ -151,7 +154,8 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
         Args:
             data (pd.DataFrame, optional): The historical performance data to evaluate.
 
-        Returns:
+        Returns
+        -------
             bool: True if prediction mode is activated, False otherwise.
         """
         all_history_data = data
@@ -168,7 +172,8 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
         This method processes all CSV files in the data directory, dropping duplicates
         and sorting the data by time.
 
-        Returns:
+        Returns
+        -------
             pd.DataFrame: The recorded performance data.
         """
         csv_paths = list_perf_event_log_files(self.data_dir)
@@ -190,7 +195,8 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
         enough historical data is available. It combines actual and predicted data to return a
         complete dataset for decision-making.
 
-        Returns:
+        Returns
+        -------
             tuple: A tuple containing the performance data (pd.DataFrame) and the end time (datetime).
         """
         data = self._get_all_performance_data()  # Get historical data for prediction
@@ -220,7 +226,8 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
         Args:
             data (pd.DataFrame): The historical performance data used for prediction.
 
-        Returns:
+        Returns
+        -------
             pd.DataFrame: A DataFrame containing the predicted CPU usage for the next set of time points.
         """
         self.logger.debug(

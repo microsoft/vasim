@@ -20,7 +20,8 @@ Classes:
         Provides methods to scale a simulated cluster based on system decisions, while adhering to recovery
         periods and core limits.
 
-Attributes:
+Attributes
+----------
     cluster_state_provider (ClusterStateProvider):
         The cluster state provider that manages the current CPU limit and scaling decisions.
     last_scaling_time (datetime):
@@ -32,7 +33,8 @@ Attributes:
     logger (Logger):
         A logger object for logging scaling decisions and events.
 
-Methods:
+Methods
+-------
     __init__(cluster_state_provider, start_timestamp, recovery_time):
         Initializes the `SimulatedInfraScaler` with a cluster state provider, the start timestamp, and a recovery time.
 
@@ -41,13 +43,16 @@ Methods:
         recovery time has passed since the last scaling event and ensures that the new limit does not exceed
         minimum or maximum core limits.
 
-        Parameters:
+Parameters
+----------
             new_limit (int): The new number of cores to scale to.
             time_now (datetime): The current timestamp.
 
-        Returns:
+Returns
+-------
             bool: Returns True if scaling was successful, otherwise False.
 """
+
 import logging
 from pathlib import Path
 
@@ -62,7 +67,8 @@ class SimulatedInfraScaler:
     ensures that scaling only happens if the required recovery time has passed, and it enforces minimum
     and maximum core limits for scaling decisions.
 
-    Attributes:
+    Attributes
+    ----------
         cluster_state_provider (ClusterStateProvider): The cluster state provider that manages the CPU limit.
         last_scaling_time (datetime): Timestamp of the last scaling event.
         start_time (datetime): The starting time of the simulation.
@@ -109,7 +115,8 @@ class SimulatedInfraScaler:
             new_limit (int): The new number of cores to scale to.
             time_now (datetime): The current time.
 
-        Returns:
+        Returns
+        -------
             bool: Returns True if scaling was performed, False if no scaling occurred due to the recovery time.
         """
         minutes = time_now.minute
@@ -143,7 +150,7 @@ class SimulatedInfraScaler:
                 return True
 
             # If recovery time has not passed, log the remaining time
-            elif self.last_scaling_time is not None:
+            if self.last_scaling_time is not None:
                 self.logger.info(
                     "Waiting to scale %d minutes, current minutes %d, new_limit: %f",
                     self.recovery_time * 60 - (time_now - self.last_scaling_time).seconds // 60,

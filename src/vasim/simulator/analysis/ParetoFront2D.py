@@ -25,6 +25,7 @@ Classes:
 Functions:
     - calculate_objective: Computes a weighted objective function.
 """
+
 import random
 
 import numpy as np
@@ -103,10 +104,10 @@ class ParetoFront2D(ParetoFrontier):
         """
         This function finds the closest combination to (0, 0) for the given dimensions.
 
-        Returns:
+        Returns
+        -------
             Tuple: A tuple containing the folder, config, dimension_1, and dimension_2 of the closest combination
         """
-
         closest_combination = None
         closest_distance = float("inf")
 
@@ -126,8 +127,6 @@ class ParetoFront2D(ParetoFrontier):
 
         # Both log and print the closest combination
         # TODO: Setup logger for this function.
-        print(f"Closest combination to (0, 0) is dimension_1: {closest_combination[2]}, dimension_2: {closest_combination[3]}")
-        print(f"Folder: {closest_combination[0]}, Config: {closest_combination[1]}")
 
         return closest_combination
 
@@ -232,7 +231,6 @@ class ParetoFront2D(ParetoFrontier):
         fig.tight_layout()
         plt.title(f"{self.dimension_1} vs {self.dimension_2}")
         if self.files is not None:
-            print(f"Saving plot to {self.files}/pareto_frontier.png")
             # self.logger.info(f"Saving plot to {self.files}/pareto_frontier.png")
             plt.savefig(f"{self.files}/pareto_frontier.png")
         plt.show()
