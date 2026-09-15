@@ -46,10 +46,9 @@ dependencies = [
 [project.optional-dependencies]
 "dev" = [
     "autopep8",
-    "flake8",
-    "pylint",
-    "black",
-    "isort",
+    "ruff==0.16.7",
+    "mypy==2.3.1",
+    "pyright==1.1.414",
     "pydocstringformatter",
     "pytest",
     "pytest-cov",
@@ -75,15 +74,37 @@ minversion = "6.0"
 # produce coverage report
 addopts = "-n auto -s -v --cov=src/ --cov-fail-under=70 --cov-report=xml"
 
-[tool.black]
+[tool.ruff]
 line-length = 127
-target-version = ["py39", "py310"]
-include = '\.pyi?$'
+target-version = "py39"
+src = ["src", "tests", "examples"]
 
-[tool.isort]
-profile = "black"
-py_version = 310
-src_paths = ["src", "tests"]
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "COM812",
+    "D203",
+    "D213",
+    "E501",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.mypy]
+python_version = "3.9"
+strict = true
+files = ["src", "tests", "examples"]
+
+[tool.pyright]
+include = ["src", "tests", "examples"]
+typeCheckingMode = "strict"
+pythonVersion = "3.9"
+venvPath = "."
+venv = ".venv"
 
 [tool.pydocstringformatter]
 write = true
