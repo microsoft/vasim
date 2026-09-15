@@ -132,12 +132,12 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         self.data_dir = (Path().absolute() / data_dir).absolute()
         self.decision_file_path = (Path().absolute() / decision_file_path).absolute()
         self.curr_cpu_limit = None  # set by initial_cores_count during the first scaling
-        self.log_properties()
         self.config: Any = kwargs.get("config")
         # TODO: these did not get updated to the new config format
         self.max_cpu_limit = max_cpu_limit
         self.lag = lag
         self.window = window
+        self.log_properties()
 
         csv_paths = list_perf_event_log_files(self.data_dir)
         if not csv_paths:
@@ -158,7 +158,7 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         self.current_time = self.start_time
         self.last_scaling_time = self.start_time
 
-    def get_next_recorded_data(self) -> None:
+    def get_next_recorded_data(self) -> Any:
         """
         Abstract method to fetch the next set of recorded data from the performance logs.
 

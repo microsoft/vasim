@@ -45,7 +45,6 @@ dependencies = [
 ]
 [project.optional-dependencies]
 "dev" = [
-    "autopep8",
     "ruff==0.16.7",
     "mypy==1.20.2",
     "pyright==1.1.414",
