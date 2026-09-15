@@ -90,17 +90,6 @@ class ParetoFrontier(ABC):
 
     @staticmethod
     def create_df(results: Any) -> Any:
-        df = pd.DataFrame(
-            columns=[
-                "folder",
-                "sum_slack",
-                "average_slack",
-                "insufficient_observations_percentage",
-                "slack_percentage",
-                "sum_insufficient_cpu",
-                "num_scalings",
-            ]
-        )
         rows = []
         for folder, config, metrics in results:
             row = pd.Series(
@@ -125,5 +114,5 @@ class ParetoFrontier(ABC):
             )
             rows.append(row)  # Add the row to the list
 
-        df = pd.concat(rows, axis=1).T
-        return df
+        result_df = pd.DataFrame(pd.concat(rows, axis=1).T)
+        return result_df
