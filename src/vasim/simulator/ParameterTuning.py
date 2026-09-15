@@ -294,5 +294,17 @@ def tune_with_strategy(
     # (only not in a loop, maybe just for ONE modified config)
     # #  results = _tune_parameters(modified_config[0], data_dir, lag, algorithm, initial_cpu_limit)
 
-    # The results will be a list of tuples, where each tuple contains the modified config and the resulting metrics
-    return results
+    # Build a flat dict of the actual parameter values tested for each run, so callers can map
+    # metrics back to the configuration that produced them (fixes #119).
+    populated_results = []
+    for config, metrics in results:
+        config_dict = {}
+        for key in algo_specific_params_to_tune:
+            config_dict[key] = config.algo_specific_config[key]
+        for key in general_params_to_tune:
+            config_dict[key] = config.general_config[key]
+        for key in predictive_params_to_tune:
+            config_dict[key] = config.prediction_config[key]
+        populated_results.append((config_dict, metrics))
+
+    return populated_results
