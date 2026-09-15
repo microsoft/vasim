@@ -132,7 +132,7 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         self.data_dir = (Path().absolute() / data_dir).absolute()
         self.decision_file_path = (Path().absolute() / decision_file_path).absolute()
         self.curr_cpu_limit = None  # set by initial_cores_count during the first scaling
-        self.print_properties()
+        self.log_properties()
         self.config: Any = kwargs.get("config")
         # TODO: these did not get updated to the new config format
         self.max_cpu_limit = max_cpu_limit
@@ -194,7 +194,7 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         """
         return self.last_scaling_time
 
-    def print_properties(self) -> None:
+    def log_properties(self) -> None:
         """Log the properties of the SimulatedBaseClusterStateProvider instance for debugging."""
         for key, value in vars(self).items():
             self.logger.debug("%s: %s", key, value)

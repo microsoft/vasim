@@ -47,14 +47,14 @@ class ParetoFrontier(ABC):
         self.workload_run_metrics = workload_run_metrics
 
     @abstractmethod
-    def get_pareto_frontier(self) -> None:
+    def get_pareto_frontier(self) -> Any:
         pass
 
     def filter_out_less_than_by_dimension(self, dimension: Any, value: Any) -> Any:
         return [x for x in self.workload_run_metrics if x[2][dimension] <= value]
 
     @abstractmethod
-    def find_closest_to_zero(self) -> None:
+    def find_closest_to_zero(self) -> Any:
         pass
 
     @staticmethod
@@ -90,6 +90,15 @@ class ParetoFrontier(ABC):
 
     @staticmethod
     def create_df(results: Any) -> Any:
+        columns = [
+            "folder",
+            "sum_slack",
+            "average_slack",
+            "insufficient_observations_percentage",
+            "slack_percentage",
+            "sum_insufficient_cpu",
+            "num_scalings",
+        ]
         rows = []
         for folder, config, metrics in results:
             row = pd.Series(
@@ -113,6 +122,9 @@ class ParetoFrontier(ABC):
                 }
             )
             rows.append(row)  # Add the row to the list
+
+        if not rows:
+            return pd.DataFrame(columns=columns)
 
         result_df = pd.DataFrame(pd.concat(rows, axis=1).T)
         return result_df

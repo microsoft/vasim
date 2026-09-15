@@ -100,9 +100,6 @@ ignore = [
     "E501",
 ]
 
-[tool.ruff.lint.pydocstyle]
-convention = "numpy"
-
 [tool.mypy]
 python_version = "3.9"
 strict = true

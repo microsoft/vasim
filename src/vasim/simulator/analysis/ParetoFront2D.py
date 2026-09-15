@@ -135,9 +135,6 @@ class ParetoFront2D(ParetoFrontier):
                 closest_combination = (folder, config, dimension_1, dimension_2)
                 closest_distance = distance
 
-        # Both log and print the closest combination
-        # TODO: Setup logger for this function.
-
         return closest_combination
 
     def plot_scatter_frontier(self, plot_filename: Any = "pareto_frontier") -> None:

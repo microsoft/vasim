@@ -216,11 +216,11 @@ class ClusterStateConfig(dict[str, Any]):
                     "prediction_config": self.prediction_config,
                 }
                 json.dump(full_dict, f, indent=4)
-        except OSError as file_error:
-            logging.exception("File error while writing JSON file: %s", filepath, exc_info=file_error)
+        except OSError:
+            logging.exception("File error while writing JSON file: %s", filepath)
             raise
-        except (TypeError, ValueError, json.JSONDecodeError) as json_error:
-            logging.exception("JSON serialization error for file: %s", filepath, exc_info=json_error)
+        except (TypeError, ValueError, json.JSONDecodeError):
+            logging.exception("JSON serialization error for file: %s", filepath)
             raise
 
     def validate_config(self) -> None:

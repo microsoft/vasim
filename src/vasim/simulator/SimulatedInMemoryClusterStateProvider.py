@@ -128,7 +128,7 @@ class SimulatedInMemoryClusterStateProvider(SimulatedBaseClusterStateProvider, F
             **kwargs,
         )
 
-    def get_next_recorded_data(self) -> None:
+    def get_next_recorded_data(self) -> Any:
         """
         Abstract method to retrieve the next set of recorded performance data.
 
