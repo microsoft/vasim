@@ -68,7 +68,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
     It calls tune_with_strategy, which performs a tuning run of the simulator, trying different configurations.
     """
 
-    def setUp(self):
+    def setUp(self) -> None:
 
         # For this test we'll use the "mini" dataset, which is a smaller version of the full dataset
         root_dir = Path(os.path.dirname(os.path.abspath(__file__)))
@@ -83,12 +83,12 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         shutil.copytree(self.source_dir, self.target_dir)
 
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
         patcher = patch("builtins.print", MagicMock())  # Mock the print function globally
         patcher.start()
         cls.patcher = patcher
 
-    def test_run_tuning_grid(self):
+    def test_run_tuning_grid(self) -> None:
         """
         Now use the tuning function to test the tuning process.
 
@@ -160,7 +160,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         )
         self.assertAlmostEqual(results[0][1]["slack_percentage"], expected["slack_percentage"], places=2)
 
-    def test_run_tuning_grid_withpred(self):
+    def test_run_tuning_grid_withpred(self) -> None:
         """This version provides a predictive parameter to tune as well."""
         config_path = f"{self.source_dir}/metadata.json"
         general_params_to_tune = {
@@ -231,7 +231,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         )
         self.assertAlmostEqual(results[0][1]["slack_percentage"], expected["slack_percentage"], places=2)
 
-    def test_run_tuning_random(self):
+    def test_run_tuning_random(self) -> None:
         """
         This version used the random strategy to tune the parameters.
 
@@ -269,7 +269,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         assert len(results) == num_combinations
         # not checking the results because random
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         shutil.rmtree(self.target_dir_sim, ignore_errors=True)
         shutil.rmtree(self.target_dir, ignore_errors=True)
 

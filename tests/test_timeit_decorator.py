@@ -42,6 +42,7 @@ Usage:
 
 import time
 import unittest
+from typing import Any
 
 from vasim.recommender.forecasting.utils.helpers import timeit
 
@@ -54,7 +55,7 @@ class TestTimeitDecorator(unittest.TestCase):
     execution time of functions, while preserving their original behavior and return values.
     """
 
-    def test_timeit_decorator_measures_execution_time(self):
+    def test_timeit_decorator_measures_execution_time(self) -> None:
         """
         Test that the `timeit` decorator correctly measures the execution time of a function.
 
@@ -62,14 +63,14 @@ class TestTimeitDecorator(unittest.TestCase):
         """
 
         @timeit
-        def sample_function():
+        def sample_function() -> str:
             time.sleep(0.1)
             return "done"
 
         result = sample_function()
         self.assertEqual(result, "done")
 
-    def test_timeit_decorator_with_no_return_value(self):
+    def test_timeit_decorator_with_no_return_value(self) -> None:
         """
         Test that the `timeit` decorator works with functions that do not return any value.
 
@@ -77,13 +78,13 @@ class TestTimeitDecorator(unittest.TestCase):
         """
 
         @timeit
-        def sample_function():
+        def sample_function() -> None:
             time.sleep(0.1)
 
         result = sample_function()
         self.assertIsNone(result)
 
-    def test_timeit_decorator_with_arguments(self):
+    def test_timeit_decorator_with_arguments(self) -> None:
         """
         Test that the `timeit` decorator correctly handles functions with positional arguments.
 
@@ -92,14 +93,14 @@ class TestTimeitDecorator(unittest.TestCase):
         """
 
         @timeit
-        def sample_function(x, y):
+        def sample_function(x: Any, y: Any) -> Any:
             time.sleep(0.1)
             return x + y
 
         result = sample_function(2, 3)
         self.assertEqual(result, 5)
 
-    def test_timeit_decorator_with_keyword_arguments(self):
+    def test_timeit_decorator_with_keyword_arguments(self) -> None:
         """
         Test that the `timeit` decorator correctly handles functions with keyword arguments.
 
@@ -108,7 +109,7 @@ class TestTimeitDecorator(unittest.TestCase):
         """
 
         @timeit
-        def sample_function(x, y=0):
+        def sample_function(x: Any, y: Any = 0) -> Any:
             time.sleep(0.1)
             return x + y
 

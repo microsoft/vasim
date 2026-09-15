@@ -104,7 +104,9 @@ def _create_modified_configs(
             modified_config["prediction_config"][param] = value
         return modified_config
 
-    def generate_random_configs(algo_params_to_tune, general_params_to_tune, predictive_params_to_tune, num_combinations):
+    def generate_random_configs(
+        algo_params_to_tune: Any, general_params_to_tune: Any, predictive_params_to_tune: Any, num_combinations: Any
+    ) -> Any:
         """
         Generates random configurations based on provided parameters.
 
@@ -156,7 +158,7 @@ def _create_modified_configs(
     return modified_configs
 
 
-def create_uuid():
+def create_uuid() -> Any:
     """
     Generates a unique identifier to be used as a worker ID.
 
@@ -169,7 +171,7 @@ def create_uuid():
     return "cfg-" + uid_str[:8] + "-" + uid_str[9:13]
 
 
-def _tune_parameters(config, data_dir=None, algorithm=None, initial_cpu_limit=None):
+def _tune_parameters(config: Any, data_dir: Any = None, algorithm: Any = None, initial_cpu_limit: Any = None) -> Any:
     """
     Runs the simulator with the provided configuration and returns the resulting metrics.
 
@@ -227,13 +229,13 @@ def tune_with_strategy(
     strategy: str,
     num_combinations: int = 10,
     num_workers: int = 1,
-    data_dir=None,
-    algorithm=None,
-    initial_cpu_limit=None,
+    data_dir: Any = None,
+    algorithm: Any = None,
+    initial_cpu_limit: Any = None,
     algo_specific_params_to_tune: Optional[dict[str, list[Any]]] = None,
     general_params_to_tune: Optional[dict[str, list[Any]]] = None,
     predictive_params_to_tune: Optional[dict[str, list[Any]]] = None,
-):
+) -> Any:
     # pylint: disable=too-many-positional-arguments
     # pylint: disable=too-many-arguments
     # pylint: disable=too-many-locals

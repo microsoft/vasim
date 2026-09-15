@@ -87,15 +87,18 @@ pre-commit run --all-files
 and should see output such as:
 
 ```txt
-Flake8...........................Passed
+ruff-check........................Passed
+ruff-format.......................Passed
+mypy..............................Passed
+pyright...........................Passed
 ```
 
 If you have installed your pre-commit hooks successfully, you should see something like this if you try to commit something non-conformant:
 
 ```txt
 $ git commit -m "testing"
-Flake8............................Failed
-- hook id: flake8
+ruff-check........................Failed
+- hook id: ruff-check
 - exit code: 1
 ```
 
@@ -104,8 +107,8 @@ See [`pre-commit-config.yaml`](./.pre-commit-config.yaml) for the complete list 
 ##### Temporarily Skipping a Hook
 
 ```sh
-# To temporarily skip the pylint and flake8 checks, for instance, do the following:
-SKIP="flake8,pylint" git commit -a -m "wip: hacking"
+# To temporarily skip the Ruff and type-checking hooks, for instance, do the following:
+SKIP="ruff-check,ruff-format,mypy,pyright" git commit -a -m "wip: hacking"
 ```
 
 #### Naming Convention
@@ -116,7 +119,7 @@ Scripts should be named in `snake_case` and classes in `CamelCase`.
 
 We generally use all [pep8](https://peps.python.org/pep-0008/) checks, with the exception of line length 127.
 
-Tools like `flake8`, `pylint`, and others are used to enforce this and are invoked as a part of the [`pre-commit`](#pre-commit) hooks mentioned above.
+Tools like `ruff`, `mypy`, `pyright`, and others are used to enforce this and are invoked as a part of the [`pre-commit`](#pre-commit) hooks mentioned above.
 
 #### Coverage
 

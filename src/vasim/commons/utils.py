@@ -30,9 +30,10 @@ Returns
 """
 
 from pathlib import Path
+from typing import Any
 
 
-def list_perf_event_log_files(data_dir: Path):
+def list_perf_event_log_files(data_dir: Path) -> Any:
     """
     Scans the provided directory for CSV files whose names end with "perf_event_log".
 

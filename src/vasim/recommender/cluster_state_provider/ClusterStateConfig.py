@@ -17,6 +17,7 @@ Classes:
 
 import json
 import logging
+from typing import Any
 
 from vasim.recommender.cluster_state_provider.ConfigStateConstants import (
     DEFAULT_FORECASTING_MODEL,
@@ -35,7 +36,7 @@ from vasim.recommender.cluster_state_provider.ConfigStateConstants import (
 logging.basicConfig(level=logging.INFO)  # You can adjust the logging level as needed
 
 
-class ClusterStateConfig(dict):
+class ClusterStateConfig(dict[str, Any]):
     """
     A class that manages the cluster state configuration used for autoscaling recommendations.
 
@@ -58,7 +59,7 @@ class ClusterStateConfig(dict):
         _check_positive_integer(key, value): Checks if a configuration value is a positive integer.
     """
 
-    def __init__(self, config_dict=None, filename=None):
+    def __init__(self, config_dict: Any = None, filename: Any = None) -> None:
         """
         Initialize the ClusterStateConfig object.
 
@@ -71,11 +72,11 @@ class ClusterStateConfig(dict):
             KeyError: If invalid keys are provided in the configuration.
         """
         super().__init__()  # Initialize the dictionary part of the object
-        self.algo_specific_config = {}
-        self.general_config = {}
-        self.prediction_config = {}
+        self.algo_specific_config: dict[str, Any] = {}
+        self.general_config: dict[str, Any] = {}
+        self.prediction_config: dict[str, Any] = {}
 
-        self.defaults = {
+        self.defaults: dict[str, dict[str, Any]] = {
             "general_config": {
                 "window": DEFAULT_WINDOW,
                 "lag": DEFAULT_LAG,
@@ -100,7 +101,7 @@ class ClusterStateConfig(dict):
 
         self.validate_config()
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: Any) -> Any:
         """
         Retrieve a configuration section using dictionary-like keys.
 
@@ -123,7 +124,7 @@ class ClusterStateConfig(dict):
             return self.prediction_config
         raise KeyError(f"Invalid key: {key}")
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: Any, value: Any) -> None:
         """
         Set a value for a configuration section using dictionary-like keys.
 
@@ -144,7 +145,7 @@ class ClusterStateConfig(dict):
         else:
             raise KeyError(f"Invalid key: {key}")
 
-    def get(self, key, default=None):
+    def get(self, key: Any, default: Any = None) -> Any:
         """
         Retrieve a configuration value by key, or return a default if not found.
 
@@ -161,7 +162,7 @@ class ClusterStateConfig(dict):
         except KeyError:
             return default
 
-    def _load_from_dict(self, config_dict):
+    def _load_from_dict(self, config_dict: Any) -> None:
         """
         Load the configuration from a provided dictionary and merge it with the default values.
 
@@ -172,7 +173,7 @@ class ClusterStateConfig(dict):
         self.algo_specific_config = config_dict.get("algo_specific_config", {})
         self.prediction_config = config_dict.get("prediction_config", {})
 
-    def _load_from_json(self, filename):
+    def _load_from_json(self, filename: Any) -> None:
         """
         Load the configuration from a JSON file.
 
@@ -195,7 +196,7 @@ class ClusterStateConfig(dict):
             logging.exception("Invalid JSON format in the configuration file: %s", filename)
             raise e
 
-    def to_json(self, filepath):
+    def to_json(self, filepath: Any) -> None:
         """
         Save the current configuration to a JSON file.
 
@@ -222,7 +223,7 @@ class ClusterStateConfig(dict):
             logging.exception("JSON serialization error for file: %s", filepath, exc_info=json_error)
             raise
 
-    def validate_config(self):
+    def validate_config(self) -> None:
         """
         Validate the configuration values to ensure required keys are present and have valid values.
 
@@ -274,7 +275,7 @@ class ClusterStateConfig(dict):
             self.general_config["min_cpu_limit"] = self.defaults["general_config"]["min_cpu_limit"]
             self.general_config["max_cpu_limit"] = self.defaults["general_config"]["max_cpu_limit"]
 
-    def _check_positive_integer(self, key, value):
+    def _check_positive_integer(self, key: Any, value: Any) -> None:
         """
         Helper method to check if a configuration value is a positive integer.
 

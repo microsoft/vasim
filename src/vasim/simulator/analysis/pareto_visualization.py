@@ -49,6 +49,7 @@ Usage:
 import multiprocessing
 import os
 import time
+from typing import Any
 
 import pandas as pd
 
@@ -57,7 +58,7 @@ from vasim.simulator.analysis.ParetoFrontier import ParetoFrontier
 from vasim.simulator.analysis.plot_utils import plot_cpu_usage_and_new_limit_reformat
 
 
-def _load_results_parallel(target_folder):
+def _load_results_parallel(target_folder: Any) -> Any:
     with multiprocessing.Pool() as pool:
         results = pool.starmap(
             ParetoFrontier.process_folder, ((target_folder, folder) for folder in os.listdir(target_folder))
@@ -68,7 +69,9 @@ def _load_results_parallel(target_folder):
     return filtered_results
 
 
-def create_pareto_curve_from_folder(original_data, tuned_data, cached_df=None, plot_surface=True):
+def create_pareto_curve_from_folder(
+    original_data: Any, tuned_data: Any, cached_df: Any = None, plot_surface: Any = True
+) -> Any:
     """
     This function creates a Pareto curve from the results and puts them in the target_folder.
 

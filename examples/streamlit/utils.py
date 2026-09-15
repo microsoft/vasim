@@ -20,12 +20,13 @@ Functions:
     - run_simulation: Runs the autoscaling simulation and updates a Streamlit progress bar.
     - plot_cpu_usage_and_sku_target_streamlit: Plots CPU usage and SKU targets using Streamlit's line_chart.
 """
-# pylint: disable=no-member # FIXME
 
+# pylint: disable=no-member # FIXME
 # utils.py
 import multiprocessing
 import os
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 
@@ -42,7 +43,7 @@ from vasim.simulator.InMemorySimulator import InMemoryRunnerSimulator
 from vasim.simulator.ParameterTuning import create_uuid
 
 
-def calculate_and_return_metrics(experiment_dir, perf_log_file_path=None, decision_file_path=None):
+def calculate_and_return_metrics(experiment_dir: Any, perf_log_file_path: Any = None, decision_file_path: Any = None) -> Any:
     """
     Calculates performance metrics based on a given experiment directory, using the performance log.
 
@@ -69,7 +70,7 @@ def calculate_and_return_metrics(experiment_dir, perf_log_file_path=None, decisi
     return metrics
 
 
-def parse_input(value):
+def parse_input(value: Any) -> Any:
     """
     Parses input values from a string or numeric value and returns a list of floats.
 
@@ -91,7 +92,7 @@ def parse_input(value):
         return []
 
 
-def process_folder(target_folder, folder):
+def process_folder(target_folder: Any, folder: Any) -> Any:
     """
     Processes a folder in the target directory.
 
@@ -114,7 +115,7 @@ def process_folder(target_folder, folder):
     return None
 
 
-def create_df(results):
+def create_df(results: Any) -> Any:
     """
     Creates a pandas DataFrame from the results of multiple simulations.
 
@@ -158,7 +159,7 @@ def create_df(results):
     return df
 
 
-def unflatten_dict(d, sep="."):
+def unflatten_dict(d: Any, sep: Any = ".") -> Any:
     """
     Converts a flat dictionary into a nested dictionary, using a separator to determine levels of nesting.
 
@@ -180,7 +181,7 @@ def unflatten_dict(d, sep="."):
     return result_dict
 
 
-def load_results_parallel(target_folder):
+def load_results_parallel(target_folder: Any) -> Any:
     """
     Loads and processes simulation results in parallel from the specified target folder.
 
@@ -196,7 +197,7 @@ def load_results_parallel(target_folder):
     return results
 
 
-def run_simulation(algorithm, data_dir, initial_cores_count, config):
+def run_simulation(algorithm: Any, data_dir: Any, initial_cores_count: Any, config: Any) -> None:
     """
     Runs the autoscaling simulation using the specified algorithm and configuration.
 
@@ -248,7 +249,9 @@ def run_simulation(algorithm, data_dir, initial_cores_count, config):
         plot_cpu_usage_and_sku_target_streamlit(target_dir_name, perf_log_file_path=perf_log_file_path)
 
 
-def plot_cpu_usage_and_sku_target_streamlit(experiment_dir, perf_log_file_path=None, decision_file_path=None):
+def plot_cpu_usage_and_sku_target_streamlit(
+    experiment_dir: Any, perf_log_file_path: Any = None, decision_file_path: Any = None
+) -> None:
     """
     Plots CPU usage and SKU target data using Streamlit's line_chart.
 

@@ -31,11 +31,12 @@ Example Usage:
 import logging
 import os
 from abc import abstractmethod
+from typing import Any
 
 
 class Recommender:
     # pylint: disable=too-few-public-methods
-    def __init__(self, cluster_state_provider, save_metadata=True):
+    def __init__(self, cluster_state_provider: Any, save_metadata: Any = True) -> None:
         """
         This is the base class for all recommender algorithms.
 
@@ -57,7 +58,7 @@ class Recommender:
         if save_metadata:
             self._save_metadata()
 
-    def _setup_logger(self):
+    def _setup_logger(self) -> Any:
         # TODO: I think we can simplify this by just using the config.uuid as the logger name
         if (
             hasattr(self.cluster_state_provider, "config")
@@ -67,7 +68,7 @@ class Recommender:
             return logging.getLogger(f"{self.cluster_state_provider.config.uuid}")
         return logging.getLogger()
 
-    def _save_metadata(self):
+    def _save_metadata(self) -> None:
         # Save metadata to a JSON file
 
         # We need to save it close to decision file, which would be target file.
@@ -76,7 +77,7 @@ class Recommender:
         self.config.to_json(f"{target_dir}/metadata.json")
 
     @abstractmethod
-    def run(self, recorded_data):
+    def run(self, recorded_data: Any) -> None:
         """
         This function is not intended to be called directly.
 

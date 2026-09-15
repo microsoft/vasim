@@ -24,26 +24,6 @@ Classes:
         Provides static methods for preparing and processing time series data, including smoothing,
         train/test splitting, resampling, and calculating workload duration.
 
-Methods
--------
-    timeit(func):
-        Decorator function that measures the execution time of the wrapped function.
-
-    DataProcessor.smooth_max(series, window, center=False):
-        Applies a rolling maximum to smooth the input time series data.
-
-    DataProcessor.train_test_split(series, test_size):
-        Splits the input series into training and testing sets based on the specified test size.
-
-    DataProcessor.prepare_data(y, smooth_window=1, smooth=True, test_size=0.2):
-        Prepares time series data for forecasting by applying optional smoothing and performing train/test splits.
-
-    DataProcessor.resample_dataframe(df, freq):
-        Resamples the input DataFrame to a specified frequency, applying forward-filling to handle missing data.
-
-    DataProcessor.get_workload_duration(data):
-        Calculates the total duration of a workload based on the time range in the input DataFrame.
-
 Parameters
 ----------
     series (pd.Series):
@@ -73,6 +53,26 @@ Parameters
     data (pd.DataFrame):
         Input DataFrame containing a 'time' column for calculating the workload duration.
 
+Methods
+-------
+    timeit(func):
+        Decorator function that measures the execution time of the wrapped function.
+
+    DataProcessor.smooth_max(series, window, center=False):
+        Applies a rolling maximum to smooth the input time series data.
+
+    DataProcessor.train_test_split(series, test_size):
+        Splits the input series into training and testing sets based on the specified test size.
+
+    DataProcessor.prepare_data(y, smooth_window=1, smooth=True, test_size=0.2):
+        Prepares time series data for forecasting by applying optional smoothing and performing train/test splits.
+
+    DataProcessor.resample_dataframe(df, freq):
+        Resamples the input DataFrame to a specified frequency, applying forward-filling to handle missing data.
+
+    DataProcessor.get_workload_duration(data):
+        Calculates the total duration of a workload based on the time range in the input DataFrame.
+
 Returns
 -------
     The respective methods return either the processed time series or train/test data,
@@ -80,12 +80,13 @@ Returns
 """
 
 import time
+from typing import Any
 
 import pandas as pd
 from sktime.forecasting.model_selection import temporal_train_test_split
 
 
-def timeit(func):
+def timeit(func: Any) -> Any:
     """
     Decorator to measure the execution time of a function.
 
@@ -97,7 +98,7 @@ def timeit(func):
         function: The wrapped function with execution time measurement.
     """
 
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         time.time()
         result = func(*args, **kwargs)
         time.time()
@@ -134,7 +135,7 @@ class DataProcessor:
     """
 
     @staticmethod
-    def smooth_max(series, window, center=False):
+    def smooth_max(series: Any, window: Any, center: Any = False) -> Any:
         """
         Smooths the series by applying a rolling maximum.
 
@@ -154,7 +155,7 @@ class DataProcessor:
         return smoothed
 
     @staticmethod
-    def train_test_split(series, test_size):
+    def train_test_split(series: Any, test_size: Any) -> Any:
         """
         Splits the time series into training and testing sets.
 
@@ -173,7 +174,7 @@ class DataProcessor:
         return y_train, y_test
 
     @staticmethod
-    def prepare_data(y, smooth_window=1, smooth=True, test_size=0.2):
+    def prepare_data(y: Any, smooth_window: Any = 1, smooth: Any = True, test_size: Any = 0.2) -> Any:
         """
         Prepares the time series data for forecasting.
 
@@ -197,7 +198,7 @@ class DataProcessor:
         return y_train, y_test
 
     @staticmethod
-    def resample_dataframe(df, freq):
+    def resample_dataframe(df: Any, freq: Any) -> Any:
         """
         Resamples the DataFrame to the specified frequency.
 
@@ -218,7 +219,7 @@ class DataProcessor:
         return df
 
     @staticmethod
-    def get_workload_duration(data):
+    def get_workload_duration(data: Any) -> Any:
         """
         Calculates the duration of the workload.
 

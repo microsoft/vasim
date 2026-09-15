@@ -32,6 +32,7 @@ Functions:
 import json
 import os
 from abc import ABC, abstractmethod
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -42,22 +43,22 @@ from vasim.recommender.cluster_state_provider.ClusterStateConfig import (
 
 
 class ParetoFrontier(ABC):
-    def __init__(self, workload_run_metrics):
+    def __init__(self, workload_run_metrics: Any) -> None:
         self.workload_run_metrics = workload_run_metrics
 
     @abstractmethod
-    def get_pareto_frontier(self):
+    def get_pareto_frontier(self) -> None:
         pass
 
-    def filter_out_less_than_by_dimension(self, dimension, value):
+    def filter_out_less_than_by_dimension(self, dimension: Any, value: Any) -> Any:
         return [x for x in self.workload_run_metrics if x[2][dimension] <= value]
 
     @abstractmethod
-    def find_closest_to_zero(self):
+    def find_closest_to_zero(self) -> None:
         pass
 
     @staticmethod
-    def preprocess_df(df):
+    def preprocess_df(df: Any) -> Any:
         # normalize by dividing by max value
         if df["sum_slack"].max() > 0:
             df["sum_slack_norm"] = df["sum_slack"] / df["sum_slack"].max()
@@ -72,12 +73,12 @@ class ParetoFrontier(ABC):
         return df
 
     @staticmethod
-    def read_metrics(file_path):
+    def read_metrics(file_path: Any) -> Any:
         with open(file_path, encoding="utf-8") as file:
             return json.load(file)
 
     @staticmethod
-    def process_folder(target_folder, folder):
+    def process_folder(target_folder: Any, folder: Any) -> Any:
         if folder.startswith("target_"):
             metadata_file = f"{target_folder}/{folder}/metadata.json"
             if os.path.exists(f"{target_folder}/{folder}/calc_metrics.json") and os.path.exists(metadata_file):
@@ -88,7 +89,7 @@ class ParetoFrontier(ABC):
         return None
 
     @staticmethod
-    def create_df(results):
+    def create_df(results: Any) -> Any:
         df = pd.DataFrame(
             columns=[
                 "folder",

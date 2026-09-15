@@ -50,6 +50,7 @@ Methods
 
 import logging
 import math
+from typing import Any
 
 import pandas as pd
 
@@ -87,7 +88,7 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
     """
 
     # pylint: disable=too-many-instance-attributes
-    def __init__(self, data_dir, prediction_config, **kwargs):
+    def __init__(self, data_dir: Any, prediction_config: Any, **kwargs: Any) -> None:
         """
         Initialize the PredictiveFileClusterStateProvider with predictive capabilities.
 
@@ -124,7 +125,7 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
 
         self.logger = logging.getLogger()
 
-    def get_predicted_cores(self, data):
+    def get_predicted_cores(self, data: Any) -> Any:
         """
         Calculate the predicted number of CPU cores based on the maximum observed CPU usage.
 
@@ -139,13 +140,13 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
             int: The predicted number of CPU cores required.
         """
 
-        def traditional_round(x):
+        def traditional_round(x: Any) -> Any:
             frac = x - math.floor(x)
             return math.floor(x) if frac < 0.5 else math.ceil(x)
 
         return max(traditional_round(data["cpu"].max()), self.cores)
 
-    def prediction_activated(self, data=None):
+    def prediction_activated(self, data: Any = None) -> Any:
         """
         Determines if prediction mode should be activated based on the collected historical data.
 
@@ -165,7 +166,7 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
             )
         return self._prediction_activated
 
-    def _get_all_performance_data(self):
+    def _get_all_performance_data(self) -> Any:
         """
         Retrieves all available performance data from the CSV files.
 
@@ -187,7 +188,7 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
 
         return recorded_data
 
-    def get_next_recorded_data(self):
+    def get_next_recorded_data(self) -> Any:
         """
         Retrieves the performance data for the current time window and predicts future data.
 
@@ -216,7 +217,7 @@ class PredictiveFileClusterStateProvider(FileClusterStateProvider):
 
         return entire_segment, end_time
 
-    def get_prediction(self, data):
+    def get_prediction(self, data: Any) -> Any:
         """
         Generates a prediction for future CPU usage based on the historical data.
 

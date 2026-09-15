@@ -31,6 +31,7 @@ Functions:
 
 import os
 import warnings
+from typing import Any
 
 import pandas as pd
 from plotnine import aes, geom_line, ggplot, labs
@@ -39,7 +40,7 @@ from plotnine import aes, geom_line, ggplot, labs
 warnings.filterwarnings("ignore", category=UserWarning)
 
 
-def read_data(decision_file_path, perf_log_file_path, if_resample=True):
+def read_data(decision_file_path: Any, perf_log_file_path: Any, if_resample: Any = True) -> Any:
     """
     This function reads the decision and performance log files and returns the dataframes.
 
@@ -84,7 +85,7 @@ def read_data(decision_file_path, perf_log_file_path, if_resample=True):
     return decision_df, perf_df
 
 
-def process_data(decision_df, perf_df, if_resample=True):
+def process_data(decision_df: Any, perf_df: Any, if_resample: Any = True) -> Any:
     if if_resample:
         decision_resampled = decision_df.set_index("LATEST_TIME").resample("1T").ffill().reset_index()
         perf_log_resampled = perf_df.set_index("TIMESTAMP").resample("1T").ffill().reset_index()
@@ -99,7 +100,7 @@ def process_data(decision_df, perf_df, if_resample=True):
     return merged
 
 
-def calculate_metrics(merged):
+def calculate_metrics(merged: Any) -> Any:
     if len(merged) == 0:
         return {}
 
@@ -122,7 +123,7 @@ def calculate_metrics(merged):
     return metrics
 
 
-def create_line_plots(merged):
+def create_line_plots(merged: Any) -> Any:
     df1 = merged[["TIMESTAMP", "CURR_LIMIT"]]
     df2 = merged[["TIMESTAMP", "CPU_USAGE_ACTUAL"]]
 
@@ -136,7 +137,9 @@ def create_line_plots(merged):
     return plot
 
 
-def calculate_and_return_metrics_to_target(source_dir, target_dir, perf_log_file_path=None, decision_file_path=None):
+def calculate_and_return_metrics_to_target(
+    source_dir: Any, target_dir: Any, perf_log_file_path: Any = None, decision_file_path: Any = None
+) -> Any:
     if not perf_log_file_path:
         perf_log_file_path = f"{source_dir}/{next(f for f in os.listdir(source_dir) if f.endswith('.csv'))}"
 
@@ -151,12 +154,12 @@ def calculate_and_return_metrics_to_target(source_dir, target_dir, perf_log_file
 
 
 def plot_cpu_usage_and_new_limit_reformat(
-    source_dir,
-    target_dir,
-    perf_log_file_path=None,
-    plot_show=False,
-    decision_file_path=None,
-):
+    source_dir: Any,
+    target_dir: Any,
+    perf_log_file_path: Any = None,
+    plot_show: Any = False,
+    decision_file_path: Any = None,
+) -> None:
     if not perf_log_file_path:
         perf_log_file_path = f"{source_dir}/{next(f for f in os.listdir(source_dir) if f.endswith('.csv'))}"
 
@@ -173,12 +176,12 @@ def plot_cpu_usage_and_new_limit_reformat(
 
 
 def plot_cpu_usage_and_new_limit_plotnine(
-    experiment_dir,
-    perf_log_file_path=None,
-    plot_show=False,
-    decision_file_path=None,
-    if_resample=True,
-):
+    experiment_dir: Any,
+    perf_log_file_path: Any = None,
+    plot_show: Any = False,
+    decision_file_path: Any = None,
+    if_resample: Any = True,
+) -> None:
     if not perf_log_file_path:
         perf_log_file_path = f"{experiment_dir}/{next(f for f in os.listdir(experiment_dir) if f.endswith('.csv'))}"
 

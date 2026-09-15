@@ -50,7 +50,7 @@ from vasim.recommender.forecasting.models.oracle import Oracle
 
 
 class TestOracle(unittest.TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         # Create a temporary directory and CSV files for testing
         root_dir = Path(os.path.dirname(os.path.abspath(__file__)))
         self.test_dir = root_dir / "test_data/oracle"
@@ -70,11 +70,11 @@ class TestOracle(unittest.TestCase):
         df.to_csv(self.csv_file_path, index=False)
         self.oracle = Oracle(self.test_dir)
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         # Remove the temporary directory and files after tests
         shutil.rmtree(self.test_dir)
 
-    def test_oracle(self):
+    def test_oracle(self) -> None:
         # Initialization
         self.assertIsInstance(self.oracle.all_performance_data, pd.DataFrame)
         self.assertEqual(5, len(self.oracle.all_performance_data))

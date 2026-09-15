@@ -21,6 +21,8 @@ Classes:
     the maximum observed CPU usage to recommend scaling limits.
 """
 
+from typing import Any
+
 import numpy as np
 
 from vasim.recommender.Recommender import Recommender
@@ -30,7 +32,7 @@ class SimpleAdditiveRecommender(Recommender):
     # pylint: disable=too-few-public-methods
     """A recommender that scales CPU usage by adding a buffer to the maximum observed usage."""
 
-    def __init__(self, cluster_state_provider, save_metadata=True):
+    def __init__(self, cluster_state_provider: Any, save_metadata: Any = True) -> None:
         """
         Initialize the SimpleAdditiveRecommender class.
 
@@ -45,7 +47,7 @@ class SimpleAdditiveRecommender(Recommender):
         # Default addend is 2. This is the buffer to the maximum value.
         self.addend = self.algo_params.get("addend", 2)
 
-    def run(self, recorded_data):
+    def run(self, recorded_data: Any) -> Any:
         """
         Run the recommender algorithm and return the new number of cores to scale to (new limit).
 

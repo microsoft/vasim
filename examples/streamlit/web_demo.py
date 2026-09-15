@@ -26,7 +26,7 @@ Modules:
 import itertools
 import json
 import os
-from typing import Optional
+from typing import Any, Optional
 
 import pandas as pd
 from utils import run_simulation, unflatten_dict  # pylint: disable=import-error
@@ -44,7 +44,7 @@ st.set_page_config(layout="wide")
 st.title("VASIM Autoscaling Simulator Toolkit Presentation")
 
 
-def construct_config_metric_df(config_metrics_list) -> pd.DataFrame:
+def construct_config_metric_df(config_metrics_list: Any) -> pd.DataFrame:
     """
     Helper function to output parameter list and metrics.
 
@@ -84,7 +84,7 @@ def create_charts(chart_data: pd.DataFrame) -> None:
     st.sidebar.success("Workload visualization finished.")
 
 
-def process_params_to_tune(input_selected_params_to_tune):
+def process_params_to_tune(input_selected_params_to_tune: Any) -> Any:
     """
     Processes selected parameters by prompting the user for input and returning.
 
@@ -105,7 +105,7 @@ def process_params_to_tune(input_selected_params_to_tune):
     return resulted_params_to_tune
 
 
-def process_parameter_input(param_name):
+def process_parameter_input(param_name: Any) -> Any:
     """
     Prompts the user for input values for a specific simulation parameter and.
 
@@ -142,7 +142,7 @@ parent_data_input_directory = st.sidebar.text_input("Enter the directory path fo
 # Function to get all CSV files recursively from a directory
 
 
-def get_files_with_extension(directory, format_suffix=".csv"):
+def get_files_with_extension(directory: Any, format_suffix: Any = ".csv") -> Any:
     """
     Recursively retrieves all files with a specific extension from a directory.
 

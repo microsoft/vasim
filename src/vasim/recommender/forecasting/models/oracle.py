@@ -19,6 +19,11 @@ Classes:
         Loads CSV files from a specified directory, processes the data, and provides methods for fitting
         and predicting future performance data.
 
+Parameters
+----------
+    data_dir (str):
+        The directory containing the CSV files to load.
+
 Attributes
 ----------
     all_performance_data (pd.DataFrame):
@@ -37,11 +42,6 @@ Methods
         Predicts future performance data points based on the provided data and the forecast horizon.
         Returns a DataFrame containing the predicted values.
 
-Parameters
-----------
-    data_dir (str):
-        The directory containing the CSV files to load.
-
 Returns
 -------
     pd.DataFrame:
@@ -50,6 +50,7 @@ Returns
 
 import os
 from datetime import datetime
+from typing import Any
 
 import pandas as pd
 
@@ -67,7 +68,7 @@ class Oracle:
         all_performance_data (pd.DataFrame): DataFrame containing all loaded performance data.
     """
 
-    def __init__(self, data_dir):
+    def __init__(self, data_dir: Any) -> None:
         """
         Initializes the Oracle class by loading CSV files from the specified directory.
 
@@ -91,7 +92,7 @@ class Oracle:
         temp_data = temp_data.sort_values("time", ascending=True)
         self.all_performance_data = temp_data
 
-    def fit(self, data):
+    def fit(self, data: Any) -> None:
         """
         Placeholder method for fitting a model to the data.
 
@@ -99,7 +100,7 @@ class Oracle:
             data (pd.DataFrame): Data to fit the model on.
         """
 
-    def predict(self, data, forecast_horizon):
+    def predict(self, data: Any, forecast_horizon: Any) -> Any:
         """
         Predicts future data points based on the provided data.
 

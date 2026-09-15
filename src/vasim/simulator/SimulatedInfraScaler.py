@@ -20,6 +20,11 @@ Classes:
         Provides methods to scale a simulated cluster based on system decisions, while adhering to recovery
         periods and core limits.
 
+Parameters
+----------
+            new_limit (int): The new number of cores to scale to.
+            time_now (datetime): The current timestamp.
+
 Attributes
 ----------
     cluster_state_provider (ClusterStateProvider):
@@ -43,11 +48,6 @@ Methods
         recovery time has passed since the last scaling event and ensures that the new limit does not exceed
         minimum or maximum core limits.
 
-Parameters
-----------
-            new_limit (int): The new number of cores to scale to.
-            time_now (datetime): The current timestamp.
-
 Returns
 -------
             bool: Returns True if scaling was successful, otherwise False.
@@ -55,6 +55,7 @@ Returns
 
 import logging
 from pathlib import Path
+from typing import Any
 
 
 class SimulatedInfraScaler:
@@ -76,7 +77,7 @@ class SimulatedInfraScaler:
         logger (Logger): A logger object to log scaling decisions and events.
     """
 
-    def __init__(self, cluster_state_provider, start_timestamp, recovery_time):
+    def __init__(self, cluster_state_provider: Any, start_timestamp: Any, recovery_time: Any) -> None:
         """
         Initialize the SimulatedInfraScaler.
 
@@ -103,7 +104,7 @@ class SimulatedInfraScaler:
         # Write a test message to confirm logger is initialized
         self.logger.info(">>>SimulatedInfraScaler initialized")
 
-    def scale(self, new_limit, time_now):
+    def scale(self, new_limit: Any, time_now: Any) -> bool:
         """
         Scale the simulated cluster to a new CPU limit.
 

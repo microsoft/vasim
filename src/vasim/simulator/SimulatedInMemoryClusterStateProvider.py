@@ -20,6 +20,19 @@ Classes:
         Extends both `SimulatedBaseClusterStateProvider` and `FileClusterStateProvider` to handle
         in-memory simulations of cluster state management.
 
+Parameters
+----------
+    data_dir (str):
+        The directory where performance data CSV files are stored.
+    window (int):
+        The size of the time window for filtering data (in minutes).
+    decision_file_path (str):
+        The file path where decisions are recorded.
+    max_cpu_limit (int):
+        The maximum allowable CPU limit for scaling operations.
+    lag (int):
+        The time lag in minutes used for decision-making in the simulation.
+
 Methods
 -------
     __init__(data_dir="data/performance_log", window=40, decision_file_path=None, max_cpu_limit=None, lag=None, **kwargs):
@@ -37,19 +50,6 @@ Methods
         Writes the recorded data to a CSV file with a custom header, allowing metrics to be stored
         for further analysis or auditing.
 
-Parameters
-----------
-    data_dir (str):
-        The directory where performance data CSV files are stored.
-    window (int):
-        The size of the time window for filtering data (in minutes).
-    decision_file_path (str):
-        The file path where decisions are recorded.
-    max_cpu_limit (int):
-        The maximum allowable CPU limit for scaling operations.
-    lag (int):
-        The time lag in minutes used for decision-making in the simulation.
-
 Returns
 -------
     The `read_metrics_data` method returns a filtered DataFrame containing the performance data
@@ -57,6 +57,7 @@ Returns
 """
 
 from datetime import timedelta
+from typing import Any
 
 from vasim.recommender.cluster_state_provider.FileClusterStateProvider import (
     FileClusterStateProvider,
@@ -85,13 +86,13 @@ class SimulatedInMemoryClusterStateProvider(SimulatedBaseClusterStateProvider, F
     # pylint: disable=too-many-instance-attributes disable=too-many-positional-arguments
     def __init__(
         self,
-        data_dir="data/performance_log",
-        window=40,
-        decision_file_path=None,
-        max_cpu_limit=None,
-        lag=None,
-        **kwargs,
-    ):
+        data_dir: Any = "data/performance_log",
+        window: Any = 40,
+        decision_file_path: Any = None,
+        max_cpu_limit: Any = None,
+        lag: Any = None,
+        **kwargs: Any,
+    ) -> None:
         """
         Initialize the SimulatedInMemoryClusterStateProvider.
 
@@ -127,7 +128,7 @@ class SimulatedInMemoryClusterStateProvider(SimulatedBaseClusterStateProvider, F
             **kwargs,
         )
 
-    def get_next_recorded_data(self):
+    def get_next_recorded_data(self) -> None:
         """
         Abstract method to retrieve the next set of recorded performance data.
 
@@ -141,7 +142,7 @@ class SimulatedInMemoryClusterStateProvider(SimulatedBaseClusterStateProvider, F
         raise NotImplementedError
 
     # pylint: disable=duplicate-code
-    def read_metrics_data(self):
+    def read_metrics_data(self) -> Any:
         """
         Read and return the recorded performance data filtered by the current time window.
 
@@ -163,7 +164,7 @@ class SimulatedInMemoryClusterStateProvider(SimulatedBaseClusterStateProvider, F
         return filtered_data
 
     # pylint: disable=duplicate-code
-    def flush_metrics_data(self, filename):
+    def flush_metrics_data(self, filename: Any) -> None:
         """
         Write the recorded performance data to a CSV file with a custom header.
 

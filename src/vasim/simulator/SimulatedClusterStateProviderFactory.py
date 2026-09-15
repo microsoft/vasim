@@ -72,7 +72,7 @@ class SimulatedClusterStateProviderFactory:
     """
 
     # pylint: disable=too-few-public-methods
-    def __init__(self, data_dir: str, out_filename: str, config: ClusterStateConfig):
+    def __init__(self, data_dir: str, out_filename: str, config: ClusterStateConfig) -> None:
         """
         Initialize the SimulatedClusterStateProviderFactory.
 

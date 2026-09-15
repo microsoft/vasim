@@ -70,6 +70,7 @@ Methods
 
 import logging
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 
@@ -105,13 +106,13 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
 
     def __init__(
         self,
-        data_dir="data/performance_log",
-        window=40,
-        decision_file_path=None,
-        max_cpu_limit=None,
-        lag=None,
-        **kwargs,
-    ):
+        data_dir: Any = "data/performance_log",
+        window: Any = 40,
+        decision_file_path: Any = None,
+        max_cpu_limit: Any = None,
+        lag: Any = None,
+        **kwargs: Any,
+    ) -> None:
         """
         Initialize the `SimulatedBaseClusterStateProvider`.
 
@@ -132,7 +133,7 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         self.decision_file_path = (Path().absolute() / decision_file_path).absolute()
         self.curr_cpu_limit = None  # set by initial_cores_count during the first scaling
         self.print_properties()
-        self.config = kwargs.get("config")
+        self.config: Any = kwargs.get("config")
         # TODO: these did not get updated to the new config format
         self.max_cpu_limit = max_cpu_limit
         self.lag = lag
@@ -157,7 +158,7 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         self.current_time = self.start_time
         self.last_scaling_time = self.start_time
 
-    def get_next_recorded_data(self):
+    def get_next_recorded_data(self) -> None:
         """
         Abstract method to fetch the next set of recorded data from the performance logs.
 
@@ -169,7 +170,7 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         """
         raise NotImplementedError
 
-    def set_cpu_limit(self, new_cpu_limit):
+    def set_cpu_limit(self, new_cpu_limit: Any) -> None:
         """
         Set a new CPU limit for the cluster.
 
@@ -183,7 +184,7 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
             self.last_scaling_time = self.current_time
         self.curr_cpu_limit = new_cpu_limit
 
-    def get_index_pod_creation_timestamp(self):
+    def get_index_pod_creation_timestamp(self) -> Any:
         """
         Retrieve the timestamp of the last scaling operation.
 
@@ -193,12 +194,12 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         """
         return self.last_scaling_time
 
-    def print_properties(self):
+    def print_properties(self) -> None:
         """Print the properties of the SimulatedBaseClusterStateProvider instance for debugging."""
         for _key, _value in vars(self).items():
             pass
 
-    def get_current_cpu_limit(self):
+    def get_current_cpu_limit(self) -> Any:
         """
         Retrieve the current CPU limit for the cluster.
 
@@ -208,7 +209,7 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         """
         return self.curr_cpu_limit
 
-    def get_total_cpu(self):
+    def get_total_cpu(self) -> Any:
         """
         Retrieve the total maximum CPU limit for the cluster.
 
@@ -218,7 +219,7 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         """
         return self.max_cpu_limit
 
-    def flush_metrics_data(self, filename):
+    def flush_metrics_data(self, filename: Any) -> None:
         """
         Write the recorded performance data to a CSV file with a custom header.
 
@@ -231,7 +232,7 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
             file.write(custom_header + "\n")
             self.recorded_data.to_csv(file, index=False, date_format="%Y.%m.%d-%H:%M:%S:%f", header=False)
 
-    def get_last_decision_time(self, recorded_data=None):  # pylint: disable=unused-argument
+    def get_last_decision_time(self, recorded_data: Any = None) -> Any:  # pylint: disable=unused-argument
         """
         Calculate the last decision time based on the current time and lag.
 
@@ -244,6 +245,6 @@ class SimulatedBaseClusterStateProvider(ClusterStateProvider):
         """
         return pd.Timestamp(self.current_time) - pd.Timedelta(minutes=self.lag)
 
-    def advance_time(self):
+    def advance_time(self) -> None:
         """Advance the current simulated time by the lag value."""
         self.current_time = pd.Timestamp(self.current_time) + pd.Timedelta(minutes=self.lag)

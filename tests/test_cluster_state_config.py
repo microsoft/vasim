@@ -103,7 +103,7 @@ from vasim.recommender.cluster_state_provider.ConfigStateConstants import (
 
 
 class TestClusterStateConfig(unittest.TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.config_data = {
             "general_config": {"window": 20},
             "algo_specific_config": {"addend": 2},
@@ -112,13 +112,13 @@ class TestClusterStateConfig(unittest.TestCase):
 
         self.config = ClusterStateConfig(config_dict=self.config_data)
 
-    def test_init_with_config_dict(self):
+    def test_init_with_config_dict(self) -> None:
         # Test that the values are correctly assigned
         self.assertEqual(self.config.general_config["window"], 20)
         self.assertEqual(self.config.algo_specific_config["addend"], 2)
         self.assertEqual(self.config.prediction_config["frequency_minutes"], 5)
 
-    def test_load_from_json(self):
+    def test_load_from_json(self) -> None:
         json_data = json.dumps(self.config_data)
 
         with patch("builtins.open", mock_open(read_data=json_data)):
@@ -129,7 +129,7 @@ class TestClusterStateConfig(unittest.TestCase):
         self.assertEqual(config.algo_specific_config["addend"], 2)
         self.assertEqual(config.prediction_config["frequency_minutes"], 5)
 
-    def test_load_config_file_not_exist(self):
+    def test_load_config_file_not_exist(self) -> None:
         # Path to a file that doesn't exist
         data_path = "non_existent_file.json"
 
@@ -137,7 +137,7 @@ class TestClusterStateConfig(unittest.TestCase):
         with self.assertRaises(FileNotFoundError):
             ClusterStateConfig(filename=data_path)
 
-    def test_to_json_no_prediction(self):
+    def test_to_json_no_prediction(self) -> None:
         config = ClusterStateConfig({"general_config": {"window": 20}, "algo_specific_config": {"addend": 2}})
 
         # Expected dictionary structure with subsections
@@ -157,7 +157,7 @@ class TestClusterStateConfig(unittest.TestCase):
             # Ensure that 'json.dump' was called with the correct dictionary and file handle
             mock_json_dump.assert_called_once_with(expected_dict, mocked_file(), indent=4)
 
-    def test_to_json(self):
+    def test_to_json(self) -> None:
         # Expected dictionary structure with subsections
         expected_dict = {
             "general_config": {"window": 20, "lag": 15, "max_cpu_limit": 20, "min_cpu_limit": 1, "recovery_time": 15},
@@ -183,7 +183,7 @@ class TestClusterStateConfig(unittest.TestCase):
             # Ensure that 'json.dump' was called with the correct dictionary and file handle
             mock_json_dump.assert_called_once_with(expected_dict, mocked_file(), indent=4)
 
-    def test_setattr(self):
+    def test_setattr(self) -> None:
         config = ClusterStateConfig()
         config.general_config["window"] = 10
         config.algo_specific_config["addend"] = 5
@@ -193,7 +193,7 @@ class TestClusterStateConfig(unittest.TestCase):
         self.assertEqual(config.general_config["recovery_time"], RECOVERY_TIME)
         self.assertEqual(config.algo_specific_config["addend"], 5)
 
-    def test_load_from_dict(self):
+    def test_load_from_dict(self) -> None:
 
         self.config._load_from_dict(self.config_data)  # pylint: disable=protected-access
 
@@ -201,7 +201,7 @@ class TestClusterStateConfig(unittest.TestCase):
         self.assertEqual(self.config.general_config["window"], 20)
         self.assertEqual(self.config.prediction_config["model"], "naive")
 
-    def test_empty_initialization(self):
+    def test_empty_initialization(self) -> None:
         # Initialize config without any input
         config = ClusterStateConfig()
 
@@ -217,7 +217,7 @@ class TestClusterStateConfig(unittest.TestCase):
         self.assertEqual(config.algo_specific_config, {})
         self.assertEqual(config.prediction_config, {"enabled": False})
 
-    def test_load_config_from_file(self):
+    def test_load_config_from_file(self) -> None:
         # Path to the test JSON file
         data_path = "tests/test_data/alibaba_control_c_29247_denom_1/metadata.json"
 
@@ -236,7 +236,7 @@ class TestClusterStateConfig(unittest.TestCase):
         self.assertEqual(config.prediction_config["waiting_before_predict"], 1440)
         self.assertEqual(config.prediction_config["forecasting_models"], "naive")
 
-    def test_exception_in_to_json(self):
+    def test_exception_in_to_json(self) -> None:
         config = ClusterStateConfig(config_dict=self.config_data)
 
         # Simulate an OSError when trying to write to a file
@@ -250,7 +250,7 @@ class TestClusterStateConfig(unittest.TestCase):
             # Ensure the error message was logged
             self.assertIn("File error while writing JSON file", log.output[0])
 
-    def test_min_cpu_greater_than_max_cpu(self):
+    def test_min_cpu_greater_than_max_cpu(self) -> None:
         # Create the config instance with mocked config data
         config = ClusterStateConfig(
             config_dict={
@@ -271,7 +271,7 @@ class TestClusterStateConfig(unittest.TestCase):
         self.assertEqual(config.general_config["min_cpu_limit"], config.defaults["general_config"]["min_cpu_limit"])
         self.assertEqual(config.general_config["max_cpu_limit"], config.defaults["general_config"]["max_cpu_limit"])
 
-    def test_min_cpu_less_than_or_equal_to_max_cpu(self):
+    def test_min_cpu_less_than_or_equal_to_max_cpu(self) -> None:
         # Modify the config so min_cpu_limit is less than or equal to max_cpu_limit
         self.config_data["general_config"]["min_cpu_limit"] = 2
         self.config_data["general_config"]["max_cpu_limit"] = 4
@@ -287,7 +287,7 @@ class TestClusterStateConfig(unittest.TestCase):
 
         # Test __getitem__ for valid keys
 
-    def test_getitem_valid_keys(self):
+    def test_getitem_valid_keys(self) -> None:
         # Test for general_config key
 
         self.assertEqual(self.config["general_config"], self.config_data["general_config"])
@@ -297,12 +297,12 @@ class TestClusterStateConfig(unittest.TestCase):
         self.assertEqual(self.config["prediction_config"], self.config_data["prediction_config"])
 
     # Test __getitem__ for an invalid key
-    def test_getitem_invalid_key(self):
+    def test_getitem_invalid_key(self) -> None:
         with self.assertRaises(KeyError):
             self.config["invalid_key"]  # This should raise a KeyError
 
     # Test __setitem__ for valid keys
-    def test_setitem_valid_keys(self):
+    def test_setitem_valid_keys(self) -> None:
         # Set a new value for general_config
         new_general_config = {"window": 15, "lag": 8}
         config = ClusterStateConfig(config_dict=self.config_data)
@@ -320,22 +320,22 @@ class TestClusterStateConfig(unittest.TestCase):
         self.assertEqual(config["prediction_config"], new_prediction_config)
 
     # Test __setitem__ for an invalid key
-    def test_setitem_invalid_key(self):
+    def test_setitem_invalid_key(self) -> None:
         with self.assertRaises(KeyError):
             self.config["invalid_key"] = {"some_key": "some_value"}  # This should raise a KeyError
 
     # Test get method for valid keys
-    def test_get_valid_keys(self):
+    def test_get_valid_keys(self) -> None:
         self.assertEqual(self.config.get("general_config"), self.config_data["general_config"])
         self.assertEqual(self.config.get("algo_specific_config"), self.config_data["algo_specific_config"])
         self.assertEqual(self.config.get("prediction_config"), self.config_data["prediction_config"])
 
     # Test get method with an invalid key and a default value
-    def test_get_invalid_key_with_default(self):
+    def test_get_invalid_key_with_default(self) -> None:
         self.assertEqual(self.config.get("invalid_key", "default_value"), "default_value")
 
     # Test get method with an invalid key without providing a default (should return None)
-    def test_get_invalid_key_without_default(self):
+    def test_get_invalid_key_without_default(self) -> None:
         self.assertIsNone(self.config.get("invalid_key"))
 
 

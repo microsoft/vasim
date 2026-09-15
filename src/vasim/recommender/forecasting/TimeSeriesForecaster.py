@@ -19,6 +19,23 @@ Classes:
         Provides methods for configuring and executing time series forecasts on performance data,
         using models like NaiveForecaster or Oracle.
 
+Parameters
+----------
+    data_dir (str):
+        The directory path containing the data for training the forecasting models.
+
+    sp (int):
+        The seasonal periodicity for the time series (default is 24 * 60 * 2).
+
+    selected_forecaster (list):
+        A list of forecasters to use for the prediction. Default is ["naive"].
+
+    data (pd.DataFrame):
+        Input data for prediction or forecasting, typically a DataFrame with time series data.
+
+    forecast_horizon (int):
+        The number of future data points to predict.
+
 Attributes
 ----------
     window_splitter (float): Proportion of data to use for training during forecasting (default 0.7).
@@ -45,23 +62,6 @@ Methods
         Performs the forecasting operation using the provided data and forecast horizon,
         returns the predicted data points.
 
-Parameters
-----------
-    data_dir (str):
-        The directory path containing the data for training the forecasting models.
-
-    sp (int):
-        The seasonal periodicity for the time series (default is 24 * 60 * 2).
-
-    selected_forecaster (list):
-        A list of forecasters to use for the prediction. Default is ["naive"].
-
-    data (pd.DataFrame):
-        Input data for prediction or forecasting, typically a DataFrame with time series data.
-
-    forecast_horizon (int):
-        The number of future data points to predict.
-
 Returns
 -------
     The `get_prediction` and `_forecast` methods return a `pd.DataFrame` containing the predicted
@@ -69,7 +69,7 @@ Returns
 """
 
 import warnings
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 import numpy as np
 from sktime.forecasting.compose import MultiplexForecaster
@@ -94,7 +94,9 @@ class TimeSeriesForecaster:
         data_dir (str): Directory containing training data.
     """
 
-    def __init__(self, data_dir=None, sp=24 * 60 * 2, selected_forecaster: Optional[Union[str, list[str]]] = None):
+    def __init__(
+        self, data_dir: Any = None, sp: Any = 24 * 60 * 2, selected_forecaster: Optional[Union[str, list[str]]] = None
+    ) -> None:
         """
         Initializes the TimeSeriesForecaster with the specified parameters.
 
@@ -108,13 +110,13 @@ class TimeSeriesForecaster:
         self.window_splitter = 0.7
         self.sp = sp
         self.selected_forecaster = selected_forecaster
-        self.forecaster = None
-        self.forecaster_param_grid = None
+        self.forecaster: Any = None
+        self.forecaster_param_grid: Optional[dict[str, list[Any]]] = None
         self.cv = SlidingWindowSplitter(window_length=1, fh=[0])
         self.data_dir = data_dir
         self.set_forecaster(selected_forecaster)
 
-    def set_forecaster(self, selected_forecaster):
+    def set_forecaster(self, selected_forecaster: Any) -> None:
         """
         Sets the forecaster based on the selected forecaster.
 
@@ -135,7 +137,7 @@ class TimeSeriesForecaster:
             )
         self.forecaster_param_grid = {"selected_forecaster": [selected_forecaster]}
 
-    def get_prediction(self, data, forecast_horizon):
+    def get_prediction(self, data: Any, forecast_horizon: Any) -> Any:
         """
         Gets the prediction for the specified number of points.
 
@@ -154,7 +156,7 @@ class TimeSeriesForecaster:
         y_pred = y_pred.reset_index(drop=True)
         return y_pred
 
-    def _forecast(self, data, forecast_horizon):
+    def _forecast(self, data: Any, forecast_horizon: Any) -> Any:
         """
         Forecasts the future data points based on the provided data.
 
@@ -171,6 +173,8 @@ class TimeSeriesForecaster:
         warnings.filterwarnings("ignore", category=DeprecationWarning)
         warnings.filterwarnings("ignore", category=FutureWarning)
         forecaster = self.forecaster
+        if forecaster is None:
+            raise RuntimeError("Forecaster has not been initialized.")
         forecaster.fit(data)
         if self.selected_forecaster == ["oracle"]:
             y_pred = forecaster.predict(data, forecast_horizon)

@@ -62,7 +62,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
     It calls tune_with_strategy, which performs a tuning run of the simulator, trying different configurations.
     """
 
-    def setUp(self):
+    def setUp(self) -> None:
 
         # For this test we'll use the "mini" dataset, which is a smaller version of the full dataset
         root_dir = Path(os.path.dirname(os.path.abspath(__file__)))
@@ -77,12 +77,12 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         shutil.copytree(self.source_dir, self.target_dir)
 
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
         patcher = patch("builtins.print", MagicMock())  # Mock the print function globally
         patcher.start()
         cls.patcher = patcher
 
-    def test_pareto2d(self):
+    def test_pareto2d(self) -> None:
         """This test will tune the simulator with a few parameters and then plot the results on a pareto curve."""
         # First create some test data to tune
         config_path = f"{self.source_dir}/metadata.json"
@@ -139,7 +139,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         self.assertAlmostEqual(ret[2], 7800, delta=100)
         self.assertAlmostEqual(ret[3], 70.6, delta=4)
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         shutil.rmtree(self.target_dir_sim, ignore_errors=True)
         shutil.rmtree(self.target_dir, ignore_errors=True)
 

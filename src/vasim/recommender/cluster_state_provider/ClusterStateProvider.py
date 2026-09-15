@@ -53,44 +53,47 @@ Methods
 """
 
 from abc import abstractmethod
+from typing import Any
 
 import pandas as pd
 
 
 class ClusterStateProvider:
-    def __init__(self, data_dir=None, features=None, window=None, decision_file_path=None, lag=None):
+    def __init__(
+        self, data_dir: Any = None, features: Any = None, window: Any = None, decision_file_path: Any = None, lag: Any = None
+    ) -> None:
         # pylint: disable=too-many-arguments
         # TODO: How did we chose to include lag and window, but not the rest? I think make them all kwargs
         pass
 
     @abstractmethod
-    def get_next_recorded_data(self):
+    def get_next_recorded_data(self) -> Any:
         pass
 
     @abstractmethod
-    def get_current_cpu_limit(self):
+    def get_current_cpu_limit(self) -> Any:
         pass
 
     @abstractmethod
-    def get_total_cpu(self):
+    def get_total_cpu(self) -> Any:
         pass
 
-    def prediction_activated(self, data=None):
+    def prediction_activated(self, data: Any = None) -> bool:
         # pylint: disable=unused-argument
         # pylint: disable=no-self-use
         return False
 
     @abstractmethod
-    def process_data(self, data=None):
+    def process_data(self, data: Any = None) -> Any:
         pass
 
     @staticmethod
-    def drop_duplicates(recorded_data: pd.DataFrame):
+    def drop_duplicates(recorded_data: pd.DataFrame) -> Any:
         recorded_data = recorded_data.drop_duplicates()
         return recorded_data
 
     @staticmethod
-    def sort_data(recorded_data: pd.DataFrame):
+    def sort_data(recorded_data: pd.DataFrame) -> Any:
         recorded_data = recorded_data.assign(time=pd.to_datetime(recorded_data["time"]))
         recorded_data = recorded_data.sort_values(by="time")
         return recorded_data

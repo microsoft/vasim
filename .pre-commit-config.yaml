@@ -27,6 +27,7 @@ repos:
         entry: mypy
         language: system
         types: [python]
+        pass_filenames: false
         require_serial: true
       - id: pyright
         name: pyright

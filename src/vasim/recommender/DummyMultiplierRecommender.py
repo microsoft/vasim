@@ -21,6 +21,8 @@ Classes:
     CPU usage data to recommend scaling limits.
 """
 
+from typing import Any
+
 import numpy as np
 
 from vasim.recommender.Recommender import Recommender
@@ -28,10 +30,10 @@ from vasim.recommender.Recommender import Recommender
 
 class SimpleMultiplierRecommender(Recommender):
     # pylint: disable=too-few-public-methods
-    def __init__(self, cluster_state_provider, save_metadata=True):
+    def __init__(self, cluster_state_provider: Any, save_metadata: Any = True) -> None:
         """
-        Parameters
-        ----------
+        ---
+
             cluster_state_provider (ClusterStateProvider): The cluster state provider such as FileClusterStateProvider.
             save_metadata (bool): Whether to save metadata to a file.
         """
@@ -48,7 +50,7 @@ class SimpleMultiplierRecommender(Recommender):
             self.config.get("general_config", {}).get("window", 5),
         )
 
-    def run(self, recorded_data):
+    def run(self, recorded_data: Any) -> Any:
         """
         This method runs the recommender algorithm and returns the new number of cores to scale to (new limit).
 
@@ -71,7 +73,7 @@ class SimpleMultiplierRecommender(Recommender):
 
         return new_limit
 
-    def calculate_smoothed_max(self, recorded_data):
+    def calculate_smoothed_max(self, recorded_data: Any) -> Any:
         # Smooth the data by applying a rolling mean
         smoothed_data = recorded_data["cpu"].rolling(window=self.smoothing_window, min_periods=1).mean()
 

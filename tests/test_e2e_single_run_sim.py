@@ -62,7 +62,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
     It calls InMemoryRunnerSimulator, which performs a single run of the simulator without tuning.
     """
 
-    def setUp(self):
+    def setUp(self) -> None:
         root_dir = Path(os.path.dirname(os.path.abspath(__file__)))
         self.source_dir = root_dir / "test_data/alibaba_control_c_29247_denom_1"
         # Here we'll copy the source directory to a target directory, so we can modify the target directory without
@@ -75,12 +75,12 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         shutil.copytree(self.source_dir, self.target_dir)
 
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
         patcher = patch("builtins.print", MagicMock())  # Mock the print function globally
         patcher.start()
         cls.patcher = patcher
 
-    def test_run_multiplicative_algo(self):
+    def test_run_multiplicative_algo(self) -> None:
         """Test a single run of the simulator with the multiplicative algorithm."""
         runner = InMemoryRunnerSimulator(self.target_dir, initial_cpu_limit=14, algorithm="multiplicative")
         assert runner.initial_cpu_limit == 14
@@ -131,7 +131,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         )
         self.assertAlmostEqual(results["slack_percentage"], expected["slack_percentage"], places=2)
 
-    def test_run_additive_algo(self):
+    def test_run_additive_algo(self) -> None:
         """Test a single run of the simulator with the additive algorithm."""
         runner = InMemoryRunnerSimulator(self.target_dir, initial_cpu_limit=14, algorithm="additive")
         results = runner.run_simulation()
@@ -185,7 +185,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         )
         self.assertAlmostEqual(results["slack_percentage"], expected["slack_percentage"], places=2)
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         shutil.rmtree(self.target_dir_sim, ignore_errors=True)
         shutil.rmtree(self.target_dir, ignore_errors=True)
 

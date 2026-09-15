@@ -61,7 +61,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
     It calls InMemoryRunnerSimulator, which performs a single run of the simulator without tuning.
     """
 
-    def setUp(self):
+    def setUp(self) -> None:
         root_dir = Path(os.path.dirname(os.path.abspath(__file__)))
         self.source_dir = root_dir / "test_data/alibaba_control_c_29247_denom_1_mini"
         # Here we'll copy the source directory to a target directory, so we can modify the target directory without
@@ -74,7 +74,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         shutil.rmtree(self.target_dir, ignore_errors=True)
         shutil.copytree(self.source_dir, self.target_dir)
 
-    def test_lag_parameter_10(self):
+    def test_lag_parameter_10(self) -> None:
         """
         The lag parameter defines the number of minutes to wait before making a prediction.
 
@@ -125,7 +125,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
             diff = (third_time - second_time).total_seconds() / 60
             assert diff == lag_read_in, f"Expected the difference lines 2-3 to be {lag_read_in} minutes, but got {diff}"
 
-    def test_lag_parameter_5(self):
+    def test_lag_parameter_5(self) -> None:
         """
         The lag parameter defines the number of minutes to wait before making a prediction.
 
@@ -180,7 +180,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
             diff = (third_time - second_time).total_seconds() / 60
             assert diff == lag_read_in, f"Expected the difference lines 2-3 to be {lag_read_in} minutes, but got {diff}"
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         shutil.rmtree(self.target_dir_sim, ignore_errors=True)
         shutil.rmtree(self.target_dir, ignore_errors=True)
 

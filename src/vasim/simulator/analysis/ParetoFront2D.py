@@ -27,6 +27,7 @@ Functions:
 """
 
 import random
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -35,14 +36,20 @@ from matplotlib import pyplot as plt
 from vasim.simulator.analysis.ParetoFrontier import ParetoFrontier
 
 
-def calculate_objective(alpha, sum_slack, sum_insufficient_cpu):
+def calculate_objective(alpha: Any, sum_slack: Any, sum_insufficient_cpu: Any) -> Any:
     """KS: what does this do? How was this formula derived?"""
     return alpha * sum_slack + sum_insufficient_cpu
 
 
 class ParetoFront2D(ParetoFrontier):
     # pylint: disable=too-many-instance-attributes
-    def __init__(self, df, dimension_1="sum_slack", dimension_2="sum_insufficient_cpu", directory_to_save_files=None):
+    def __init__(
+        self,
+        df: Any,
+        dimension_1: Any = "sum_slack",
+        dimension_2: Any = "sum_insufficient_cpu",
+        directory_to_save_files: Any = None,
+    ) -> None:
         """
         This class is used to find the Pareto frontier of a 2D space.
 
@@ -72,7 +79,7 @@ class ParetoFront2D(ParetoFrontier):
             result_df = pd.DataFrame.from_dict(self.result, orient="index")
             result_df.to_csv(f"{self.files}/pareto_frontier_denominator_{self.denominator}2d.csv")
 
-    def get_best_config_for_alpha(self, alpha):
+    def get_best_config_for_alpha(self, alpha: Any) -> Any:
         """TODO: KS: what does this do?"""
         sum_slack = self.df[self.dimension_1]
         sum_insufficient_cpu = self.df[self.dimension_2]
@@ -100,7 +107,10 @@ class ParetoFront2D(ParetoFrontier):
 
         return best_config
 
-    def find_closest_to_zero(self):
+    def get_pareto_frontier(self) -> Any:
+        return self.result
+
+    def find_closest_to_zero(self) -> Any:
         """
         This function finds the closest combination to (0, 0) for the given dimensions.
 
@@ -130,7 +140,7 @@ class ParetoFront2D(ParetoFrontier):
 
         return closest_combination
 
-    def plot_scatter_frontier(self, plot_filename="pareto_frontier"):
+    def plot_scatter_frontier(self, plot_filename: Any = "pareto_frontier") -> None:
         _fig, ax = plt.subplots()
         for alpha in self.alphas:
             ax.scatter(
@@ -148,7 +158,7 @@ class ParetoFront2D(ParetoFrontier):
         plt.show()
         plt.savefig(f"{plot_filename}.pdf")
 
-    def plot_scatter_with_pareto(self):
+    def plot_scatter_with_pareto(self) -> None:
         """If no path was provided (self.files), the plot will be displayed only."""
         # colors = ['blue' if val else 'green' for val in df['predictive']]
 

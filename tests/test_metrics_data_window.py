@@ -77,7 +77,7 @@ class TestSimulatedInMemoryPredictiveClusterStateProvider(unittest.TestCase):
     There is no prediction for this because the datasize is too small to trigger the prediction.
     """
 
-    def setUp(self):
+    def setUp(self) -> None:
 
         root_dir = Path(os.path.dirname(os.path.abspath(__file__)))
         self.source_dir = root_dir / "test_data/alibaba_control_c_29247_denom_1_mini"
@@ -99,7 +99,7 @@ class TestSimulatedInMemoryPredictiveClusterStateProvider(unittest.TestCase):
         shutil.copytree(self.source_dir_toosmall, self.target_dir_toosmall)
         self.config = ClusterStateConfig(filename=self.source_dir / "metadata.json")
 
-    def test_read_metrics_data(self):
+    def test_read_metrics_data(self) -> None:
         """Test the read_metrics_data method, which is the window of data to process next."""
         sim_inmem_p_prov = SimulatedInMemoryPredictiveClusterStateProvider(
             window=40,
@@ -152,7 +152,7 @@ class TestSimulatedInMemoryPredictiveClusterStateProvider(unittest.TestCase):
         type(result)
         self.assertEqual(result["cpu"].values.tolist(), expected_result["cpu"].values.tolist())
 
-    def test_get_next_recorded_data(self):
+    def test_get_next_recorded_data(self) -> None:
         """Test the read_metrics_data method, which is the window of data to process next."""
         file_cs_prov = FileClusterStateProvider(
             window=40,
@@ -208,7 +208,7 @@ class TestSimulatedInMemoryPredictiveClusterStateProvider(unittest.TestCase):
 
         self.assertEqual(recorded_data["cpu"].values.tolist(), expected_result["cpu"].values.tolist())
 
-    def test_too_small_data(self):
+    def test_too_small_data(self) -> None:
 
         # Here we'll work with the too small data.  We were hitting a bug where there is at
         # least one data point in the window, but not enough data points to make a prediction.
@@ -219,7 +219,7 @@ class TestSimulatedInMemoryPredictiveClusterStateProvider(unittest.TestCase):
 
         self.assertEqual(cfg, {})
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         shutil.rmtree(self.target_dir_sim, ignore_errors=True)
         shutil.rmtree(self.target_dir, ignore_errors=True)
         shutil.rmtree(self.target_dir_toosmall, ignore_errors=True)

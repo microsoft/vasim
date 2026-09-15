@@ -69,7 +69,7 @@ class TestSimulatedInfraScaler(unittest.TestCase):
     We need to fill in and fix the rest of the tests in this file.
     """
 
-    def setUp(self):
+    def setUp(self) -> None:
 
         # For this test we'll use the "mini" dataset, which is a smaller version of the full dataset
         root_dir = Path(os.path.dirname(os.path.abspath(__file__)))
@@ -109,7 +109,7 @@ class TestSimulatedInfraScaler(unittest.TestCase):
         self.scaler = self.runner.infra_scaler
         self.recovery_time = self.runner.infra_scaler.recovery_time
 
-    def test_scale_should_scale_cluster_when_recovery_time_has_passed(self):
+    def test_scale_should_scale_cluster_when_recovery_time_has_passed(self) -> None:
         # Arrange
         new_limit = 10
         current_limit = 5
@@ -125,7 +125,7 @@ class TestSimulatedInfraScaler(unittest.TestCase):
         self.assertEqual(self.scaler.last_scaling_time, time_now)
         self.assertEqual(self.cluster_state_provider.get_current_cpu_limit(), new_limit)
 
-    def test_scale_should_not_scale_cluster_when_recovery_time_has_not_passed(self):
+    def test_scale_should_not_scale_cluster_when_recovery_time_has_not_passed(self) -> None:
         # Arrange
         new_limit = 10
         current_limit = 5
@@ -185,7 +185,7 @@ class TestSimulatedInfraScaler(unittest.TestCase):
     #     self.cluster_state_provider.set_cpu_limit.assert_not_called()
     #     self.assertIsNone(self.scaler.last_scaling_time)
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         shutil.rmtree(self.target_dir_sim, ignore_errors=True)
         shutil.rmtree(self.target_dir, ignore_errors=True)
 
