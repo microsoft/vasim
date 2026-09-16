@@ -12,6 +12,8 @@ on:
     branches:
       - main
 
+  workflow_dispatch:
+
   schedule:  # Run the pipeline every friday afternoon to make sure no package is broken
     - cron: "15 21 * * FRI"
 
@@ -125,4 +127,3 @@ jobs:
   #     with:
   #       branch: gh-pages
   #       folder: website/public
-
