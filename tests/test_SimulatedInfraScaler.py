@@ -140,6 +140,28 @@ class TestSimulatedInfraScaler(unittest.TestCase):
         self.assertFalse(result)
         self.assertEqual(self.cluster_state_provider.get_current_cpu_limit(), current_limit)
 
+    def test_waiting_log_reports_the_remaining_minutes(self):
+        # Arrange. The waiting log mixed units: it subtracted elapsed minutes
+        # from recovery_time * 60 seconds, so a 5-minute wait at recovery_time
+        # 15 reported 895 minutes remaining instead of 10. Here recovery_time
+        # is 5, so a 2-minute wait must report 3 rather than 298.
+        new_limit = 10
+        current_limit = 5
+        elapsed = 2
+        self.scaler.last_scaling_time = self.start_timestamp
+        time_now = self.start_timestamp + timedelta(minutes=elapsed)
+        self.cluster_state_provider.set_cpu_limit(current_limit)
+
+        # Act. Still inside the recovery window, so this takes the waiting branch.
+        with self.assertLogs(self.scaler.logger, level="INFO") as captured:
+            result = self.scaler.scale(new_limit, time_now)
+
+        # Assert
+        self.assertFalse(result)
+        waiting = [line for line in captured.output if "Waiting to scale" in line]
+        self.assertTrue(waiting)
+        self.assertIn(f"Waiting to scale {self.recovery_time - elapsed} minutes", waiting[0])
+
     def test_scale_should_scale_cluster_when_a_whole_day_has_passed(self):
         # Arrange. timedelta.seconds drops whole days, so a gap of exactly one
         # day reported 0 seconds elapsed and the recovery window never opened.
