@@ -101,7 +101,12 @@ def calculate_metrics(merged):
         print("No data to calculate metrics.")
         return {}
 
-    num_changes = (merged["CURR_LIMIT"] != merged["CURR_LIMIT"].shift(-1)).sum()
+    # Count how many times CURR_LIMIT changes between consecutive rows. Comparing against
+    # shift() always marks the first row as changed (it has no predecessor, so NaN != value),
+    # so subtract that one phantom change. `merged` is guaranteed non-empty by the guard above,
+    # so this never goes negative. (Previously this used shift(-1), which left the *last* row
+    # as NaN and overcounted num_scalings by exactly 1 on every run.)
+    num_changes = (merged["CURR_LIMIT"] != merged["CURR_LIMIT"].shift()).sum() - 1
 
     metrics = {
         "average_slack": merged["SLACK"].mean(),
