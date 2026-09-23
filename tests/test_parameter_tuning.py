@@ -5,7 +5,6 @@
 #  Copyright (c) Microsoft Corporation.
 # --------------------------------------------------------------------------
 #
-# pylint: disable=duplicate-code
 
 """
 Module Name: TestParameterTuning.
@@ -22,13 +21,13 @@ Classes:
         has a non-empty config dict containing the tested parameter keys and values.
 """
 
+# pylint: disable=duplicate-code
+
 import json
 import unittest
 from unittest.mock import MagicMock, patch
 
-from vasim.recommender.cluster_state_provider.ClusterStateConfig import ClusterStateConfig
 from vasim.simulator.ParameterTuning import tune_with_strategy
-
 
 MINIMAL_CONFIG = {
     "general_config": {
@@ -43,10 +42,10 @@ MINIMAL_CONFIG = {
 }
 
 
-def _make_fake_pool(*args, **kwargs):
+def _make_fake_pool(*_args, **_kwargs):
     """Return fake starmap results that mirror what _tune_parameters would return."""
 
-    def fake_starmap(fn, pool_args):
+    def fake_starmap(_fn, pool_args):
         return [(cfg, {"average_slack": 1.0, "num_scalings": 5}) for cfg, *_ in pool_args]
 
     pool = MagicMock()
@@ -59,7 +58,8 @@ def _make_fake_pool(*args, **kwargs):
 class TestTuneWithStrategyConfig(unittest.TestCase):
     """Regression tests for issue #119: config dict in result tuples must be non-empty."""
 
-    def _run_tune(self, strategy, algo_params, general_params, predictive_params=None):
+    @staticmethod
+    def _run_tune(strategy, algo_params, general_params, predictive_params=None):
         json_data = json.dumps(MINIMAL_CONFIG)
         with (
             patch("builtins.open", unittest.mock.mock_open(read_data=json_data)),
@@ -87,7 +87,7 @@ class TestTuneWithStrategyConfig(unittest.TestCase):
         results = self._run_tune("grid", algo_params, general_params)
 
         self.assertGreater(len(results), 0)
-        for config, metrics in results:
+        for config, _metrics in results:
             self.assertIsInstance(config, dict)
             self.assertNotEqual(config, {}, "config dict must not be empty (issue #119)")
             self.assertIn("addend", config, "algo param 'addend' must appear in config dict")
