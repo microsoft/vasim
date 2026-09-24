@@ -118,7 +118,7 @@ class SimulatedInfraScaler:
         # Only scale if the new limit differs from the current CPU limit
         if new_limit != current_cpu_limit:
             # Perform scaling if enough recovery time has passed since the last scaling event
-            if self.last_scaling_time is None or (time_now - self.last_scaling_time).seconds > self.recovery_time * 60:
+            if self.last_scaling_time is None or (time_now - self.last_scaling_time).total_seconds() > self.recovery_time * 60:
                 self.logger.info(">>>attempting to scale to %f cores from %f", new_limit, current_cpu_limit)
 
                 # Check if new_limit goes below minimum or above maximum CPU limits
@@ -146,7 +146,7 @@ class SimulatedInfraScaler:
             elif self.last_scaling_time is not None:
                 self.logger.info(
                     "Waiting to scale %d minutes, current minutes %d, new_limit: %f",
-                    self.recovery_time * 60 - (time_now - self.last_scaling_time).seconds // 60,
+                    self.recovery_time - int((time_now - self.last_scaling_time).total_seconds() // 60),
                     minutes,
                     new_limit,
                 )
