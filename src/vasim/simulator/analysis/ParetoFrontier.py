@@ -61,12 +61,15 @@ class ParetoFrontier(ABC):
             df["sum_slack_norm"] = df["sum_slack"] / df["sum_slack"].max()
         if df["sum_insufficient_cpu"].max() > 0:
             df["sum_insufficient_cpu_norm"] = df["sum_insufficient_cpu"] / df["sum_insufficient_cpu"].max()
+        # The percentile filter below relies on num_scalings_norm, which only exists when at
+        # least one configuration scaled. If no configuration scales, there is no thrashing to
+        # filter out, so skip it rather than raising a KeyError on the missing column.
         if df["num_scalings"].max() > 0:
             df["num_scalings_norm"] = df["num_scalings"] / df["num_scalings"].max()
 
-        # Filter out 90 percentile of num_scalings_norm, to eliminate thrashing cases
-        # Lots of times, the number of scalings is very high, which is not desirable
-        df = df[df["num_scalings_norm"] <= np.percentile(df["num_scalings_norm"], 90)]
+            # Filter out 90 percentile of num_scalings_norm, to eliminate thrashing cases
+            # Lots of times, the number of scalings is very high, which is not desirable
+            df = df[df["num_scalings_norm"] <= np.percentile(df["num_scalings_norm"], 90)]
         return df
 
     @staticmethod
