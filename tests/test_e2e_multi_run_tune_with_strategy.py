@@ -144,7 +144,7 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
         # even if num_combinations is less than the total.
         # assert len(results) == num_combinations
         # check the first result's combinations, which is deterministic because we're using grid
-        self.assertEqual(results[0][0].general_config["window"], 60)
+        self.assertEqual(results[0][0]["window"], 60)
         # # check the first result's metrics
         self.assertAlmostEqual(results[0][1]["average_slack"], expected["average_slack"], places=2)
         self.assertAlmostEqual(results[0][1]["median_slack"], expected["median_slack"], places=2)
@@ -217,8 +217,8 @@ class TestRunnerSimulatorIntegrationTest(unittest.TestCase):
 
         # assert len(results) == num_combinations
         # check the first result's combinations, which is deterministic because we're using grid
-        self.assertEqual(results[0][0].general_config["window"], 60)
-        self.assertEqual(results[0][0]["prediction_config"]["waiting_before_predict"], 60)
+        self.assertEqual(results[0][0]["window"], 60)
+        self.assertEqual(results[0][0]["waiting_before_predict"], 60)
         # # check the first result's metrics
         self.assertAlmostEqual(results[0][1]["average_slack"], expected["average_slack"], places=2)
         self.assertAlmostEqual(results[0][1]["median_slack"], expected["median_slack"], places=2)
